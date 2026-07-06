@@ -10,7 +10,7 @@
 - доступ к Maven Central
 - доступ к Maven-репозиторию оригинального WorldPainter: `https://www.worldpainter.net/maven-repo/`
 
-На Windows для будущей сборки installer.exe дополнительно понадобятся:
+На Windows для сборки installer.exe дополнительно понадобятся:
 
 - JDK с `jpackage`
 - WiX Toolset с доступными `candle.exe` и `light.exe`
@@ -79,8 +79,8 @@ mvn -pl WPGUI exec:exec
 
 После ручной проверки GUI можно готовить portable/installer layout.
 
-Заготовка для Windows:
+Сборка installer.exe на Windows:
 
 ```powershell
-.\scripts\build-windows-installer.ps1
+.\scripts\build-windows-installer.ps1 -BuildInstaller
 ```

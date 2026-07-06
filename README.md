@@ -45,9 +45,9 @@
 
 | Артефакт | Для чего нужен |
 | --- | --- |
-| `WorldPainter RU 2.27.0-r1 Setup.exe` | обычная установка на Windows, ярлыки, меню «Пуск» |
-| `WorldPainter RU Portable.zip` | переносимая сборка для ручного запуска через Java |
-| `WorldPainter-RU-src.zip` | архив исходного кода релиза |
+| `WorldPainter-RU-2.27.0-r1-Setup.exe` | обычная установка на Windows, ярлыки, меню «Пуск» |
+| `WorldPainter-RU-2.27.0-r1-Portable.zip` | переносимая сборка для ручного запуска через Java |
+| `WorldPainter-RU-2.27.0-r1-src.zip` | архив исходного кода релиза |
 
 > [!NOTE]
 > Portable-сборка не заменяет полноценный installer. Она удобна для тестов и ручного запуска, но для рядового пользователя лучше использовать `Setup.exe`.
@@ -57,21 +57,13 @@
 - Русская локализация основных окон, меню, панелей и диалогов.
 - Переведены многие предупреждения, ошибки, progress-сообщения и `JOptionPane`.
 - Подготовлена сборка Windows installer через `jpackage` и WiX.
-- Добавлены release-документы: changelog, roadmap, build guide и packaging notes.
+- Подготовлена документация по сборке, упаковке и плану развития.
 - Сохранена лицензия **GNU GPLv3**, совместимая с оригинальным WorldPainter.
-
-## Скриншоты
-
-Скриншоты будут добавлены перед публичным релизом.
-
-| Главное окно | Настройки | Экспорт |
-| --- | --- | --- |
-| _скриншот будет добавлен_ | _скриншот будет добавлен_ | _скриншот будет добавлен_ |
 
 ## Установка
 
 1. Откройте страницу **Releases**.
-2. Скачайте `WorldPainter RU 2.27.0-r1 Setup.exe`.
+2. Скачайте `WorldPainter-RU-2.27.0-r1-Setup.exe`.
 3. Запустите установщик.
 4. На шаге выбора ярлыков отметьте нужные пункты.
 5. После установки можно сразу запустить WorldPainter RU.
@@ -117,9 +109,9 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build-windows-installer.ps1 -
 
 Подробнее:
 
-- [BUILDING_RU.md](BUILDING_RU.md)
-- [PACKAGING_NOTES.md](PACKAGING_NOTES.md)
-- [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
+- [BUILDING_RU.md](docs/BUILDING_RU.md)
+- [PACKAGING_NOTES.md](docs/PACKAGING_NOTES.md)
+- [RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md)
 
 ## Структура
 
@@ -128,6 +120,7 @@ WPCore/               ядро WorldPainter
 WPGUI/                графический интерфейс
 WPDynmapPreviewer/    dynmap previewer
 assets/               иконки WorldPainter RU
+docs/                 сборка, упаковка и release checklist
 scripts/              сборка installer
 ```
 
