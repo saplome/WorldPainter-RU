@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -152,6 +163,18 @@ public abstract class Layer implements Serializable, Comparable<Layer> {
     }
     
     public BufferedImage getIcon() {
+        final Object configuredTheme = javax.swing.UIManager.get("WorldPainter.iconTheme");
+        if (configuredTheme instanceof String) {
+            final String iconTheme = (String) configuredTheme;
+            if (! iconTheme.equals(themedIconTheme)) {
+                themedIcon = IconUtils.loadScaledImage(getClass().getClassLoader(),
+                        "org/pepsoft/worldpainter/icons/" + iconTheme + "/" + getClass().getSimpleName().toLowerCase() + ".png");
+                themedIconTheme = iconTheme;
+            }
+            if (themedIcon != null) {
+                return themedIcon;
+            }
+        }
         return icon;
     }
     
@@ -305,6 +328,8 @@ public abstract class Layer implements Serializable, Comparable<Layer> {
     private transient LayerRenderer renderer;
     private transient Class<? extends LayerExporter> exporterType;
     private transient BufferedImage icon;
+    private transient BufferedImage themedIcon;
+    private transient String themedIconTheme;
 
     private static final long serialVersionUID = 2011032901L;
 

@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -601,7 +612,7 @@ public class ExportWorldDialog extends WPDialogWithPaintSelection {
 
         jLabel1.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.mapFormat"));
 
-        labelPlatform.setForeground(new java.awt.Color(0, 0, 255));
+        labelPlatform.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         labelPlatform.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUExperimentalMinecraft"));
         labelPlatform.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         labelPlatform.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -610,7 +621,7 @@ public class ExportWorldDialog extends WPDialogWithPaintSelection {
             }
         });
 
-        labelPlatformWarning.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelPlatformWarning.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelPlatformWarning.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlBUnknownFormat"));
         labelPlatformWarning.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlThisMapFormat"));
 
@@ -670,7 +681,7 @@ public class ExportWorldDialog extends WPDialogWithPaintSelection {
         });
         jScrollPane1.setViewportView(listDataPacks);
 
-        buttonAddDataPack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_add.png"))); // NOI18N
+        buttonAddDataPack.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_add.png")); // NOI18N
         buttonAddDataPack.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.addADataPack"));
         buttonAddDataPack.setMargin(new java.awt.Insets(2, 2, 2, 2));
         buttonAddDataPack.addActionListener(new java.awt.event.ActionListener() {
@@ -679,7 +690,7 @@ public class ExportWorldDialog extends WPDialogWithPaintSelection {
             }
         });
 
-        buttonRemoveDataPack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_delete.png"))); // NOI18N
+        buttonRemoveDataPack.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_delete.png")); // NOI18N
         buttonRemoveDataPack.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.removeTheSelectedData"));
         buttonRemoveDataPack.setEnabled(false);
         buttonRemoveDataPack.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -875,7 +886,7 @@ public class ExportWorldDialog extends WPDialogWithPaintSelection {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.0db377921f"), jPanel1);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.general"), jPanel1);
 
         buttonTestExport.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.testExport"));
         buttonTestExport.addActionListener(new java.awt.event.ActionListener() {

@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
@@ -65,7 +76,7 @@ public class ScaleWorldDialog extends WorldPainterDialog {
         if (percentage == 100) {
             beepAndShowError(this, org.pepsoft.worldpainter.WPI18n.s("ui.scale.selectOtherFactor.message"), org.pepsoft.worldpainter.WPI18n.s("ui.scale.selectOtherFactor.title"));
             return;
-        } else if (JOptionPane.showConfirmDialog(this, org.pepsoft.worldpainter.WPI18n.s("ui.dialog.confirmScaling.messagePrefix") + percentage + org.pepsoft.worldpainter.WPI18n.s("ui.dialog.confirmScaling.messageSuffix"), org.pepsoft.worldpainter.WPI18n.s("ui.dialog.confirmScaling.title"), YES_NO_OPTION) != OK_OPTION) {
+        } else if (JOptionPane.showConfirmDialog(this, org.pepsoft.worldpainter.WPI18n.format("ui.dialog.confirmScaling.message", percentage), org.pepsoft.worldpainter.WPI18n.s("ui.dialog.confirmScaling.title"), YES_NO_OPTION) != OK_OPTION) {
             return;
         }
         final CoordinateTransform transform = CoordinateTransform.getScalingInstance(percentage / 100f);

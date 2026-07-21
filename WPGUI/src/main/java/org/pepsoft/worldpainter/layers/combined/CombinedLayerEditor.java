@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -327,7 +338,7 @@ public class CombinedLayerEditor extends AbstractLayerEditor<CombinedLayer> impl
 
         checkBoxApplyTerrainAndBiomeOnExport.setText(org.pepsoft.worldpainter.WPI18n.s("ui.button.applyTerrainAndBiome"));
 
-        buttonEditLayerSettings.setText(org.pepsoft.worldpainter.WPI18n.s("ui.7efadb241b"));
+        buttonEditLayerSettings.setText(org.pepsoft.worldpainter.WPI18n.s("ui.action.edit"));
         buttonEditLayerSettings.setEnabled(false);
         buttonEditLayerSettings.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -1,8 +1,15 @@
 # WorldPainter Languages: языки интерфейса.
-# Новый язык = 5 файлов: (strings|blocks|gamedata|layers|swing)_<код>.properties
+# Новый язык = 9 файлов: (strings|blocks|gamedata|layers|swing|Category|GameType|Generator|LightOrigin)_<код>.properties
 # Формат:  <код> = <название, как оно показывается в меню>
+# Опция:   <код>.font = <шрифт 1>, <шрифт 2>, ... — первый установленный в системе шрифт заменяет стандартные шрифты интерфейса для этого языка
 en = English
 ru = Русский (Russian)
 be = Беларуская (Belarusian)
 uk = Українська (Ukrainian)
 kk = Қазақша (Kazakh)
+de = Deutsch (German)
+fr = Français (French)
+es = Español (Spanish)
+it = Italiano (Italian)
+zh = 简体中文 (Chinese Simplified)
+zh.font = Microsoft YaHei UI, Microsoft YaHei, Noto Sans CJK SC, Source Han Sans SC, PingFang SC, WenQuanYi Micro Hei

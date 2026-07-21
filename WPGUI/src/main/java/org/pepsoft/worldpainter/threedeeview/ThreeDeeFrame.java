@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -123,7 +134,7 @@ public class ThreeDeeFrame extends JFrame implements WindowListener {
         toolBar.add(MOVE_TO_SPAWN_ACTION);
         toolBar.add(MOVE_TO_ORIGIN_ACTION);
         toolBar.addSeparator();
-        toolBar.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.42d6e016e6")));
+        toolBar.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.threeDee.visibleLayers")));
         final JRadioButton radioButtonLayersNone = new JRadioButton(NO_LAYERS_ACTION);
         layerVisibilityButtonGroup.add(radioButtonLayersNone);
         toolBar.add(radioButtonLayersNone);

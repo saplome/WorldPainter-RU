@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -161,27 +172,27 @@ public class JavaExportSettingsEditor extends ExportSettingsEditor {
         checkBoxRemovePlants = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
 
-        jLabel1.setText(org.pepsoft.worldpainter.WPI18n.s("wp.water.a306efea8b"));
+        jLabel1.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.water"));
 
         buttonGroup1.add(radioButtonWaterFloat);
         radioButtonWaterFloat.setText(org.pepsoft.worldpainter.WPI18n.s("wp.leave.floating.48e326abb8"));
 
         buttonGroup1.add(radioButtonWaterDrop);
-        radioButtonWaterDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.drop.6e9d25362c"));
+        radioButtonWaterDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.drop"));
 
         checkBoxWaterFlow.setText(org.pepsoft.worldpainter.WPI18n.s("wp.make.unbounded.water.flow.ee3d4bbbef"));
 
-        jLabel2.setText(org.pepsoft.worldpainter.WPI18n.s("wp.lava.2ffeadf328"));
+        jLabel2.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.lava"));
 
         buttonGroup2.add(radioButtonLavaFloat);
         radioButtonLavaFloat.setText(org.pepsoft.worldpainter.WPI18n.s("wp.leave.floating.48e326abb8"));
 
         buttonGroup2.add(radioButtonLavaDrop);
-        radioButtonLavaDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.drop.6e9d25362c"));
+        radioButtonLavaDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.drop"));
 
         checkBoxLavaFlow.setText(org.pepsoft.worldpainter.WPI18n.s("wp.make.unbounded.lava.flow.7ec061ca82"));
 
-        jLabel3.setText(org.pepsoft.worldpainter.WPI18n.s("wp.gravel.16fef3b022"));
+        jLabel3.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.gravel"));
 
         buttonGroup3.add(radioButtonGravelFloat);
         radioButtonGravelFloat.setText(org.pepsoft.worldpainter.WPI18n.s("wp.leave.floating.48e326abb8"));
@@ -190,9 +201,9 @@ public class JavaExportSettingsEditor extends ExportSettingsEditor {
         radioButtonGravelSupport.setText(org.pepsoft.worldpainter.WPI18n.s("wp.support.with.stone.f668903390"));
 
         buttonGroup3.add(radioButtonGravelDrop);
-        radioButtonGravelDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.drop.6e9d25362c"));
+        radioButtonGravelDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.drop"));
 
-        jLabel4.setText(org.pepsoft.worldpainter.WPI18n.s("wp.cement.553513360b"));
+        jLabel4.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.cement"));
 
         buttonGroup4.add(radioButtonCementFloat);
         radioButtonCementFloat.setText(org.pepsoft.worldpainter.WPI18n.s("wp.leave.floating.48e326abb8"));
@@ -201,18 +212,18 @@ public class JavaExportSettingsEditor extends ExportSettingsEditor {
         radioButtonCementSupport.setText(org.pepsoft.worldpainter.WPI18n.s("wp.support.with.stone.f668903390"));
 
         buttonGroup4.add(radioButtonCementDrop);
-        radioButtonCementDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.drop.6e9d25362c"));
+        radioButtonCementDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.drop"));
 
         buttonGroup5.add(radioButtonSandFloat);
         radioButtonSandFloat.setText(org.pepsoft.worldpainter.WPI18n.s("wp.leave.floating.48e326abb8"));
 
-        jLabel5.setText(org.pepsoft.worldpainter.WPI18n.s("wp.sand.b56bb34bfc"));
+        jLabel5.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.sand"));
 
         buttonGroup5.add(radioButtonSandSupport);
         radioButtonSandSupport.setText(org.pepsoft.worldpainter.WPI18n.s("wp.support.with.sandstone.99317bc538"));
 
         buttonGroup5.add(radioButtonSandDrop);
-        radioButtonSandDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.drop.6e9d25362c"));
+        radioButtonSandDrop.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.drop"));
 
         checkBoxLeafDistance.setText(org.pepsoft.worldpainter.WPI18n.s("wp.calculate.distance.property.b6e48c09b3"));
         checkBoxLeafDistance.addActionListener(new java.awt.event.ActionListener() {
@@ -221,13 +232,13 @@ public class JavaExportSettingsEditor extends ExportSettingsEditor {
             }
         });
 
-        jLabel6.setText(org.pepsoft.worldpainter.WPI18n.s("wp.leaves.46d06d859f"));
+        jLabel6.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.leaves"));
 
         checkBoxRemoveFloatingLeaves.setText(org.pepsoft.worldpainter.WPI18n.s("wp.remove.floating.leaf.blocks.30d94e4e74"));
 
         checkBoxSkyLight.setText(org.pepsoft.worldpainter.WPI18n.s("wp.calculate.sky.light.c715e9f0cc"));
 
-        jLabel7.setText(org.pepsoft.worldpainter.WPI18n.s("wp.light.a5277579c2"));
+        jLabel7.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.light"));
 
         checkBoxBlockLight.setText(org.pepsoft.worldpainter.WPI18n.s("wp.calculate.block.light.1e458b6b0e"));
 
@@ -235,7 +246,7 @@ public class JavaExportSettingsEditor extends ExportSettingsEditor {
 
         checkBoxRemovePlants.setText(org.pepsoft.worldpainter.WPI18n.s("wp.remove.from.invalid.blocks.3a5e5bf4b4"));
 
-        jLabel8.setText(org.pepsoft.worldpainter.WPI18n.s("wp.plants.f2848999af"));
+        jLabel8.setText(org.pepsoft.worldpainter.WPI18n.s("wp.export.plants"));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

@@ -529,7 +529,7 @@ public final class TileRenderer {
             return ICON;
         }
 
-        private final BufferedImage ICON = IconUtils.loadScaledImage("org/pepsoft/worldpainter/resources/fluids.png");
+        private final BufferedImage ICON = IconUtils.loadScaledImage("org/pepsoft/worldpainter/icons/fluids.png");
     };
     public static final Layer ALL_TUNNELS_AS_LAYER = new Layer("org.pepsoft.synthetic.Tunnels", "Cave/Tunnel Layers", "All Custom Cave/Tunnel Layers", Layer.DataSize.NONE, false, 0) {
         @Override
@@ -537,7 +537,7 @@ public final class TileRenderer {
             return ICON;
         }
 
-        private final BufferedImage ICON = IconUtils.loadScaledImage("org/pepsoft/worldpainter/resources/tunnels.png");
+        private final BufferedImage ICON = IconUtils.loadScaledImage("org/pepsoft/worldpainter/icons/tunnels.png");
     };
 
     private static final int BLACK = 0x000000, LIGHT_GREY = 0xD0D0D0;

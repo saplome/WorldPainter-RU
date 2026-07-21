@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -789,15 +800,15 @@ public class NewWorldDialog extends WorldPainterDialog {
             if (westEastTime.equals(northSouthTime)) {
                 labelWalkingTimes.setText(westEastTime);
             } else {
-                labelWalkingTimes.setText(org.pepsoft.worldpainter.WPI18n.s("ui.71310fb090") + westEastTime + org.pepsoft.worldpainter.WPI18n.s("ui.frag.northToSouthLabel") + northSouthTime);
+                labelWalkingTimes.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.westToEastPrefix") + westEastTime + org.pepsoft.worldpainter.WPI18n.s("ui.frag.northToSouthLabel") + northSouthTime);
             }
         }
         if (scale == 1.0f) {
             labelScaledDimensions.setText(" ");
         } else if (checkBoxCircular.isSelected()) {
-            labelScaledDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.42c6220bca") + INT_NUMBER_FORMAT.format(width) + ")");
+            labelScaledDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.newWorld.scaledPrefix") + INT_NUMBER_FORMAT.format(width) + ")");
         } else {
-            labelScaledDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.42c6220bca") + INT_NUMBER_FORMAT.format(width) + " x " + INT_NUMBER_FORMAT.format(length) + ")");
+            labelScaledDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.newWorld.scaledPrefix") + INT_NUMBER_FORMAT.format(width) + " x " + INT_NUMBER_FORMAT.format(length) + ")");
         }
     }
     
@@ -1135,7 +1146,7 @@ public class NewWorldDialog extends WorldPainterDialog {
 
         jLabel3.setText(org.pepsoft.worldpainter.WPI18n.s("ui.unit.blocksInMultiplesOf"));
 
-        buttonRandomSeed.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/arrow_rotate_clockwise.png"))); // NOI18N
+        buttonRandomSeed.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/arrow_rotate_clockwise.png")); // NOI18N
         buttonRandomSeed.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.chooseARandomSeed"));
         buttonRandomSeed.setEnabled(false);
         buttonRandomSeed.addActionListener(new java.awt.event.ActionListener() {
@@ -1188,7 +1199,7 @@ public class NewWorldDialog extends WorldPainterDialog {
         });
 
         buttonGroup2.add(radioButtonLandSeed);
-        radioButtonLandSeed.setText(org.pepsoft.worldpainter.WPI18n.s("ui.512ef7c688"));
+        radioButtonLandSeed.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.land"));
         radioButtonLandSeed.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.text.aSeedWithA"));
         radioButtonLandSeed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1206,7 +1217,7 @@ public class NewWorldDialog extends WorldPainterDialog {
         });
 
         labelWarning.setFont(labelWarning.getFont().deriveFont(labelWarning.getFont().getStyle() | java.awt.Font.BOLD));
-        labelWarning.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelWarning.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelWarning.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.onlyWithMods"));
 
         checkBoxExtendedBlockIds.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.extendedBlockIds"));
@@ -1259,7 +1270,7 @@ public class NewWorldDialog extends WorldPainterDialog {
             }
         });
 
-        buttonMasterInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/information.png"))); // NOI18N
+        buttonMasterInfo.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/information.png")); // NOI18N
         buttonMasterInfo.setMargin(new java.awt.Insets(0, 0, 0, 0));
         buttonMasterInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

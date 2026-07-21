@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -72,7 +83,7 @@ public class BiomesViewerFrame extends JFrame {
         getContentPane().add(imageViewer, BorderLayout.CENTER);
 
         JToolBar toolBar = new JToolBar();
-        toolBar.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.e1d3a990db")));
+        toolBar.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.biomesViewer.biomeSchemePrefix")));
         List<Integer> availableAlgorithms = BiomeSchemeManager.getAvailableBiomeAlgorithms();
         //noinspection unchecked // NetBeans visual designer
         schemeChooser = new JComboBox(availableAlgorithms.toArray());
@@ -124,7 +135,7 @@ public class BiomesViewerFrame extends JFrame {
         });
         toolBar.add(schemeChooser);
         toolBar.add(Box.createHorizontalStrut(5));
-        toolBar.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.d2ee1feacf")));
+        toolBar.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.biomesViewer.seedPrefix")));
         seedSpinner.setEditor(new JSpinner.NumberEditor(seedSpinner, "0"));
         seedSpinner.addChangeListener(e -> {
             if (BiomesViewerFrame.this.biomeScheme != null) {
@@ -154,7 +165,7 @@ public class BiomesViewerFrame extends JFrame {
         toolBar.add(button);
         
         toolBar.add(Box.createHorizontalStrut(5));
-        createWorldButton = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.d8213825cd"));
+        createWorldButton = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.biomesViewer.createWorld"));
         if (! standAloneMode) {
             createWorldButton.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.createANewWorldpainter"));
             createWorldButton.addActionListener(e -> createWorld());
@@ -163,7 +174,7 @@ public class BiomesViewerFrame extends JFrame {
         toolBar.add(createWorldButton);
         
         toolBar.add(Box.createHorizontalStrut(5));
-        button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.526d688f37"));
+        button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.biomesViewer.resetView"));
         button.addActionListener(e -> {
             imageViewer.setZoom(-2);
             if (marker != null) {
@@ -176,20 +187,20 @@ public class BiomesViewerFrame extends JFrame {
         
         if (seedListener != null) {
             toolBar.add(Box.createHorizontalStrut(5));
-            button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.580c8978ca"));
+            button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.biomesViewer.copySeed"));
             button.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.copyTheCurrentSeed"));
             button.addActionListener(e -> BiomesViewerFrame.this.seedListener.setSeed(((Number) seedSpinner.getValue()).longValue(), ((schemeChooser.getSelectedIndex() == 1) || (schemeChooser.getSelectedIndex() == 3)) ? Generator.LARGE_BIOMES : Generator.DEFAULT));
             toolBar.add(button);
         }
         
         toolBar.add(Box.createHorizontalStrut(5));
-        button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.3c8f281a39"));
+        button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.biomesViewer.playHereSurvival"));
         button.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.createASurvivalIn"));
         button.addActionListener(event -> playHere(false));
         toolBar.add(button);
 
         toolBar.add(Box.createHorizontalStrut(5));
-        button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.3f1fdc4f20"));
+        button = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.biomesViewer.playHereCreative"));
         button.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.createACreativeIn"));
         button.addActionListener(event -> playHere(true));
         toolBar.add(button);

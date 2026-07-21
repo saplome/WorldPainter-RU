@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -107,8 +118,9 @@ public class FloatingLayerDialog extends TunnelLayerDialog {
             if (! config.isMessageDisplayedCountAtLeast(PAINT_FLOATING_LAYER_KEY, 3)) {
                 doLaterOnEventThread(() -> JOptionPane.showMessageDialog(App.getInstance(),
                         org.pepsoft.worldpainter.WPI18n.s("ui.help.paintFloatingDimension") +
-                        org.pepsoft.worldpainter.WPI18n.s("ui.help.rightClickButtonPrefix") + layer.getName() + org.pepsoft.worldpainter.WPI18n.s("ui.help.buttonOnPanelMiddle") + layer.getPalette() + org.pepsoft.worldpainter.WPI18n.s("ui.help.panelNewlineSuffix") +
-                        org.pepsoft.worldpainter.WPI18n.s("ui.help.editFloatingDimensionHint")));
+                        org.pepsoft.worldpainter.WPI18n.s("ui.help.rightClickButtonPrefix") + layer.getName() + org.pepsoft.worldpainter.WPI18n.s("ui.help.buttonOnPanelMiddle") + org.pepsoft.worldpainter.WPI18n.paletteName(layer.getPalette()) + org.pepsoft.worldpainter.WPI18n.s("ui.help.panelNewlineSuffix") +
+                        org.pepsoft.worldpainter.WPI18n.s("ui.help.editFloatingDimensionHint"),
+                        org.pepsoft.worldpainter.WPI18n.s("ui.dialog.info.title"), JOptionPane.INFORMATION_MESSAGE));
                 config.setMessageDisplayed(PAINT_FLOATING_LAYER_KEY);
             }
         }
@@ -601,9 +613,9 @@ public class FloatingLayerDialog extends TunnelLayerDialog {
             }
         });
 
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/edge_sheer.png"))); // NOI18N
+        jLabel14.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/edge_sheer.png")); // NOI18N
 
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/edge_linear.png"))); // NOI18N
+        jLabel15.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/edge_linear.png")); // NOI18N
 
         buttonGroup4.add(radioButtonSmoothEdge);
         radioButtonSmoothEdge.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.smooth"));
@@ -614,7 +626,7 @@ public class FloatingLayerDialog extends TunnelLayerDialog {
             }
         });
 
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/edge_smooth.png"))); // NOI18N
+        jLabel19.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/edge_smooth.png")); // NOI18N
 
         buttonGroup4.add(radioButtonRoundedEdge);
         radioButtonRoundedEdge.setSelected(true);
@@ -625,7 +637,7 @@ public class FloatingLayerDialog extends TunnelLayerDialog {
             }
         });
 
-        jLabel20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/edge_rounded.png"))); // NOI18N
+        jLabel20.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/edge_rounded.png")); // NOI18N
 
         jLabel21.setLabelFor(spinnerRange);
         jLabel21.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.hillHeight"));
@@ -669,7 +681,7 @@ public class FloatingLayerDialog extends TunnelLayerDialog {
 
         jLabel30.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.height"));
 
-        labelEditDimensionProperties.setForeground(new java.awt.Color(0, 0, 255));
+        labelEditDimensionProperties.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         labelEditDimensionProperties.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUEditFloor"));
         labelEditDimensionProperties.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         labelEditDimensionProperties.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -875,7 +887,7 @@ public class FloatingLayerDialog extends TunnelLayerDialog {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.cb7f3a8037"), jPanel1);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.floating.dimensionTitle"), jPanel1);
 
         jLabel24.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlYouCanAddCanAdd"));
 
@@ -954,7 +966,7 @@ public class FloatingLayerDialog extends TunnelLayerDialog {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.1c8d7136a3"), jPanel3);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.floating.bottomLayers"), jPanel3);
 
         jLabel23.setFont(jLabel23.getFont().deriveFont((jLabel23.getFont().getStyle() | java.awt.Font.ITALIC) | java.awt.Font.BOLD, jLabel23.getFont().getSize()+6));
         jLabel23.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.alpha"));

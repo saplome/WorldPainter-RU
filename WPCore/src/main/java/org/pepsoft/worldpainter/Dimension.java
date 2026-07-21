@@ -2011,7 +2011,7 @@ public class Dimension extends InstanceKeeper implements TileProvider, Serializa
      */
     public void transform(CoordinateTransform transform, ProgressReceiver progressReceiver) throws OperationCancelled {
         if (progressReceiver != null) {
-            progressReceiver.setMessage("transforming " + getName() + "...");
+            progressReceiver.setMessage(WPI18n.format("ui.progress.transformingDimension", WPI18n.dimensionName(this)));
         }
         eventsInhibited = true;
         try {

@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -267,6 +278,14 @@ public final class Configuration implements Serializable, EventLogger, Minecraft
 
     public synchronized void setCheckForUpdates(boolean checkForUpdates) {
         this.checkForUpdates = checkForUpdates;
+    }
+
+    public synchronized int getDismissedForkUpdateRevision() {
+        return dismissedForkUpdateRevision;
+    }
+
+    public synchronized void setDismissedForkUpdateRevision(int dismissedForkUpdateRevision) {
+        this.dismissedForkUpdateRevision = dismissedForkUpdateRevision;
     }
 
     public synchronized int getDefaultContourSeparation() {
@@ -1307,7 +1326,7 @@ public final class Configuration implements Serializable, EventLogger, Minecraft
      */
     private static void installStartupLookAndFeel(Configuration legacyConfig) {
         try {
-            final LookAndFeel lookAndFeel = ((legacyConfig != null) && (legacyConfig.getLookAndFeel() != null)) ? legacyConfig.getLookAndFeel() : LookAndFeel.SYSTEM;
+            final LookAndFeel lookAndFeel = ((legacyConfig != null) && (legacyConfig.getLookAndFeel() != null)) ? legacyConfig.getLookAndFeel() : LookAndFeel.FLATLAF_CYAN_LIGHT;
             final String lafClassName;
             switch (lookAndFeel) {
                 case METAL:
@@ -1316,11 +1335,28 @@ public final class Configuration implements Serializable, EventLogger, Minecraft
                 case NIMBUS:
                     lafClassName = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
                     break;
+                case FLATLAF_ARC_ORANGE:
+                case FLATLAF_CYAN_LIGHT:
+                    lafClassName = "com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme";
+                    break;
                 case DARK_METAL:
                     lafClassName = "org.netbeans.swing.laf.dark.DarkMetalLookAndFeel";
                     break;
                 case DARK_NIMBUS:
                     lafClassName = "org.netbeans.swing.laf.dark.DarkNimbusLookAndFeel";
+                    break;
+                case DARK_THEME:
+                case RADIANCE_NIGHT_SHADE:
+                case RADIANCE_NIGHT_SHADE_2:
+                case RADIANCE_GRAPHITE:
+                case RADIANCE_GRAPHITE_CHALK:
+                case RADIANCE_TWILIGHT:
+                    // L78: removed themes are compatibility aliases for FlatLaf One Dark.
+                case FLATLAF_CARBON:
+                case FLATLAF_DARK_PURPLE:
+                case FLATLAF_ONE_DARK:
+                    // Dark fallback for pre-main startup dialogs.
+                    lafClassName = "org.netbeans.swing.laf.dark.DarkMetalLookAndFeel";
                     break;
                 default:
                     lafClassName = javax.swing.UIManager.getSystemLookAndFeelClassName();
@@ -1403,6 +1439,8 @@ public final class Configuration implements Serializable, EventLogger, Minecraft
     @Deprecated
     private int colourschemeIndex;
     private int launchCount;
+    // L66: latest fork release for which the user selected "do not remind". A newer release is shown again.
+    private int dismissedForkUpdateRevision;
     private Map<Integer, File> minecraftJars = new HashMap<>();
     private DonationStatus donationStatus;
     private UUID uuid = UUID.randomUUID();
@@ -1432,7 +1470,7 @@ public final class Configuration implements Serializable, EventLogger, Minecraft
     private String defaultGeneratorOptions;
     private byte[] defaultJideLayoutData;
     private Map<String, byte[]> jideLayoutData;
-    private LookAndFeel lookAndFeel;
+    private LookAndFeel lookAndFeel = LookAndFeel.FLATLAF_CYAN_LIGHT;
     private OverlayType overlayType = OverlayType.OPTIMISE_ON_LOAD;
     private int showCalloutCount = 3;
     private List<File> recentFiles;
@@ -1484,7 +1522,10 @@ public final class Configuration implements Serializable, EventLogger, Minecraft
 
     public enum DonationStatus {DONATED, NO_THANK_YOU}
     
-    public enum LookAndFeel {SYSTEM, METAL, NIMBUS, DARK_METAL, DARK_NIMBUS}
+    // FLAT_LIGHT and FLAT_DARK are legacy values from a rolled back FlatLaf experiment. They are kept so that
+    // existing configs which still reference them keep deserialising, but they are no longer offered in the UI and
+    // are treated as SYSTEM
+    public enum LookAndFeel {SYSTEM, METAL, NIMBUS, DARK_METAL, DARK_NIMBUS, @Deprecated DARK_THEME, @Deprecated FLAT_LIGHT, @Deprecated FLAT_DARK, @Deprecated RADIANCE_NIGHT_SHADE, @Deprecated RADIANCE_GRAPHITE, @Deprecated RADIANCE_GRAPHITE_CHALK, @Deprecated RADIANCE_TWILIGHT, @Deprecated RADIANCE_NIGHT_SHADE_2, @Deprecated FLATLAF_ARC_ORANGE, FLATLAF_CYAN_LIGHT, @Deprecated FLATLAF_CARBON, @Deprecated FLATLAF_DARK_PURPLE, FLATLAF_ONE_DARK}
 
     public enum OverlayType {SCALE_ON_LOAD, OPTIMISE_ON_LOAD, SCALE_ON_PAINT}
 

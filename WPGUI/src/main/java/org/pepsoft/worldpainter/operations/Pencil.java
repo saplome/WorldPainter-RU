@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * WorldPainter, a graphical and interactive map generator for Minecraft.
  * Copyright © 2011-2015  pepsoft.org, The Netherlands
  *
@@ -203,16 +214,16 @@ public class Pencil extends AbstractPaintOperation {
         @Override
         protected void addAdditionalComponents(GridBagConstraints constraints) {
             final ButtonGroup buttonGroup = new ButtonGroup();
-            final JRadioButton buttonFast = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.688e68e7df"), true);
+            final JRadioButton buttonFast = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.pencil.fastMode"), true);
             buttonFast.addActionListener(event -> fastMode = true);
             buttonGroup.add(buttonFast);
             add(buttonFast, constraints);
-            add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.00a86c34c0")), constraints);
-            final JRadioButton buttonSlow = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.eaf3727a3d"));
+            add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.pencil.fastModeTooltip")), constraints);
+            final JRadioButton buttonSlow = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.pencil.slowMode"));
             buttonSlow.addActionListener(event -> fastMode = false);
             buttonGroup.add(buttonSlow);
             add(buttonSlow, constraints);
-            add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.b46930b410")), constraints);
+            add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.pencil.slowModeTooltip")), constraints);
         }
     };
 }

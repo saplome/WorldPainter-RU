@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -215,10 +226,13 @@ public class MaterialSelector extends javax.swing.JPanel {
         if (legacyMode && (material != null) && (material.blockType >= 0)) {
             final String legacyName = BLOCKS[material.blockType].name;
             labelMaterialName.setText((legacyName != null) ? WPI18n.block(legacyName) : Integer.toString(material.blockType));
+            labelMaterialName.setIcon((legacyName != null) ? BlockIcons.get(legacyName.toLowerCase().replace(' ', '_')) : null);
         } else if (MINECRAFT.equals(namespace)) {
             labelMaterialName.setText(WPI18n.block(simpleName));
+            labelMaterialName.setIcon(BlockIcons.get(simpleName));
         } else {
             labelMaterialName.setText(namespace + ":" + simpleName);
+            labelMaterialName.setIcon(null);
         }
     }
 
@@ -234,6 +248,7 @@ public class MaterialSelector extends javax.swing.JPanel {
                 label.setForeground(list.getForeground());
             }
             label.setText((value != null) ? WPI18n.block(value) : "");
+            label.setIcon((value != null) ? BlockIcons.get(value) : null);
             return label;
         };
         comboBoxMinecraftName.setRenderer(simpleNameRenderer);
@@ -249,6 +264,7 @@ public class MaterialSelector extends javax.swing.JPanel {
                 label.setForeground(list.getForeground());
             }
             label.setText(formatLegacyBlockTypeLabel(value));
+            label.setIcon(legacyBlockTypeIcon(value));
             return label;
         });
     }
@@ -262,6 +278,17 @@ public class MaterialSelector extends javax.swing.JPanel {
             return entry;
         }
         return entry.substring(0, colon + 2) + WPI18n.block(entry.substring(colon + 2));
+    }
+
+    private static javax.swing.Icon legacyBlockTypeIcon(String entry) {
+        if (entry == null) {
+            return null;
+        }
+        final int colon = entry.indexOf(": ");
+        if (colon < 0) {
+            return null;
+        }
+        return BlockIcons.get(entry.substring(colon + 2).toLowerCase().replace(' ', '_'));
     }
 
     /**
@@ -648,7 +675,7 @@ public class MaterialSelector extends javax.swing.JPanel {
             }
         });
 
-        jLabel5.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel5.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         jLabel5.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlULookUp"));
         jLabel5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -709,7 +736,7 @@ public class MaterialSelector extends javax.swing.JPanel {
         panelProperties.setLayout(new java.awt.GridBagLayout());
         jScrollPane1.setViewportView(panelProperties);
 
-        buttonAddProperty.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_add.png"))); // NOI18N
+        buttonAddProperty.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_add.png")); // NOI18N
         buttonAddProperty.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.addAProperty"));
         buttonAddProperty.setEnabled(false);
         buttonAddProperty.setMargin(new java.awt.Insets(2, 2, 2, 2));

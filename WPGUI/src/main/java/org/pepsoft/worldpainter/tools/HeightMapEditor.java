@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -207,7 +218,7 @@ public class HeightMapEditor extends javax.swing.JFrame implements HeightMapProp
                 menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.dialog.heightMapEditor.bitmap"));
                 menuItem.addActionListener(actionEvent -> {
                     final File myHeightMapDir = Configuration.getInstance().getHeightMapsDirectory();
-                    final File file = ImageUtils.selectImageForOpen(HeightMapEditor.this, "a height map image file", myHeightMapDir);
+                    final File file = ImageUtils.selectImageForOpen(HeightMapEditor.this, org.pepsoft.worldpainter.WPI18n.s("ui.image.heightMapImageFile"), myHeightMapDir);
                     if (file != null) {
                         try {
                             BufferedImage image = ImageIO.read(file);
@@ -219,7 +230,7 @@ public class HeightMapEditor extends javax.swing.JFrame implements HeightMapProp
                     }
                 });
                 replaceMenu.add(menuItem);
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.9b27ee4c75"));
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.label.noise"));
                 menuItem.addActionListener(actionEvent -> {
                     NoiseHeightMap noiseHeightMap = new NoiseHeightMap(1f, 1.0, 1);
                     replace(parent, heightMap, noiseHeightMap);
@@ -276,7 +287,7 @@ public class HeightMapEditor extends javax.swing.JFrame implements HeightMapProp
                 replaceMenu.add(menuItem);
                 menu.add(replaceMenu);
                 if (heightMap instanceof DelegatingHeightMap) {
-                    menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.f2a6c498fb"));
+                    menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.action.delete"));
                     menuItem.addActionListener(e -> {
                         replace(parent, heightMap, ((DelegatingHeightMap) heightMap).getHeightMap(0));
                         treeModel.notifyListeners();

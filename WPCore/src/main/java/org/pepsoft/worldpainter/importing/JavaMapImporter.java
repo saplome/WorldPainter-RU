@@ -4,6 +4,8 @@
  */
 package org.pepsoft.worldpainter.importing;
 
+import org.pepsoft.worldpainter.WPI18n;
+
 import org.pepsoft.minecraft.*;
 import org.pepsoft.minecraft.ChunkStore.ChunkVisitor;
 import org.pepsoft.util.LongAttributeKey;
@@ -241,7 +243,7 @@ public class JavaMapImporter extends MapImporter {
     @SuppressWarnings({"StringEquality", "StringConcatenationInsideStringBufferAppend"}) // Interned strings; readability
     private String importDimension(File worldDir, Dimension dimension, ProgressReceiver progressReceiver) throws ProgressReceiver.OperationCancelled {
         if (progressReceiver != null) {
-            progressReceiver.setMessage(dimension.getName() + " dimension");
+            progressReceiver.setMessage(WPI18n.format("ui.progress.importingDimension", WPI18n.dimensionName(dimension)));
         }
         final int minHeight = dimension.getMinHeight(), maxHeight = dimension.getMaxHeight();
         final int maxY = maxHeight - 1;

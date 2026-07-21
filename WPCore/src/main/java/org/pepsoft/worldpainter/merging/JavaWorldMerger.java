@@ -1,8 +1,21 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package org.pepsoft.worldpainter.merging;
+
+import org.pepsoft.worldpainter.WPI18n;
 
 import org.jnbt.NBTInputStream;
 import org.jnbt.Tag;
@@ -398,7 +411,7 @@ public class JavaWorldMerger extends JavaWorldExporter { // TODO can this be mad
     private void mergeDimension(final File worldDir, File backupWorldDir, final Dimension dimension, ProgressReceiver progressReceiver) {
         doWithMdcContext(() -> {
             if (progressReceiver != null) {
-                progressReceiver.setMessage("merging " + dimension.getName() + " dimension");
+                progressReceiver.setMessage(WPI18n.format("ui.progress.mergingDimension", WPI18n.dimensionName(dimension)));
             }
             final int dim = dimension.getAnchor().dim;
             final File dimensionDir = platformProvider.getDimensionDir(platform, worldDir, dim), backupDimensionDir = platformProvider.getDimensionDir(platform, backupWorldDir, dim);
@@ -706,7 +719,7 @@ public class JavaWorldMerger extends JavaWorldExporter { // TODO can this be mad
                     synchronized (fixups) {
                         if (! fixups.isEmpty()) {
                             if (progressReceiver != null) {
-                                progressReceiver.setMessage("doing remaining fixups for " + dimension.getName());
+                                progressReceiver.setMessage(WPI18n.format("ui.progress.remainingFixups", WPI18n.dimensionName(dimension)));
                                 progressReceiver.reset();
                             }
                             try {
@@ -804,7 +817,7 @@ public class JavaWorldMerger extends JavaWorldExporter { // TODO can this be mad
             logger.debug("Region " + coords + " does not exist in new world and will be copied from existing map");
         }
         if (progressReceiver != null) {
-            progressReceiver.setMessage("Copying region " + coords.x + "," + coords.y + " unchanged");
+            progressReceiver.setMessage(WPI18n.format("ui.progress.copyingRegion", coords.x, coords.y));
         }
         final int fileCount = regions.size();
         int fileNo = 0;
@@ -827,7 +840,7 @@ public class JavaWorldMerger extends JavaWorldExporter { // TODO can this be mad
     private String mergeRegion(MinecraftWorld minecraftWorld, File oldRegionDir, Dimension dimension, Point regionCoords, Map<Point, Tile> tiles, boolean tileSelection, Map<Layer, LayerExporter> exporters, ChunkFactory chunkFactory, List<Fixup> fixups, ProgressReceiver progressReceiver) {
         return doWithMdcContext(() -> {
             if (progressReceiver != null) {
-                progressReceiver.setMessage("Merging region " + regionCoords.x + "," + regionCoords.y + " of " + dimension.getName());
+                progressReceiver.setMessage(WPI18n.format("ui.progress.mergingRegion", regionCoords.x, regionCoords.y, WPI18n.dimensionName(dimension)));
             }
 
             Set<Layer> allLayers = new HashSet<>();
@@ -898,7 +911,7 @@ public class JavaWorldMerger extends JavaWorldExporter { // TODO can this be mad
 
     private String thirdPass(MinecraftWorld minecraftWorld, File oldRegionDir, Dimension dimension, Point regionCoords, ProgressReceiver progressReceiver) throws IOException, ProgressReceiver.OperationCancelled {
         if (progressReceiver != null) {
-            progressReceiver.setMessage("Merging changes into existing chunks");
+            progressReceiver.setMessage(WPI18n.s("ui.progress.mergingChanges"));
         }
 
         // TODO: we used to do one extra ring of chunks here. Not sure why, perhaps we'll rediscover it...
@@ -1163,7 +1176,7 @@ public class JavaWorldMerger extends JavaWorldExporter { // TODO can this be mad
     
     private String copyAllChunksInRegion(MinecraftWorld minecraftWorld, File oldRegionDir, Dimension dimension, Point regionCoords, ProgressReceiver progressReceiver) throws IOException, ProgressReceiver.OperationCancelled {
         if (progressReceiver != null) {
-            progressReceiver.setMessage("Copying chunks unchanged");
+            progressReceiver.setMessage(WPI18n.s("ui.progress.copyingChunks"));
         }
 
         final Map<DataType, RegionFile> regionFiles = new HashMap<>();

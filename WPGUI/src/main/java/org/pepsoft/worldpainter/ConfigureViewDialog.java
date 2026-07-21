@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -204,7 +215,7 @@ public class ConfigureViewDialog extends WorldPainterDialog implements WindowLis
     }
 
     private void addOverlay() {
-        final File imageFile = selectImageForOpen(this, "an overlay image file", config.getOverlaysDirectory());
+        final File imageFile = selectImageForOpen(this, org.pepsoft.worldpainter.WPI18n.s("ui.image.overlayImageFile"), config.getOverlaysDirectory());
         if (imageFile != null) {
             final Overlay overlay = new Overlay(imageFile);
             final int rowIndex = overlaysTableModel.addOverlay(overlay);
@@ -379,7 +390,7 @@ public class ConfigureViewDialog extends WorldPainterDialog implements WindowLis
             }
         });
 
-        buttonAddOverlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_add.png"))); // NOI18N
+        buttonAddOverlay.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_add.png")); // NOI18N
         buttonAddOverlay.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.addAnOverlay"));
         buttonAddOverlay.setMargin(new java.awt.Insets(2, 2, 2, 2));
         buttonAddOverlay.addActionListener(new java.awt.event.ActionListener() {
@@ -388,7 +399,7 @@ public class ConfigureViewDialog extends WorldPainterDialog implements WindowLis
             }
         });
 
-        buttonDeleteOverlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_delete.png"))); // NOI18N
+        buttonDeleteOverlay.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_delete.png")); // NOI18N
         buttonDeleteOverlay.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.removeTheSelectedOverlay"));
         buttonDeleteOverlay.setEnabled(false);
         buttonDeleteOverlay.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -398,7 +409,7 @@ public class ConfigureViewDialog extends WorldPainterDialog implements WindowLis
             }
         });
 
-        buttonEditOverlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_edit.png"))); // NOI18N
+        buttonEditOverlay.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_edit.png")); // NOI18N
         buttonEditOverlay.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.edit.editTheSelectedOverlay"));
         buttonEditOverlay.setEnabled(false);
         buttonEditOverlay.setMargin(new java.awt.Insets(2, 2, 2, 2));

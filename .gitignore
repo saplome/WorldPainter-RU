@@ -1,7 +1,7 @@
 # Build output
 target/
 release/
-WorldPainter-RU-RELEASE/
+WorldPainter-LANGUAGES-RELEASE/
 *.class
 *.jar
 *.exe
@@ -33,3 +33,28 @@ exporttimings.csv
 # OS files
 .DS_Store
 Thumbs.db
+
+# Maven/release plugin leftovers
+*.releaseBackup
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+.flattened-pom.xml
+dependency-reduced-pom.xml
+hs_err_pid*
+replay_pid*
+.attach_pid*
+
+# Coverage and test reports outside target
+coverage/
+.nyc_output/
+.jacoco/
+surefire-reports/
+failsafe-reports/
+
+# Editor swap/backup files
+*~
+*.orig
+*.rej
+*.swp
+*.swo

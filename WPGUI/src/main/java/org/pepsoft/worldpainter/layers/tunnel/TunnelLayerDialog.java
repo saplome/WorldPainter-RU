@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -187,8 +198,9 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
                 if (! config.isMessageDisplayedCountAtLeast(PAINT_TUNNEL_LAYER_KEY, 3)) {
                     doLaterOnEventThread(() -> JOptionPane.showMessageDialog(App.getInstance(),
                             org.pepsoft.worldpainter.WPI18n.s("ui.help.paintCaveTunnelLayer") +
-                            org.pepsoft.worldpainter.WPI18n.s("ui.help.rightClickButtonPrefix") + layer.getName() + org.pepsoft.worldpainter.WPI18n.s("ui.help.buttonOnPanelMiddle") + layer.getPalette() + org.pepsoft.worldpainter.WPI18n.s("ui.help.panelNewlineSuffix") +
-                            org.pepsoft.worldpainter.WPI18n.s("ui.help.editFloorDimensionHint")));
+                            org.pepsoft.worldpainter.WPI18n.s("ui.help.rightClickButtonPrefix") + layer.getName() + org.pepsoft.worldpainter.WPI18n.s("ui.help.buttonOnPanelMiddle") + org.pepsoft.worldpainter.WPI18n.paletteName(layer.getPalette()) + org.pepsoft.worldpainter.WPI18n.s("ui.help.panelNewlineSuffix") +
+                            org.pepsoft.worldpainter.WPI18n.s("ui.help.editFloorDimensionHint"),
+                            org.pepsoft.worldpainter.WPI18n.s("ui.dialog.info.title"), JOptionPane.INFORMATION_MESSAGE));
                     config.setMessageDisplayed(PAINT_TUNNEL_LAYER_KEY);
                 }
             } else {
@@ -207,9 +219,9 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
     protected final void updatePreview() {
 //        if ((radioButtonFloorFixedLevel.isSelected() && radioButtonRoofFixedLevel.isSelected())
 //                || (radioButtonFloorInverse.isSelected() && radioButtonRoofInverse.isSelected())) {
-//            labelTunnelHeight.setText(org.pepsoft.worldpainter.WPI18n.s("ui.4e941798aa") + Math.max(((Integer) spinnerRoofLevel.getValue() - (Integer) spinnerFloorLevel.getValue()), 0) + ")");
+//            labelTunnelHeight.setText(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.heightPrefix") + Math.max(((Integer) spinnerRoofLevel.getValue() - (Integer) spinnerFloorLevel.getValue()), 0) + ")");
 //        } else if (radioButtonFloorFixedDepth.isSelected() && radioButtonRoofFixedDepth.isSelected()) {
-//            labelTunnelHeight.setText(org.pepsoft.worldpainter.WPI18n.s("ui.4e941798aa") + Math.max(((Integer) spinnerFloorLevel.getValue() - (Integer) spinnerRoofLevel.getValue()), 0) + ")");
+//            labelTunnelHeight.setText(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.heightPrefix") + Math.max(((Integer) spinnerFloorLevel.getValue() - (Integer) spinnerRoofLevel.getValue()), 0) + ")");
 //        } else {
 //            labelTunnelHeight.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.tunnelHeightVariable"));
 //        }
@@ -555,7 +567,7 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
 
     protected final void newLayer(Component button, TunnelLayersTableModel tableModel) {
         JPopupMenu popupMenu = new BetterJPopupMenu();
-        JMenuItem item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.e37606ee1b"));
+        JMenuItem item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.customObjectsLayer"));
         item.addActionListener(e -> {
             EditLayerDialog<Bo2Layer> dialog = new EditLayerDialog<>(TunnelLayerDialog.this, platform, Bo2Layer.class);
             dialog.setVisible(() -> {
@@ -565,7 +577,7 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
             });
         });
         popupMenu.add(item);
-        item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.8453d960be"));
+        item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.customGroundCoverLayer"));
         item.addActionListener(e -> {
             EditLayerDialog<GroundCoverLayer> dialog = new EditLayerDialog<>(TunnelLayerDialog.this, platform, GroundCoverLayer.class);
             dialog.setVisible(() -> {
@@ -575,7 +587,7 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
             });
         });
         popupMenu.add(item);
-        item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.e4b4c68fbc"));
+        item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.customPlantsLayer"));
         item.addActionListener(e -> {
             EditLayerDialog<PlantLayer> dialog = new EditLayerDialog<>(TunnelLayerDialog.this, platform, PlantLayer.class);
             dialog.setVisible(() -> {
@@ -1266,7 +1278,7 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.22ddc87847"), jPanel1);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.cavesSettings"), jPanel1);
 
         jLabel22.setText(org.pepsoft.worldpainter.WPI18n.s("ui.text.youCanAddCustom"));
 
@@ -1345,7 +1357,7 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.16698994c5"), jPanel2);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.floorLayers"), jPanel2);
 
         jLabel24.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlYouCanAdd"));
 
@@ -1424,7 +1436,7 @@ public class TunnelLayerDialog extends AbstractEditLayerDialog<TunnelLayer> impl
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.03c3b0918a"), jPanel3);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tunnel.roofLayers"), jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -310,7 +321,7 @@ public class ImportMaskDialog extends WorldPainterDialog implements DocumentList
             if (e.getMessage().equals("Invalid scanline stride")) {
                 labelImageDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.image.imageDataTooLarge"));
             } else {
-                labelImageDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.e33e1285a0") + e.getMessage());
+                labelImageDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.message.errorInImageDataPrefix") + e.getMessage());
             }
             selectedFile = null;
         }
@@ -359,7 +370,7 @@ public class ImportMaskDialog extends WorldPainterDialog implements DocumentList
         if (myHeightMapDir == null) {
             myHeightMapDir = Configuration.getInstance().getHeightMapsDirectory();
         }
-        final File file = ImageUtils.selectImageForOpen(this, "a mask image file", myHeightMapDir);
+        final File file = ImageUtils.selectImageForOpen(this, org.pepsoft.worldpainter.WPI18n.s("ui.image.maskImageFile"), myHeightMapDir);
         if (file != null) {
             masksDir = file.getParentFile();
             fieldFilename.setText(file.getAbsolutePath());

@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -451,7 +462,7 @@ public class EditObjectAttributes extends WorldPainterDialog {
 
         jLabel3.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.offset"));
 
-        labelOffset.setForeground(new java.awt.Color(0, 0, 255));
+        labelOffset.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         labelOffset.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUOffsetU"));
         labelOffset.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.clickToEditThe"));
         labelOffset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -571,7 +582,7 @@ public class EditObjectAttributes extends WorldPainterDialog {
 
         checkBoxRandomMirroring.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.randomMirroring"));
 
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/information.png"))); // NOI18N
+        jLabel10.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/information.png")); // NOI18N
         jLabel10.setLabelFor(checkBoxRandomMirroring);
         jLabel10.setText(" ");
         jLabel10.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlMirroringWorksBy"));
@@ -602,7 +613,7 @@ public class EditObjectAttributes extends WorldPainterDialog {
 
         spinnerRandomVariation.setModel(new javax.swing.SpinnerNumberModel(0, 0, 383, 1));
 
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/information.png"))); // NOI18N
+        jLabel13.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/information.png")); // NOI18N
         jLabel13.setText(" ");
         jLabel13.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.distributedEquallyAboveAnd"));
 

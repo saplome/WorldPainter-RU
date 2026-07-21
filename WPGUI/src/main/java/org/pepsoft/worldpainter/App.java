@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -117,6 +128,9 @@ import static org.pepsoft.util.swing.ProgressDialog.NOT_CANCELABLE;
 import static org.pepsoft.util.swing.ProgressDialog.NO_FOCUS_STEALING;
 import static org.pepsoft.worldpainter.App.TerrainMode.SHOW_TERRAIN;
 import static org.pepsoft.worldpainter.Configuration.LookAndFeel.DARK_METAL;
+import static org.pepsoft.worldpainter.Configuration.LookAndFeel.FLATLAF_CARBON;
+import static org.pepsoft.worldpainter.Configuration.LookAndFeel.FLATLAF_DARK_PURPLE;
+import static org.pepsoft.worldpainter.Configuration.LookAndFeel.FLATLAF_ONE_DARK;
 import static org.pepsoft.worldpainter.Constants.*;
 import static org.pepsoft.worldpainter.DefaultPlugin.JAVA_MCREGION;
 import static org.pepsoft.worldpainter.Dimension.Anchor.*;
@@ -166,7 +180,11 @@ public final class App extends JFrame implements BrushControl,
         };
         defaultColourScheme = colourSchemes[0];
         Configuration config = Configuration.getInstance();
-        darkMode = (! "true".equalsIgnoreCase(System.getProperty("org.pepsoft.worldpainter.safeMode"))) && (config.getLookAndFeel() == DARK_METAL);
+        darkMode = (! "true".equalsIgnoreCase(System.getProperty("org.pepsoft.worldpainter.safeMode")))
+                && ((config.getLookAndFeel() == DARK_METAL) || (config.getLookAndFeel() == FLATLAF_CARBON)
+                || (config.getLookAndFeel() == FLATLAF_DARK_PURPLE) || (config.getLookAndFeel() == FLATLAF_ONE_DARK)
+                || (config.getLookAndFeel() == Configuration.LookAndFeel.DARK_THEME)
+                || ((config.getLookAndFeel() != null) && config.getLookAndFeel().name().startsWith("RADIANCE_")));
         final String customColourSchemeLocation = System.getProperty("org.pepsoft.worldpainter.colourSchemeFile");
         if (customColourSchemeLocation != null) {
             throw new UnsupportedOperationException("The org.pepsoft.worldpainter.colourSchemeFile advanced setting is no longer supported (colour schemes are once again available from the View menu)");
@@ -317,6 +335,7 @@ public final class App extends JFrame implements BrushControl,
 
             ACTION_EXPORT_WORLD.setEnabled(false);
             ACTION_MERGE_WORLD.setEnabled(false);
+            ACTION_SAVE_WORLD_FOR_ORIGINAL.setEnabled(false);
 
             // Unload all custom terrain types
             clearCustomTerrains();
@@ -380,8 +399,8 @@ public final class App extends JFrame implements BrushControl,
                                 org.pepsoft.worldpainter.WPI18n.s("ui.dialog.editingMasterDimension.scaleNote") +
                                 "\n" +
                                 org.pepsoft.worldpainter.WPI18n.s("ui.dialog.surfaceDimension.switchHint") +
-                                "pressing " + COMMAND_KEY_NAME + org.pepsoft.worldpainter.WPI18n.s("ui.dialog.surfaceDimension.viewMenuHint") +
-                                "pressing " + COMMAND_KEY_NAME + org.pepsoft.worldpainter.WPI18n.s("ui.dialog.surfaceDimension.editMenuHint"), org.pepsoft.worldpainter.WPI18n.s("ui.dialog.editingMasterDimension.title"), INFORMATION_MESSAGE));
+                                WPI18n.s("ui.action.pressShortcutPrefix") + COMMAND_KEY_NAME + org.pepsoft.worldpainter.WPI18n.s("ui.dialog.surfaceDimension.viewMenuHint") +
+                                WPI18n.s("ui.action.pressShortcutPrefix") + COMMAND_KEY_NAME + org.pepsoft.worldpainter.WPI18n.s("ui.dialog.surfaceDimension.editMenuHint"), org.pepsoft.worldpainter.WPI18n.s("ui.dialog.editingMasterDimension.title"), INFORMATION_MESSAGE));
             } else {
                 setDimension(surfaceDimension);
             }
@@ -410,6 +429,7 @@ public final class App extends JFrame implements BrushControl,
                         WPI18n.s("ui.mapFormat.unknown.title"));
             }
         }
+        updateSaveForOriginalActionState();
     }
 
     public Dimension getDimension() {
@@ -1298,6 +1318,7 @@ public final class App extends JFrame implements BrushControl,
             tile.addListener(this);
         }
         lastChangeTimestamp = System.currentTimeMillis();
+        updateSaveForOriginalActionState();
     }
 
     @Override
@@ -1306,6 +1327,7 @@ public final class App extends JFrame implements BrushControl,
             tile.removeListener(this);
         }
         lastChangeTimestamp = System.currentTimeMillis();
+        updateSaveForOriginalActionState();
     }
 
     @Override public void overlayAdded(Dimension dimension, int index, Overlay overlay) {}
@@ -1331,16 +1353,21 @@ public final class App extends JFrame implements BrushControl,
     @Override
     public void layerDataChanged(Tile tile, Set<Layer> changedLayers) {
         lastChangeTimestamp = System.currentTimeMillis();
+        if (changedLayers.contains(CaveSystem.INSTANCE) || changedLayers.contains(Icebergs.INSTANCE)) {
+            updateSaveForOriginalActionState();
+        }
     }
 
     @Override
     public void allBitLayerDataChanged(Tile tile) {
         lastChangeTimestamp = System.currentTimeMillis();
+        updateSaveForOriginalActionState();
     }
 
     @Override
     public void allNonBitlayerDataChanged(Tile tile) {
         lastChangeTimestamp = System.currentTimeMillis();
+        updateSaveForOriginalActionState();
     }
 
     @Override
@@ -1636,7 +1663,7 @@ public final class App extends JFrame implements BrushControl,
 
         MixedMaterial[] customMaterials = MixedMaterialManager.getInstance().getMaterials();
         if (customMaterials.length > 0) {
-            JMenu existingMaterialsMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.ea031dbab2"));
+            JMenu existingMaterialsMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.material.selectExisting"));
             Set<MixedMaterial> customTerrainMaterials = new HashSet<>();
             for (int i = 0; i < CUSTOM_TERRAIN_COUNT; i++) {
                 if (getCustomTerrain(i).isConfigured()) {
@@ -1681,7 +1708,7 @@ public final class App extends JFrame implements BrushControl,
             popupMenu.add(menuItem);
         }
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.4146cf5e69"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.importFromFile"));
         menuItem.addActionListener(e -> {
             if (button != null) {
                 if (importCustomMaterial(customMaterialIndex)) {
@@ -1701,17 +1728,17 @@ public final class App extends JFrame implements BrushControl,
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.6b0cbcf57b"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.importFromAnotherWorld"));
         menuItem.addActionListener(e -> importCustomItemsFromWorld(CustomItemsTreeModel.ItemType.TERRAIN, null));
         popupMenu.add(menuItem);
 
         if (button != null) {
             if (material != null) {
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.1b6b99a8e5"));
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.action.remove"));
                 menuItem.addActionListener(e -> removeCustomMaterial(customMaterialIndex));
                 popupMenu.add(menuItem);
 
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.aeb11854b2"));
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.action.exportToFile"));
                 menuItem.addActionListener(e -> exportCustomMaterial(customMaterialIndex));
                 popupMenu.add(menuItem);
             }
@@ -1877,12 +1904,32 @@ public final class App extends JFrame implements BrushControl,
                 new Object[] { yesText, noText },
                 yesText);
         if (choice == javax.swing.JOptionPane.YES_OPTION) {
-            restartApplication();
+            restartApplication("ui.h.langRestartFailed");
+        }
+    }
+
+    // Capture restart dialog texts, then prompt to restart after an interface theme or UI scale change.
+    void promptRestartForInterfaceChange() {
+        final String message = org.pepsoft.worldpainter.WPI18n.s("ui.h.uiRestartNow");
+        final String title = org.pepsoft.worldpainter.WPI18n.s("ui.dialog.restartRequired.title");
+        final String yesText = org.pepsoft.worldpainter.WPI18n.s("ui.h.uiRestartYes");
+        final String noText = org.pepsoft.worldpainter.WPI18n.s("ui.h.uiRestartNo");
+        int choice = javax.swing.JOptionPane.showOptionDialog(
+                this,
+                message,
+                title,
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[] { yesText, noText },
+                yesText);
+        if (choice == javax.swing.JOptionPane.YES_OPTION) {
+            restartApplication("ui.h.uiRestartFailed");
         }
     }
 
     // Relaunch WorldPainter in a fresh JVM, preserving the original launch command.
-    private void restartApplication() {
+    private void restartApplication(String failedMessageKey) {
         if (! saveIfNecessary()) {
             return; // user cancelled; do not restart
         }
@@ -1946,7 +1993,7 @@ public final class App extends JFrame implements BrushControl,
         } catch (Exception e) {
             logger.error("Could not restart WorldPainter automatically; please restart manually", e);
             javax.swing.JOptionPane.showMessageDialog(this,
-                    org.pepsoft.worldpainter.WPI18n.s("ui.h.langRestartFailed"),
+                    org.pepsoft.worldpainter.WPI18n.s(failedMessageKey),
                     org.pepsoft.worldpainter.WPI18n.s("ui.dialog.restartRequired.title"),
                     javax.swing.JOptionPane.WARNING_MESSAGE);
             return; // keep running so the user is not left with a dead application
@@ -1991,7 +2038,7 @@ public final class App extends JFrame implements BrushControl,
         Terrain.setCustomMaterial(index, customMaterial);
 
         if (customTerrainPanel == null) {
-            dockingManager.addFrame(new DockableFrameBuilder(createCustomTerrainPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.eb966fee19"), DOCK_SIDE_WEST, 3).withId("customTerrain").scrollable().build());
+            dockingManager.addFrame(new DockableFrameBuilder(createCustomTerrainPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.material.customTerrain"), DOCK_SIDE_WEST, 3).withId("customTerrain").scrollable().build());
         }
 
         JToggleButton newButton = createTerrainButton(Terrain.getCustomTerrain(index));
@@ -2271,10 +2318,133 @@ public final class App extends JFrame implements BrushControl,
     }
     
     /**
+     * Saves a separate copy which can be opened by the unmodified WorldPainter 2.27.0. The current world, its normal
+     * save location and its dirty state are deliberately left untouched.
+     */
+    private boolean saveForOriginal() {
+        if ((world == null) || (! worldUsesForkOnlyLayers(world))) {
+            DesktopUtils.beep();
+            return false;
+        }
+        pauseAutosave();
+        try {
+            final Configuration config = Configuration.getInstance();
+            final File directory = ((lastSelectedFile != null) && (lastSelectedFile.getParentFile() != null))
+                    ? lastSelectedFile.getParentFile()
+                    : ((config.getWorldDirectory() != null) ? config.getWorldDirectory() : DesktopUtils.getDocumentsFolder());
+            File file = new File(directory, org.pepsoft.util.FileUtils.sanitiseName(world.getName().trim() + "-original.world"));
+            file = FileUtils.selectFileForSave(App.this, WPI18n.s("ui.dlg.saveForOriginal"), file, new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".world");
+                }
+
+                @Override
+                public String getDescription() {
+                    return strings.getString("worldpainter.files.world");
+                }
+
+                @Override
+                public String getExtensions() {
+                    return "*.world";
+                }
+            });
+            if (file == null) {
+                return false;
+            }
+            if (! file.getName().toLowerCase().endsWith(".world")) {
+                file = new File(file.getParentFile(), file.getName() + ".world");
+            }
+            if (file.exists() && (showConfirmDialog(App.this, strings.getString("do.you.want.to.overwrite.the.file"), strings.getString("file.exists"), YES_NO_OPTION) != YES_OPTION)) {
+                return false;
+            }
+            final File destination = file.getAbsoluteFile();
+            if ((! destination.getParentFile().isDirectory()) || (! destination.getParentFile().canWrite())) {
+                beepAndShowError(this, strings.getString("you.do.not.have.write.access"), strings.getString("access.denied"));
+                return false;
+            }
+            final File tempFile = new File(destination.getParentFile(), destination.getName() + ".tmp");
+            if (tempFile.exists()) {
+                beepAndShowError(this, MessageFormat.format(strings.getString("temporary.save.file.exists.message"), tempFile.getName()), strings.getString("temporary.save.file.exists"));
+                return false;
+            }
+
+            ProgressDialog.executeTask(this, new ProgressTask<java.lang.Void>() {
+                @Override
+                public String getName() {
+                    return WPI18n.s("ui.action.saveForOriginal");
+                }
+
+                @Override
+                public java.lang.Void execute(ProgressReceiver progressReceiver) throws OperationCancelled {
+                    try {
+                        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                        new WorldIO(world).save(buffer);
+                        final WorldIO copyIO = new WorldIO();
+                        copyIO.load(new ByteArrayInputStream(buffer.toByteArray()));
+                        final World2 compatibleWorld = copyIO.getWorld();
+                        makeOriginalCompatible(compatibleWorld);
+                        new WorldIO(compatibleWorld).save(new FileOutputStream(tempFile));
+                        if (destination.isFile() && (! destination.delete())) {
+                            throw new IOException("Could not replace " + destination.getName());
+                        }
+                        if (! tempFile.renameTo(destination)) {
+                            throw new IOException("Could not move " + tempFile.getName() + " to " + destination.getName());
+                        }
+                        return null;
+                    } catch (IOException | UnloadableWorldException e) {
+                        throw new RuntimeException("Could not create an original-compatible world copy", e);
+                    }
+                }
+            }, NOT_CANCELABLE);
+            config.setWorldDirectory(destination.getParentFile());
+            showInfo(this, WPI18n.s("ui.message.saveForOriginal.success"), WPI18n.s("ui.message.saveForOriginal.title"));
+            return true;
+        } finally {
+            resumeAutosave();
+        }
+    }
+
+    private static boolean worldUsesForkOnlyLayers(World2 candidate) {
+        for (Dimension candidateDimension: candidate.getDimensions()) {
+            final Set<Layer> layers = candidateDimension.getAllLayers(true);
+            if (layers.contains(CaveSystem.INSTANCE) || layers.contains(Icebergs.INSTANCE)
+                    || (candidateDimension.getLayerSettings(CaveSystem.INSTANCE) != null)
+                    || (candidateDimension.getLayerSettings(Icebergs.INSTANCE) != null)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateSaveForOriginalActionState() {
+        ACTION_SAVE_WORLD_FOR_ORIGINAL.setEnabled((world != null) && worldUsesForkOnlyLayers(world));
+    }
+
+    private static void makeOriginalCompatible(World2 compatibleWorld) {
+        for (Dimension compatibleDimension: compatibleWorld.getDimensions()) {
+            compatibleDimension.clearLayerData(CaveSystem.INSTANCE);
+            compatibleDimension.clearLayerData(Icebergs.INSTANCE);
+            compatibleDimension.setLayerSettings(CaveSystem.INSTANCE, null);
+            compatibleDimension.setLayerSettings(Icebergs.INSTANCE, null);
+            for (Tile tile: compatibleDimension.getTiles()) {
+                for (int y = 0; y < TILE_SIZE; y++) {
+                    for (int x = 0; x < TILE_SIZE; x++) {
+                        final Terrain terrain = tile.getTerrain(x, y);
+                        if ((terrain == Terrain.ICE) || (terrain == Terrain.PACKED_ICE)) {
+                            tile.setTerrain(x, y, Terrain.DEEP_SNOW);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Ask for a filename and save the world with that name. If a file exists
      * with the name, ask for confirmation to overwrite it. Shows a progress
      * indicator while saving, and a confirmation when it is saved.
-     * 
+     *
      * @return {@code true} if the file was saved.
      */
     private boolean saveAs() {
@@ -2813,20 +2983,20 @@ public final class App extends JFrame implements BrushControl,
 
         scrollController.install();
 
-        dockingManager.addFrame(new DockableFrameBuilder(createToolPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.8625e1de7b"), DOCK_SIDE_WEST, 1).build());
+        dockingManager.addFrame(new DockableFrameBuilder(createToolPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.menu.tools"), DOCK_SIDE_WEST, 1).build());
 
-        dockingManager.addFrame(new DockableFrameBuilder(createToolSettingsPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.ffc843575c"), DOCK_SIDE_WEST, 2).expand().scrollable().build());
+        dockingManager.addFrame(new DockableFrameBuilder(createToolSettingsPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.panel.toolSettings"), DOCK_SIDE_WEST, 2).withIcon(loadThemedPanelIcon("panel_tool_settings", ICON_SETTINGS)).expand().scrollable().build());
 
-        dockingManager.addFrame(new DockableFrameBuilder(createLayerPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.87bfda183c"), DOCK_SIDE_WEST, 3).build());
+        dockingManager.addFrame(new DockableFrameBuilder(createLayerPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.panel.layers"), DOCK_SIDE_WEST, 3).build());
 
-        dockingManager.addFrame(new DockableFrameBuilder(createTerrainPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.4ccfea7a25"), DOCK_SIDE_WEST, 3).build());
+        dockingManager.addFrame(new DockableFrameBuilder(createTerrainPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.panel.terrain"), DOCK_SIDE_WEST, 3).build());
 
-        biomesPanelFrame = new DockableFrameBuilder(createBiomesPanelContainer(), org.pepsoft.worldpainter.WPI18n.s("ui.206f531dc3"), DOCK_SIDE_WEST, 3).scrollable().build();
+        biomesPanelFrame = new DockableFrameBuilder(createBiomesPanelContainer(), org.pepsoft.worldpainter.WPI18n.s("ui.panel.biomes"), DOCK_SIDE_WEST, 3).withIcon(loadThemedPanelIcon("panel_biomes", ICON_BIOMES)).scrollable().build();
         dockingManager.addFrame(biomesPanelFrame);
 
-        dockingManager.addFrame(new DockableFrameBuilder(createAnnotationsPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.933e469cb3"), DOCK_SIDE_WEST, 3).build());
+        dockingManager.addFrame(new DockableFrameBuilder(createAnnotationsPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.panel.annotations"), DOCK_SIDE_WEST, 3).build());
 
-        dockingManager.addFrame(new DockableFrameBuilder(createBrushPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.6cf978105b"), DOCK_SIDE_EAST, 1).build());
+        dockingManager.addFrame(new DockableFrameBuilder(createBrushPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.panel.brushes"), DOCK_SIDE_EAST, 1).build());
 
         if (customBrushes.containsKey(CUSTOM_BRUSHES_DEFAULT_TITLE)) {
             dockingManager.addFrame(new DockableFrameBuilder(createCustomBrushPanel(CUSTOM_BRUSHES_DEFAULT_TITLE, customBrushes.get(CUSTOM_BRUSHES_DEFAULT_TITLE)), WPI18n.s("ui.panel.customBrushes"), DOCK_SIDE_EAST, 1).withId("customBrushesDefault").scrollable().build());
@@ -2838,10 +3008,10 @@ public final class App extends JFrame implements BrushControl,
             dockingManager.addFrame(new DockableFrameBuilder(createCustomBrushPanel(entry.getKey(), entry.getValue()), entry.getKey(), DOCK_SIDE_EAST, 1).withId("customBrushes." + entry.getKey()).scrollable().build());
         }
         
-        dockingManager.addFrame(new DockableFrameBuilder(createBrushSettingsPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.3c8b2af880"), DOCK_SIDE_EAST, 2).withId("brushSettings").build());
+        dockingManager.addFrame(new DockableFrameBuilder(createBrushSettingsPanel(), org.pepsoft.worldpainter.WPI18n.s("ui.panel.brushSettings"), DOCK_SIDE_EAST, 2).withId("brushSettings").build());
 
         infoPanel = createInfoPanel();
-        dockingManager.addFrame(new DockableFrameBuilder(infoPanel, org.pepsoft.worldpainter.WPI18n.s("ui.4059b0251f"), DOCK_SIDE_EAST, 2).withId("infoPanel").expand().withIcon(loadScaledIcon("information")).build());
+        dockingManager.addFrame(new DockableFrameBuilder(infoPanel, org.pepsoft.worldpainter.WPI18n.s("ui.panel.info"), DOCK_SIDE_EAST, 2).withId("infoPanel").expand().withIcon(loadScaledIcon("information")).build());
 
         if (config.getDefaultJideLayoutData() != null) {
             dockingManager.loadLayoutFrom(new ByteArrayInputStream(config.getDefaultJideLayoutData()));
@@ -3096,7 +3266,7 @@ public final class App extends JFrame implements BrushControl,
         heightLabel = new JLabel(MessageFormat.format(strings.getString("height.0.of.1"), "-9,999", "9,999"));
         heightLabel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         statusBar.add(heightLabel);
-        slopeLabel = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.1f515b4ef6"));
+        slopeLabel = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.status.slope90"));
         slopeLabel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         statusBar.add(slopeLabel);
         materialLabel = new JLabel(MessageFormat.format(strings.getString("material.0"), Material.MOSSY_COBBLESTONE.toString()));
@@ -3298,7 +3468,11 @@ public final class App extends JFrame implements BrushControl,
         LayoutUtils.addRowOfComponents(layerPanel, constraints, terrainComponents);
         LayoutUtils.addRowOfComponents(layerPanel, constraints, createLayerButton(FLUIDS_AS_LAYER, (char) 0, false, false));
         for (Layer layer: layers) {
-            LayoutUtils.addRowOfComponents(layerPanel, constraints, createLayerButton(layer, layer.getMnemonic()));
+            List<Component> components = createLayerButton(layer, layer.getMnemonic());
+            if (layer == CaveSystem.INSTANCE) {
+                components = addCaveSystemSettingsButton(components);
+            }
+            LayoutUtils.addRowOfComponents(layerPanel, constraints, components);
         }
         if (! config.isEasyMode()) {
             LayoutUtils.addRowOfComponents(layerPanel, constraints, createLayerButton(Populate.INSTANCE, 'p'));
@@ -3333,6 +3507,29 @@ public final class App extends JFrame implements BrushControl,
         layerPanel.putClientProperty(KEY_ICON, ICON_LAYERS);
 
         return layerPanel;
+    }
+
+    private List<Component> addCaveSystemSettingsButton(List<Component> components) {
+        final JComponent layerButton = (JComponent) components.get(2);
+        final JButton settingsButton = new JButton(loadScaledIcon("org/pepsoft/worldpainter/icons/cog.png"));
+        settingsButton.setMargin(new Insets(2, 2, 2, 2));
+        settingsButton.setFocusable(false);
+        settingsButton.setToolTipText(WPI18n.s("ui.caveSystem.settings.tooltip"));
+        settingsButton.addActionListener(e -> {
+            if (dimension == null) { DesktopUtils.beep(); return; }
+            final org.pepsoft.worldpainter.layers.exporters.CaveSystemExporter.CaveSystemSettings current =
+                    (dimension.getLayerSettings(CaveSystem.INSTANCE)
+                            instanceof org.pepsoft.worldpainter.layers.exporters.CaveSystemExporter.CaveSystemSettings)
+                            ? (org.pepsoft.worldpainter.layers.exporters.CaveSystemExporter.CaveSystemSettings)
+                                    dimension.getLayerSettings(CaveSystem.INSTANCE)
+                            : new org.pepsoft.worldpainter.layers.exporters.CaveSystemExporter.CaveSystemSettings();
+            final CaveSystemSettingsDialog dialog = new CaveSystemSettingsDialog(this, current);
+            dialog.setVisible(true);
+            if (! dialog.isCancelled()) dimension.setLayerSettings(CaveSystem.INSTANCE, dialog.getSettings());
+        });
+        final JPanel holder = new JPanel(new BorderLayout(2, 0)); holder.setOpaque(false);
+        holder.add(layerButton, BorderLayout.CENTER); holder.add(settingsButton, BorderLayout.LINE_END);
+        components.set(2, holder); return components;
     }
 
     private List<Component> createTerrainDropDown() {
@@ -3422,7 +3619,7 @@ public final class App extends JFrame implements BrushControl,
         Configuration config = Configuration.getInstance();
         constraints.anchor = GridBagConstraints.FIRST_LINE_START;
         constraints.weightx = 0.0;
-        JCheckBox checkBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.917d465e9a"));
+        JCheckBox checkBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.checkbox.show"));
         checkBox.setHorizontalTextPosition(SwingConstants.LEADING);
         checkBox.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.uncheckToHideBiomes"));
         checkBox.addActionListener(e -> {
@@ -3439,7 +3636,7 @@ public final class App extends JFrame implements BrushControl,
             biomesPanelContainer.add(checkBox, constraints);
         }
 
-        JCheckBox soloCheckBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.e23a62ef2c"));
+        JCheckBox soloCheckBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.checkbox.solo"));
         soloCheckBox.setHorizontalTextPosition(SwingConstants.LEADING);
         soloCheckBox.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlCheckToShowToShow"));
         soloCheckBox.addActionListener(new SoloCheckboxHandler(soloCheckBox, Biome.INSTANCE));
@@ -3476,7 +3673,7 @@ public final class App extends JFrame implements BrushControl,
         Configuration config = Configuration.getInstance();
         constraints.anchor = GridBagConstraints.FIRST_LINE_START;
         constraints.weightx = 0.0;
-        JCheckBox checkBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.917d465e9a"));
+        JCheckBox checkBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.checkbox.show"));
         checkBox.setHorizontalTextPosition(SwingConstants.LEADING);
         checkBox.setSelected(true);
         checkBox.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.uncheckToHideAnnotations"));
@@ -3494,7 +3691,7 @@ public final class App extends JFrame implements BrushControl,
             layerPanel.add(checkBox, constraints);
         }
 
-        JCheckBox soloCheckBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.e23a62ef2c"));
+        JCheckBox soloCheckBox = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.checkbox.solo"));
         soloCheckBox.setHorizontalTextPosition(SwingConstants.LEADING);
         soloCheckBox.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlCheckToShowToShowc3d5ca"));
         soloCheckBox.addActionListener(new SoloCheckboxHandler(soloCheckBox, Annotations.INSTANCE));
@@ -3558,7 +3755,7 @@ public final class App extends JFrame implements BrushControl,
         constraints.weightx = 0.0;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         if (! config.isEasyMode()) {
-            final JCheckBox checkBoxSoloTerrain = new RemoteJCheckBox(terrainSoloCheckBox, org.pepsoft.worldpainter.WPI18n.s("ui.e23a62ef2c"));
+            final JCheckBox checkBoxSoloTerrain = new RemoteJCheckBox(terrainSoloCheckBox, org.pepsoft.worldpainter.WPI18n.s("ui.checkbox.solo"));
             checkBoxSoloTerrain.setHorizontalTextPosition(SwingConstants.LEADING);
             checkBoxSoloTerrain.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlCheckToShowToShow"));
             terrainPanel.add(checkBoxSoloTerrain, constraints);
@@ -3684,7 +3881,7 @@ public final class App extends JFrame implements BrushControl,
         JPanel brushPanel = new JPanel(new GridLayout(0, 3));
         brushPanel.add(createBrushButton(SymmetricBrush.SPIKE_CIRCLE));
         brushPanel.add(createBrushButton(SymmetricBrush.SPIKE_SQUARE));
-        brushPanel.add(createBrushButton(new BitmapBrush(App.class.getResourceAsStream("resources/brush_noise.png"), strings.getString("ui.9b27ee4c75"))));
+        brushPanel.add(createBrushButton(new BitmapBrush(App.class.getResourceAsStream("resources/brush_noise.png"), strings.getString("ui.label.noise"))));
 
         brushPanel.add(createBrushButton(SymmetricBrush.LINEAR_CIRCLE));
         brushPanel.add(createBrushButton(SymmetricBrush.LINEAR_SQUARE));
@@ -3755,7 +3952,7 @@ public final class App extends JFrame implements BrushControl,
         levelSlider.setPaintLabels(false);
         levelSlider.addChangeListener(e -> {
             int value = levelSlider.getValue();
-            levelLabel.setText(org.pepsoft.worldpainter.WPI18n.s("ui.ad2542a46c") + ((value < 52) ? (value - 1) : value) + " %");
+            levelLabel.setText(org.pepsoft.worldpainter.WPI18n.s("ui.status.intensityPrefix") + ((value < 52) ? (value - 1) : value) + " %");
             if ((! programmaticChange) && (! levelSlider.getValueIsAdjusting())) {
                 float newLevel = value / 100.0f;
                 if (activeOperation instanceof PaintOperation) {
@@ -3779,7 +3976,7 @@ public final class App extends JFrame implements BrushControl,
         brushRotationSlider.setPaintLabels(false);
         brushRotationSlider.addChangeListener(e -> {
             int value = brushRotationSlider.getValue();
-            brushRotationLabel.setText(org.pepsoft.worldpainter.WPI18n.s("ui.a0aa5f7f37") + ((value < 0) ? (((value - 7) / 15) * 15) : (((value + 7) / 15) * 15)) + "°");
+            brushRotationLabel.setText(org.pepsoft.worldpainter.WPI18n.s("ui.status.rotationPrefix") + ((value < 0) ? (((value - 7) / 15) * 15) : (((value + 7) / 15) * 15)) + "°");
             if ((! programmaticChange) && (! brushRotationSlider.getValueIsAdjusting())) {
                 if (activeOperation instanceof PaintOperation) {
                     brushRotation = value;
@@ -3791,7 +3988,7 @@ public final class App extends JFrame implements BrushControl,
         });
         
         constraints.insets = new Insets(3, 1, 1, 1);
-        brushRotationLabel = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.4181dd8835"));
+        brushRotationLabel = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.status.rotation0"));
         brushSettingsPanel.add(brushRotationLabel, constraints);
         
         constraints.fill = HORIZONTAL;
@@ -3805,7 +4002,7 @@ public final class App extends JFrame implements BrushControl,
 
         constraints.fill = GridBagConstraints.NONE;
         constraints.insets = new Insets(3, 1, 1, 1);
-        levelLabel = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.e99d25634c"));
+        levelLabel = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.status.intensity50"));
         brushSettingsPanel.add(levelLabel, constraints);
         
         constraints.fill = HORIZONTAL;
@@ -3819,7 +4016,7 @@ public final class App extends JFrame implements BrushControl,
         
         constraints.fill = GridBagConstraints.NONE;
         constraints.insets = new Insets(3, 1, 1, 1);
-        brushSettingsPanel.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.dae8ace18b")), constraints);
+        brushSettingsPanel.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.section.options")), constraints);
         
         constraints.insets = new Insets(1, 1, 1, 1);
         brushSettingsPanel.add(brushOptions, constraints);
@@ -3903,7 +4100,7 @@ public final class App extends JFrame implements BrushControl,
         menu.add(menuItem);
 
         final Configuration config = Configuration.getInstance();
-        recentMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.a825b733d3"));
+        recentMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.menu.recentlyUsedWorlds"));
         if ((config.getRecentFiles() != null) && (! config.getRecentFiles().isEmpty())) {
             updateRecentMenu();
         } else {
@@ -3941,6 +4138,9 @@ public final class App extends JFrame implements BrushControl,
         menuItem.setMnemonic('a');
         menu.add(menuItem);
 
+        menuItem = new JMenuItem(ACTION_SAVE_WORLD_FOR_ORIGINAL);
+        menu.add(menuItem);
+
         menuItem = new JMenuItem(ACTION_EXPORT_WORLD);
         menuItem.setMnemonic('m');
         if (config.isEasyMode()) {
@@ -3960,7 +4160,7 @@ public final class App extends JFrame implements BrushControl,
             menuItem.setMnemonic('h');
             exportMenu.add(menuItem);
 
-            menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.1aa0827e4b"));
+            menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.exportHighResHeightMap"));
             menuItem.addActionListener(event -> exportHeightMap(INTEGER_HIGH_RESOLUTION));
             exportMenu.add(menuItem);
 
@@ -3995,11 +4195,11 @@ public final class App extends JFrame implements BrushControl,
 
         menu.addSeparator();
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.6a61b45ee9"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.changeMapFormat"));
         menuItem.addActionListener(e -> changeWorldHeight(this));
         menu.add(menuItem);
 
-        extendedBlockIdsMenuItem = new JCheckBoxMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.367be965c6"));
+        extendedBlockIdsMenuItem = new JCheckBoxMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.extendedBlockIds"));
         extendedBlockIdsMenuItem.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.label.allowBlockIdsFrom"));
         extendedBlockIdsMenuItem.setMnemonic('e');
         extendedBlockIdsMenuItem.addActionListener(e -> {
@@ -4013,21 +4213,21 @@ public final class App extends JFrame implements BrushControl,
         menuItem.setMnemonic('p');
         menu.add(menuItem);
 
-        JMenu dimensionsMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.f4843c1c79"));
+        JMenu dimensionsMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.menu.dimensions"));
 
-        addMasterMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.9599ecadbc"));
+        addMasterMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.addMasterDimension"));
         addMasterMenuItem.addActionListener(e -> addMaster());
         dimensionsMenu.add(addMasterMenuItem);
 
-        removeMasterMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.afea7a8508"));
+        removeMasterMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.removeMasterDimension"));
         removeMasterMenuItem.addActionListener(e -> removeMaster());
         dimensionsMenu.add(removeMasterMenuItem);
 
-        addCeilingMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.4fe80df9f0"));
+        addCeilingMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.addCeilingDimension"));
         addCeilingMenuItem.addActionListener(e -> addCeiling());
         dimensionsMenu.add(addCeilingMenuItem);
 
-        removeCeilingMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.30edd10986"));
+        removeCeilingMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.removeCeilingDimension"));
         removeCeilingMenuItem.addActionListener(e -> removeCeiling());
         dimensionsMenu.add(removeCeilingMenuItem);
 
@@ -4036,7 +4236,7 @@ public final class App extends JFrame implements BrushControl,
         addNetherMenuItem.setMnemonic('n');
         dimensionsMenu.add(addNetherMenuItem);
 
-        removeNetherMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.5fea022ee9"));
+        removeNetherMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.removeNether"));
         removeNetherMenuItem.addActionListener(e -> removeNether());
         dimensionsMenu.add(removeNetherMenuItem);
 
@@ -4045,13 +4245,13 @@ public final class App extends JFrame implements BrushControl,
         addEndMenuItem.setMnemonic('d');
         dimensionsMenu.add(addEndMenuItem);
 
-        removeEndMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.ab8c14552d"));
+        removeEndMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.removeEnd"));
         removeEndMenuItem.addActionListener(e -> removeEnd());
         dimensionsMenu.add(removeEndMenuItem);
         menu.add(dimensionsMenu);
 
-        JMenu importMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.72d6d7a188"));
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.548c47e395"));
+        JMenu importMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.menu.import"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.importCustomItemsFromWorld"));
         menuItem.setMnemonic('i');
         menuItem.addActionListener(e -> importCustomItemsFromWorld(CustomItemsTreeModel.ItemType.ALL, getLayerFilterForCurrentDimension()));
         importMenu.add(menuItem);
@@ -4061,20 +4261,20 @@ public final class App extends JFrame implements BrushControl,
         menuItem.setText(org.pepsoft.worldpainter.WPI18n.s("ui.custom.customLayerSFrom"));
         importMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.e7aef5541d"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.importCustomTerrainsFromFiles"));
         menuItem.setMnemonic('t');
         menuItem.addActionListener(e -> importCustomMaterials());
         importMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.9ed6b4edb7"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.importHeightMapIntoDimension"));
         menuItem.addActionListener(e -> importHeightMapIntoCurrentDimension(null));
         importMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.5cbb93b865"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.importMaskAsTerrainOrLayer"));
         menuItem.addActionListener(e -> importMask(null));
         importMenu.add(menuItem);
 
-//        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.6dfbd6e448"));
+//        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.importExistingMapIntoWorld"));
 //        menuItem.addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
@@ -4114,11 +4314,11 @@ public final class App extends JFrame implements BrushControl,
         menuItem.setMnemonic('t');
         menu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.5da55fe7b5"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.deleteUnusedLayers"));
         menuItem.addActionListener(e -> customLayerController.deleteUnusedLayers());
         menu.add(menuItem);
 
-//        final JMenuItem easyModeItem = new JCheckBoxMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.1c1c788e13"));
+//        final JMenuItem easyModeItem = new JCheckBoxMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.advancedMode"));
 //        if (! config.isEasyMode()) {
 //            easyModeItem.setSelected(true);
 //        }
@@ -4285,7 +4485,7 @@ public final class App extends JFrame implements BrushControl,
         
         menu.addSeparator();
 
-        JMenu workspaceLayoutMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.71ada81306"));
+        JMenu workspaceLayoutMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.menu.workspaceLayout"));
 
         menuItem = new JMenuItem(ACTION_RESET_DOCKS);
         menuItem.setMnemonic('r');
@@ -4339,7 +4539,7 @@ public final class App extends JFrame implements BrushControl,
 
         menu.addSeparator();
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.f10b0eabfa"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.viewWorldHistory"));
         menuItem.addActionListener(e -> {
             if (world != null) {
                 WorldHistoryDialog dialog = new WorldHistoryDialog(this, world);
@@ -4359,7 +4559,7 @@ public final class App extends JFrame implements BrushControl,
             dialog.setVisible(true);
         });
         menuItem.setMnemonic('r');
-        JMenu menu = new JMenu(strings.getString("ui.8625e1de7b"));
+        JMenu menu = new JMenu(strings.getString("ui.menu.tools"));
         menu.setMnemonic('t');
         menu.add(menuItem);
 
@@ -4391,7 +4591,7 @@ public final class App extends JFrame implements BrushControl,
         menuItem.setMnemonic('p');
         menu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.17ac1716c6"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.openCustomMaterialsFolder"));
         menuItem.addActionListener(e -> {
             File customMaterialsDir = new File(Configuration.getConfigDir(), "materials");
             if (! customMaterialsDir.exists()) {
@@ -4463,7 +4663,7 @@ public final class App extends JFrame implements BrushControl,
         menuItem.setMnemonic('b');
         menu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.bf52e9042a"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.runScript"));
         menuItem.addActionListener(e -> {
             try {
                 new ScriptRunner(this, world, dimension, undoManagers.values()).setVisible(true);
@@ -4485,6 +4685,11 @@ public final class App extends JFrame implements BrushControl,
 //        menu.setMnemonic('h');
         menu.add(menuItem);
 
+        // L66: manual check for WorldPainter Languages releases on GitHub.
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.checkForForkUpdates"));
+        menuItem.addActionListener(e -> ForkUpdateChecker.checkManually(App.this));
+        menu.add(menuItem);
+
 //        menu.add(ACTION_SHOW_HELP_PICKER);
 
         // Language selection
@@ -4504,7 +4709,7 @@ public final class App extends JFrame implements BrushControl,
         }
         menu.add(languageMenu);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.5405d8a903"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.faq"));
         menuItem.setMnemonic('f');
         menuItem.addActionListener(e -> {
             try {
@@ -4515,7 +4720,7 @@ public final class App extends JFrame implements BrushControl,
         });
         menu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.231cf4c70d"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.troubleshooting"));
         menuItem.setMnemonic('t');
         menuItem.addActionListener(e -> {
             try {
@@ -4528,7 +4733,7 @@ public final class App extends JFrame implements BrushControl,
 
         menu.addSeparator();
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.0584e445d6"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.donate"));
         menuItem.setMnemonic('d');
         menuItem.addActionListener(e -> {
             try {
@@ -4539,7 +4744,7 @@ public final class App extends JFrame implements BrushControl,
         });
         menu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.c34ce60c17"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.menu.merchStore"));
         menuItem.setMnemonic('m');
         menuItem.addActionListener(e -> {
             try {
@@ -4694,6 +4899,7 @@ public final class App extends JFrame implements BrushControl,
         toolBar.add(ACTION_NEW_WORLD);
         toolBar.add(ACTION_OPEN_WORLD);
         toolBar.add(ACTION_SAVE_WORLD);
+        toolBar.add(ACTION_SAVE_WORLD_FOR_ORIGINAL);
         toolBar.add(ACTION_EXPORT_WORLD);
         toolBar.addSeparator();
         toolBar.add(ACTION_UNDO);
@@ -5383,7 +5589,8 @@ public final class App extends JFrame implements BrushControl,
             for (int dy = -radius + 1; dy < radius; dy++) {
                 final float strength = brush.getFullStrength(dx, dy);
                 final int alpha = round(strength * 255f);
-                image.setRGB(dx + radius - 1, dy + radius - 1, (alpha << 24) | (darkMode ? 0xd0d0d0 : 0x000000));
+                // WorldPainter Languages L45: brush thumbnails are always black, independently of the UI theme.
+                image.setRGB(dx + radius - 1, dy + radius - 1, (alpha << 24) | 0x000000);
             }
         }
         return new ImageIcon(image);
@@ -5391,6 +5598,77 @@ public final class App extends JFrame implements BrushControl,
 
     private static Icon loadScaledIcon(@NonNls String name) {
         return IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/" + name + ".png");
+    }
+
+    void localiseDockingButtonToolTips() {
+        // JIDE recreates title-bar buttons when the docking state changes. Localise only buttons and newly
+        // inserted containers; never inspect arbitrary JComponents from global mouse events. In particular,
+        // JideTabbedPane.getToolTipText() is unsafe while JIDE is rebuilding a tab pane.
+        localiseDockingButtonToolTips(this);
+        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
+            if ((event.getID() == ContainerEvent.COMPONENT_ADDED) && (event instanceof ContainerEvent)) {
+                final Component child = ((ContainerEvent) event).getChild();
+                SwingUtilities.invokeLater(() -> localiseDockingButtonToolTips(child));
+            }
+        }, AWTEvent.CONTAINER_EVENT_MASK);
+    }
+
+    private static void localiseDockingButtonToolTips(Component component) {
+        if (component instanceof AbstractButton) {
+            final AbstractButton button = (AbstractButton) component;
+            installDockingToolTipPropertyListener(button);
+            localiseDockingButtonToolTip(button);
+        }
+        if (component instanceof Container) {
+            for (Component child: ((Container) component).getComponents()) {
+                localiseDockingButtonToolTips(child);
+            }
+        }
+    }
+
+    private static void installDockingToolTipPropertyListener(AbstractButton button) {
+        final String marker = "WorldPainter.dockingToolTipListenerInstalled";
+        if (button.getClientProperty(marker) == null) {
+            button.putClientProperty(marker, Boolean.TRUE);
+            button.addPropertyChangeListener("ToolTipText", event -> {
+                if (isEnglishDockingToolTip(event.getNewValue())) {
+                    SwingUtilities.invokeLater(() -> localiseDockingButtonToolTip(button));
+                }
+            });
+        }
+    }
+
+    private static boolean isEnglishDockingToolTip(Object value) {
+        if (! (value instanceof String)) return false;
+        final String toolTip = (String) value;
+        return toolTip.equalsIgnoreCase("Toggle auto-hide")
+                || toolTip.equalsIgnoreCase("Toggle autohide")
+                || toolTip.equalsIgnoreCase("Toggle floating")
+                || toolTip.equalsIgnoreCase("Hide active auto-hide window")
+                || toolTip.equalsIgnoreCase("Hide active auto-hidden window");
+    }
+
+    private static void localiseDockingButtonToolTip(AbstractButton button) {
+        final String toolTip = button.getToolTipText();
+        if ((toolTip != null) && (toolTip.equalsIgnoreCase("Toggle auto-hide") || toolTip.equalsIgnoreCase("Toggle autohide"))) {
+            button.setToolTipText(WPI18n.s("ui.tooltip.toggleAutoHide"));
+        } else if ((toolTip != null) && toolTip.equalsIgnoreCase("Toggle floating")) {
+            button.setToolTipText(WPI18n.s("ui.tooltip.toggleFloating"));
+        } else if ((toolTip != null) && (toolTip.equalsIgnoreCase("Hide active auto-hide window")
+                || toolTip.equalsIgnoreCase("Hide active auto-hidden window"))) {
+            button.setToolTipText(WPI18n.s("ui.tooltip.hideActiveAutoHideWindow"));
+        }
+    }
+
+
+    private static Icon loadThemedPanelIcon(@NonNls String name, Icon fallback) {
+        if (UIManager.get("WorldPainter.iconTheme") != null) {
+            final Icon icon = IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/" + name + ".png");
+            if (icon != null) {
+                return icon;
+            }
+        }
+        return fallback;
     }
 
     private void configureForPlatform() {
@@ -6190,6 +6468,18 @@ public final class App extends JFrame implements BrushControl,
         }
     };
     
+    private final BetterAction ACTION_SAVE_WORLD_FOR_ORIGINAL = new BetterAction("saveWorldForOriginal", WPI18n.s("ui.action.saveForOriginal"), ICON_SAVE_WORLD, false) {
+        {
+            setShortDescription(WPI18n.s("ui.action.saveForOriginal.desc"));
+            setEnabled(false);
+        }
+
+        @Override
+        public void performAction(ActionEvent e) {
+            saveForOriginal();
+        }
+    };
+
     private final BetterAction ACTION_EXPORT_WORLD = new BetterAction("exportAsMinecraftMap", strings.getString("export.as.minecraft.map") + "...", ICON_EXPORT_WORLD, false) {
         {
             setAcceleratorKey(getKeyStroke(VK_E, PLATFORM_COMMAND_MASK));

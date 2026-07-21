@@ -1,3 +1,14 @@
+/*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
 package org.pepsoft.worldpainter.layers;
 
 import com.google.common.collect.ImmutableSet;
@@ -263,7 +274,7 @@ public class BiomesPanel extends JPanel implements CustomBiomeManager.CustomBiom
     private void resetOptions() {
         Set<BiomeOption> availableOptions = findAvailableOptions(selectedBaseBiome);
         optionsPanel.removeAll();
-        optionsPanel.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.12f499a394")));
+        optionsPanel.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.biomesPanel.variations")));
         for (BiomeOption option: availableOptions) {
             JCheckBox checkBox = new JCheckBox(createOptionName(option));
             checkBox.addActionListener(event -> updateOptions());
@@ -343,7 +354,7 @@ public class BiomesPanel extends JPanel implements CustomBiomeManager.CustomBiom
     }
 
     private void updateLabels() {
-        label1.setText(org.pepsoft.worldpainter.WPI18n.s("ui.440d348855") + (showIds ? selectedBiome : ""));
+        label1.setText(org.pepsoft.worldpainter.WPI18n.s("ui.biomesPanel.selectedBiomePrefix") + (showIds ? selectedBiome : ""));
         label1.setIcon(biomeHelper.getBiomeIcon(selectedBiome));
         label2.setText(biomeHelper.getBiomeNameWithoutId(selectedBiome));
     }
@@ -382,7 +393,7 @@ public class BiomesPanel extends JPanel implements CustomBiomeManager.CustomBiom
                 private void showPopupMenu(MouseEvent e) {
                     JPopupMenu popup = new BetterJPopupMenu();
                     
-                    JMenuItem item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.7efadb241b"));
+                    JMenuItem item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.action.edit"));
                     item.addActionListener(actionEvent -> {
                         CustomBiomeDialog dialog = new CustomBiomeDialog(SwingUtilities.getWindowAncestor(button), customBiome, false, App.getInstance().getWorld().getPlatform());
                         dialog.setVisible(true);
@@ -392,7 +403,7 @@ public class BiomesPanel extends JPanel implements CustomBiomeManager.CustomBiom
                     });
                     popup.add(item);
                     
-                    item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.1b6b99a8e5"));
+                    item = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.action.remove"));
                     item.addActionListener(actionEvent -> {
                         if (JOptionPane.showConfirmDialog(button, org.pepsoft.worldpainter.WPI18n.s("ui.confirm.removeCustomBiomePrefix") + customBiome.getName() + "\" (ID: " + customBiome.getId() + org.pepsoft.worldpainter.WPI18n.s("ui.confirm.replaceWithAutomaticBiomesSuffix"), org.pepsoft.worldpainter.WPI18n.s("ui.dialog.confirmRemoval.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             customBiomeManager.removeCustomBiome(customBiome);
@@ -496,7 +507,7 @@ public class BiomesPanel extends JPanel implements CustomBiomeManager.CustomBiom
 
     private final JPanel grid = new JPanel(new GridLayout(0, 5)), optionsPanel = new JPanel();
     private final ButtonGroup buttonGroup;
-    private final JLabel label1 = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.c87e9291de")), label2 = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.b363ecd5a8"));
+    private final JLabel label1 = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.biomesPanel.selectedBiome1")), label2 = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.biomesPanel.plains"));
 
     private final CustomBiomeManager customBiomeManager;
     private final Listener listener;

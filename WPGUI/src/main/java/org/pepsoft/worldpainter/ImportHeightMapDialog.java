@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * ImportHeightMapDialog.java
  *
  * Created on 22-jan-2012, 19:47:55
@@ -411,7 +422,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
             if (e.getMessage().equals("Invalid scanline stride")) {
                 labelImageDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.image.imageDataTooLarge"));
             } else {
-                labelImageDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.e33e1285a0") + e.getMessage());
+                labelImageDimensions.setText(org.pepsoft.worldpainter.WPI18n.s("ui.message.errorInImageDataPrefix") + e.getMessage());
             }
             selectedFile = null;
         }
@@ -460,7 +471,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
         if (westEastTime.equals(northSouthTime)) {
             labelWalkingTime.setText(westEastTime);
         } else {
-            labelWalkingTime.setText(org.pepsoft.worldpainter.WPI18n.s("ui.71310fb090") + westEastTime + org.pepsoft.worldpainter.WPI18n.s("ui.frag.northToSouthLabel") + northSouthTime);
+            labelWalkingTime.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.westToEastPrefix") + westEastTime + org.pepsoft.worldpainter.WPI18n.s("ui.frag.northToSouthLabel") + northSouthTime);
         }
     }
     
@@ -751,7 +762,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
         if (myHeightMapDir == null) {
             myHeightMapDir = Configuration.getInstance().getMasksDirectory();
         }
-        final File file = ImageUtils.selectImageForOpen(this, "a height map image file", myHeightMapDir);
+        final File file = ImageUtils.selectImageForOpen(this, org.pepsoft.worldpainter.WPI18n.s("ui.image.heightMapImageFile"), myHeightMapDir);
         if (file != null) {
             heightMapDir = file.getParentFile();
             fieldFilename.setText(file.getAbsolutePath());
@@ -1079,7 +1090,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
         jPanel1.add(labelWorldHighestLevel, gridBagConstraints);
 
         labelWarningCutOffAbove.setFont(labelWarningCutOffAbove.getFont().deriveFont(labelWarningCutOffAbove.getFont().getStyle() | java.awt.Font.BOLD));
-        labelWarningCutOffAbove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelWarningCutOffAbove.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelWarningCutOffAbove.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.cutOffAbove"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -1090,7 +1101,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
         jPanel1.add(labelWarningCutOffAbove, gridBagConstraints);
 
         labelWarningCutOffBelow.setFont(labelWarningCutOffBelow.getFont().deriveFont(labelWarningCutOffBelow.getFont().getStyle() | java.awt.Font.BOLD));
-        labelWarningCutOffBelow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelWarningCutOffBelow.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelWarningCutOffBelow.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.cutOffBelow"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -1151,7 +1162,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
         });
 
         labelWarning.setFont(labelWarning.getFont().deriveFont(labelWarning.getFont().getStyle() | java.awt.Font.BOLD));
-        labelWarning.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelWarning.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelWarning.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.onlyWithMods"));
 
         jLabel11.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.offset"));
@@ -1357,7 +1368,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.bc967dc2d5"), jPanel2);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.importHeightMap.scaling"), jPanel2);
 
         buttonLoadDefaults.setText(org.pepsoft.worldpainter.WPI18n.s("ui.action.loadDefaults"));
         buttonLoadDefaults.addActionListener(new java.awt.event.ActionListener() {
@@ -1410,7 +1421,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.d721757161"), jPanel3);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.theme"), jPanel3);
 
         checkBoxCreateTiles.setText(org.pepsoft.worldpainter.WPI18n.s("ui.action.createNewTilesNewTiles"));
 
@@ -1442,7 +1453,7 @@ public class ImportHeightMapDialog extends WorldPainterDialog implements Documen
             }
         });
 
-        buttonMasterInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/information.png"))); // NOI18N
+        buttonMasterInfo.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/information.png")); // NOI18N
         buttonMasterInfo.setMargin(new java.awt.Insets(0, 0, 0, 0));
         buttonMasterInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

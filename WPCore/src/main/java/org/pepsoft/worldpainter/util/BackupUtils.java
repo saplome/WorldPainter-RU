@@ -1,3 +1,14 @@
+/*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
 package org.pepsoft.worldpainter.util;
 
 import org.pepsoft.util.mdc.MDCCapturingRuntimeException;
@@ -94,7 +105,7 @@ public final class BackupUtils {
             } else {
                 if (! permissionGiven.get()) {
                     beep();
-                    final int rc = JOptionPane.showConfirmDialog(parent, org.pepsoft.worldpainter.WPI18n.s("ui.h.843f9f620b") + minimumFreeSpace + org.pepsoft.worldpainter.WPI18n.s("ui.h.7bda7d1330") + store + org.pepsoft.worldpainter.WPI18n.s("ui.h.7aebcd7d86"), org.pepsoft.worldpainter.WPI18n.s("ui.h.80ab91359a"), YES_NO_CANCEL_OPTION);
+                    final int rc = JOptionPane.showConfirmDialog(parent, org.pepsoft.worldpainter.WPI18n.s("ui.backup.lessThanPrefix") + minimumFreeSpace + org.pepsoft.worldpainter.WPI18n.s("ui.backup.gbFreeInfix") + store + org.pepsoft.worldpainter.WPI18n.s("ui.backup.deleteOldBackupsQuestion"), org.pepsoft.worldpainter.WPI18n.s("ui.backup.notEnoughSpaceTitle"), YES_NO_CANCEL_OPTION);
                     switch (rc) {
                         case YES_OPTION:
                             // Clean up the backups
@@ -132,7 +143,7 @@ public final class BackupUtils {
             final FileStore store = Files.getFileStore(exportDir.toPath());
             if (store.getUsableSpace() < (minimumFreeSpace * GB)) {
                 logger.warn("After deleting backups there is still less than {} GB free on {}", minimumFreeSpace, store);
-                final int rc = JOptionPane.showConfirmDialog(parent, report + org.pepsoft.worldpainter.WPI18n.s("ui.h.1dd4fc4e70"), org.pepsoft.worldpainter.WPI18n.s("ui.h.46a28557c6"), OK_CANCEL_OPTION, WARNING_MESSAGE);
+                final int rc = JOptionPane.showConfirmDialog(parent, report + org.pepsoft.worldpainter.WPI18n.s("ui.backup.stillNotEnoughSpaceQuestion"), org.pepsoft.worldpainter.WPI18n.s("ui.backup.stillNotEnoughSpaceTitle"), OK_CANCEL_OPTION, WARNING_MESSAGE);
                 return rc == OK_OPTION;
             }
         } else {

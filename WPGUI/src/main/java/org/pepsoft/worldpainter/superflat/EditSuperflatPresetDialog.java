@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -184,7 +195,7 @@ public class EditSuperflatPresetDialog extends WorldPainterDialog {
         tableLayers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(tableLayers);
 
-        buttonLayerAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_add.png"))); // NOI18N
+        buttonLayerAdd.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_add.png")); // NOI18N
         buttonLayerAdd.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.addALayer"));
         buttonLayerAdd.setMargin(new java.awt.Insets(2, 2, 2, 2));
         buttonLayerAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -193,7 +204,7 @@ public class EditSuperflatPresetDialog extends WorldPainterDialog {
             }
         });
 
-        buttonLayerDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_delete.png"))); // NOI18N
+        buttonLayerDelete.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_delete.png")); // NOI18N
         buttonLayerDelete.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.deleteTheSelectedLayer"));
         buttonLayerDelete.setEnabled(false);
         buttonLayerDelete.setMargin(new java.awt.Insets(2, 2, 2, 2));

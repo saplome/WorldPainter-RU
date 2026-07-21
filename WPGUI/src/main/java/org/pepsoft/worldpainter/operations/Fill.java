@@ -1,3 +1,14 @@
+/*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
 package org.pepsoft.worldpainter.operations;
 
 import org.pepsoft.util.IconUtils;
@@ -109,10 +120,10 @@ public class Fill extends MouseOrTabletOperation implements PaintOperation {
     }
 
     private final DimensionPainter painter = new DimensionPainter();
-    private final JRadioButton radioButtonApplyPaint = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.0816a5a6e0"), true);
-    private final JRadioButton radioButtonRaiseTerrain = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.d61483e745"));
-    private final JCheckBox checkboxApplyPaint = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.0816a5a6e0"));
-    private final JCheckBox checkboxApplyTheme = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.652bc70218"));
+    private final JRadioButton radioButtonApplyPaint = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.fill.applyPaint"), true);
+    private final JRadioButton radioButtonRaiseTerrain = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.fill.raiseTerrain"));
+    private final JCheckBox checkboxApplyPaint = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.fill.applyPaint"));
+    private final JCheckBox checkboxApplyTheme = new JCheckBox(org.pepsoft.worldpainter.WPI18n.s("ui.fill.applyTheme"));
     private boolean alreadyFilling;
 
     private final JPanel optionsPanel = new StandardOptionsPanel(org.pepsoft.worldpainter.WPI18n.s("ui.help.tool.fill.title"), null) {

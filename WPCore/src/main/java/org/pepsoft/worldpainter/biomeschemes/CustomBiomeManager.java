@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -67,14 +78,14 @@ public class CustomBiomeManager {
     public synchronized boolean addCustomBiome(Window parent, CustomBiome customBiome) {
         if (isBiomePresent(customBiome.getId())) {
             if (parent != null) {
-                JOptionPane.showMessageDialog(parent, org.pepsoft.worldpainter.WPI18n.s("ui.h.9e4b23a6ee") + customBiome.getId() + org.pepsoft.worldpainter.WPI18n.s("ui.h.51f19d8560") + Minecraft1_17Biomes.BIOME_NAMES[customBiome.getId()] + ")", org.pepsoft.worldpainter.WPI18n.s("ui.h.2508724c7b"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(parent, org.pepsoft.worldpainter.WPI18n.s("ui.customBiome.specifiedIdPrefix") + customBiome.getId() + org.pepsoft.worldpainter.WPI18n.s("ui.customBiome.alreadyRegularBiomeInfix") + Minecraft1_17Biomes.BIOME_NAMES[customBiome.getId()] + ")", org.pepsoft.worldpainter.WPI18n.s("ui.customBiome.duplicateIdTitle"), JOptionPane.ERROR_MESSAGE);
             }
             return false;
         }
         for (CustomBiome existingCustomBiome: customBiomes) {
             if (existingCustomBiome.getId() == customBiome.getId()) {
                 if (parent != null) {
-                    JOptionPane.showMessageDialog(parent, org.pepsoft.worldpainter.WPI18n.s("ui.h.f4462071a4") + existingCustomBiome.getName() + ")", org.pepsoft.worldpainter.WPI18n.s("ui.h.2508724c7b"), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(parent, org.pepsoft.worldpainter.WPI18n.s("ui.customBiome.idInUsePrefix") + existingCustomBiome.getName() + ")", org.pepsoft.worldpainter.WPI18n.s("ui.customBiome.duplicateIdTitle"), JOptionPane.ERROR_MESSAGE);
                 }
                 return false;
             }

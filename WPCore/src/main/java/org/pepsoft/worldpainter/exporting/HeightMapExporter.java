@@ -1,5 +1,7 @@
 package org.pepsoft.worldpainter.exporting;
 
+import org.pepsoft.worldpainter.WPI18n;
+
 import com.google.common.collect.ImmutableList;
 import com.twelvemonkeys.imageio.util.ImageTypeSpecifiers;
 import org.pepsoft.worldpainter.Dimension;
@@ -106,7 +108,7 @@ public class HeightMapExporter {
                             params.setCompressionMode(MODE_EXPLICIT);
                             params.setCompressionType("LZW");
                             params.setCompressionQuality(0f);
-                            formatDescription = "in 32-bit unsigned integer grayscale compressed " + type + " format.";
+                            formatDescription = WPI18n.format("ui.heightMap.format.integerCompressed", type);
                             formatMax = Math.pow(2.0, 32.0);
                             dimensionMax = (format == INTEGER_LOW_RESOLUTION) ? (intHighestHeight - minHeight) : ((intHighestHeight - minHeight) << 8);
                         } else {
@@ -118,7 +120,7 @@ public class HeightMapExporter {
                         if (writers.hasNext()) {
                             writer = writers.next();
                             params = writer.getDefaultWriteParam();
-                            formatDescription = ((bitsRequired <= 8) ? "in 8-bit" : "in 16-bit") + " unsigned integer grayscale " + type + " format.";
+                            formatDescription = WPI18n.format("ui.heightMap.format.integer", (bitsRequired <= 8) ? 8 : 16, type);
                             formatMax = Math.pow(2.0, (bitsRequired <= 8) ? 8.0 : 16.0);
                             dimensionMax = (format == INTEGER_LOW_RESOLUTION) ? (intHighestHeight - minHeight) : ((intHighestHeight - minHeight) << 8);
                         } else {
@@ -138,7 +140,7 @@ public class HeightMapExporter {
                         params.setCompressionMode(MODE_EXPLICIT);
                         params.setCompressionType("LZW");
                         params.setCompressionQuality(0f);
-                        formatDescription = "in " + ((format == FLOAT_NORMALISED) ? "normalised " : "") + " floating point grayscale compressed " + type + " format.";
+                        formatDescription = WPI18n.format((format == FLOAT_NORMALISED) ? "ui.heightMap.format.normalisedFloating" : "ui.heightMap.format.floating", type);
                     } else {
                         return false;
                     }
@@ -151,10 +153,7 @@ public class HeightMapExporter {
                     throw new InternalError();
             }
             if (dimensionMax / formatMax < 0.2) {
-                formatDescription += "\n\n" +
-                        "PLEASE NOTE: this height map will appear very dark when displayed as\n" +
-                        "an image, because the exported values are very small compared to the\n" +
-                        "theoretical range of the image format.";
+                formatDescription += "\n\n" + WPI18n.s("ui.heightMap.format.darkWarning");
             }
             final WritableRaster raster = image.getRaster();
             for (Tile tile: dimension.getTiles()) {

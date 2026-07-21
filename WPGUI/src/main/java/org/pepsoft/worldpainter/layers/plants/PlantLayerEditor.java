@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -228,7 +239,7 @@ public class PlantLayerEditor extends AbstractLayerEditor<PlantLayer> {
         panel.add(new JLabel("<html><b>" + title + "</b></html>"), constraints);
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         if (includeGrowth && newColumn) {
-            panel.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.df06635b9b")), constraints);
+            panel.add(new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.plantLayer.growth")), constraints);
         }
         if (subTitle != null) {
             panel.add(new JLabel(subTitle), constraints);
@@ -337,32 +348,86 @@ public class PlantLayerEditor extends AbstractLayerEditor<PlantLayer> {
             public void run() {
                 synchronized (icons) {
                     File resourcesJar = BiomeSchemeManager.getLatestMinecraftJar();
-                    if (resourcesJar == null) {
-                        logger.warn("Could not find Minecraft jar for loading plant icons");
-                        return;
-                    } else {
-                        logger.info("Loading plant icons from {}", resourcesJar);
-                    }
-                    try (JarFile jarFile = new JarFile(resourcesJar)) {
+                    JarFile jarFile = null;
+                    try {
+                        if (resourcesJar != null) {
+                            logger.info("Loading plant icons from {}", resourcesJar);
+                            jarFile = new JarFile(resourcesJar);
+                        } else {
+                            logger.warn("Could not find Minecraft jar for loading plant icons; falling back to bundled icons only");
+                        }
                         for (Plant plant: ALL_PLANTS) {
-                            // Find an icon
+                            // Find an icon. Prefer the flat icon set bundled with WorldPainter itself, so the
+                            // list always looks consistent regardless of which Minecraft jar (if any) the user
+                            // has installed; only fall back to extracting a texture from that jar if the
+                            // bundled set does not have a matching icon.
                             final String[] iconNames = plant.getIconNames();
-                            for (String iconName: iconNames) {
-                                final BufferedImage icon = findIcon(jarFile, iconName);
-                                if (icon != null) {
-                                    // Then store it under the first icon name (even if it wasn't actually found under
-                                    // that name) because we use the first icon name for the icon lookups
-                                    icons.put(iconNames[0], icon);
-                                    break;
+                            BufferedImage icon = findBundledIcon(iconNames);
+                            if ((icon == null) && (jarFile != null)) {
+                                for (String iconName: iconNames) {
+                                    icon = findIcon(jarFile, iconName);
+                                    if (icon != null) {
+                                        break;
+                                    }
                                 }
+                            }
+                            if (icon != null) {
+                                // Store it under the first icon name (even if it wasn't actually found under
+                                // that name) because we use the first icon name for the icon lookups
+                                icons.put(iconNames[0], icon);
                             }
                         }
                     } catch (IOException e) {
-                        logger.error("I/O error while trying to load plant icons; not loading icons", e);
+                        logger.error("I/O error while trying to load plant icons", e);
+                    } finally {
+                        if (jarFile != null) {
+                            try {
+                                jarFile.close();
+                            } catch (IOException e) {
+                                // Ignore
+                            }
+                        }
                     }
                 }
             }
         }.start();
+    }
+
+    /**
+     * Look up a plant icon in the flat icon set bundled with WorldPainter (under
+     * {@code org/pepsoft/worldpainter/blockicons/}), used as a fallback when no installed Minecraft jar is
+     * available, or when it does not contain a texture for one of the plant's icon names.
+     */
+    private static BufferedImage findBundledIcon(String[] iconNames) {
+        for (String iconName: iconNames) {
+            String simpleName = iconName;
+            final int slash = simpleName.lastIndexOf('/');
+            if (slash >= 0) {
+                simpleName = simpleName.substring(slash + 1);
+            }
+            if (simpleName.endsWith(".png")) {
+                simpleName = simpleName.substring(0, simpleName.length() - 4);
+            }
+            try (InputStream in = PlantLayerEditor.class.getResourceAsStream("/org/pepsoft/worldpainter/blockicons/" + simpleName + ".png")) {
+                if (in != null) {
+                    final BufferedImage image = ImageIO.read(in);
+                    if (image != null) {
+                        final BufferedImage scaled = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                        final Graphics2D g2 = scaled.createGraphics();
+                        try {
+                            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                            g2.drawImage(image, 0, 0, 16, 16, null);
+                        } finally {
+                            g2.dispose();
+                        }
+                        return scaled;
+                    }
+                }
+            } catch (IOException e) {
+                logger.error("I/O error while trying to load bundled plant icon " + simpleName + "; continuing without icon", e);
+            }
+        }
+        return null;
     }
 
     private static BufferedImage findIcon(JarFile jarFile, String name) {

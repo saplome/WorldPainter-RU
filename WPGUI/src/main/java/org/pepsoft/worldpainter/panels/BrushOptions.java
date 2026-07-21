@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -478,20 +489,20 @@ public class BrushOptions extends javax.swing.JPanel implements Observer {
     
     @SuppressWarnings("unchecked") // Guaranteed by code
     private JMenu createObjectSelectionMenu(final String descriptor, final ObjectSelectionListener listener, final boolean addAnother, final Object currentSelection) {
-        final JMenuItem waterItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.27634ff800"), ICON_WATER);
+        final JMenuItem waterItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.label.water"), ICON_WATER);
         waterItem.addActionListener(e -> listener.objectSelected(TerrainOrLayerFilter.WATER, "Water", null));
         JMenu popupMenu = new JMenu();
         popupMenu.add(waterItem);
 
-        final JMenuItem lavaItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.1d18fe2cdd"), ICON_LAVA);
+        final JMenuItem lavaItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.label.lava"), ICON_LAVA);
         lavaItem.addActionListener(e -> listener.objectSelected(TerrainOrLayerFilter.LAVA, "Lava", null));
         popupMenu.add(lavaItem);
 
-        final JMenuItem landItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.512ef7c688"));
+        final JMenuItem landItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.label.land"));
         landItem.addActionListener(e -> listener.objectSelected(TerrainOrLayerFilter.LAND, "Land", null));
         popupMenu.add(landItem);
 
-        final JMenuItem eyedropperItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.6db0d74498"), ICON_EYEDROPPER);
+        final JMenuItem eyedropperItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.brush.selectOnMap"), ICON_EYEDROPPER);
         eyedropperItem.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.label.selectAPaintFrom"));
         final App app = App.getInstance();
         final ColourScheme colourScheme = app.getColourScheme();
@@ -544,9 +555,9 @@ public class BrushOptions extends javax.swing.JPanel implements Observer {
         }
         popupMenu.add(eyedropperItem);
 
-        final JMenu terrainMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.4ccfea7a25"));
-        final JMenu customTerrainMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.90589c47f0"));
-        final JMenu stainedClayTerrainMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.3ede154f61"));
+        final JMenu terrainMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.panel.terrain"));
+        final JMenu customTerrainMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.brush.custom"));
+        final JMenu stainedClayTerrainMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.brush.stainedTerracotta"));
         for (Terrain terrain: Terrain.getConfiguredValues()) {
             final Terrain selectedTerrain = terrain;
             final String name = org.pepsoft.worldpainter.WPI18n.terrainName(terrain);
@@ -599,12 +610,12 @@ public class BrushOptions extends javax.swing.JPanel implements Observer {
         }
         popupMenu.add(layerMenu);
 
-        final JMenu biomeMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.c25aed4fa7"));
+        final JMenu biomeMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.brush.biome"));
         final CustomBiomeManager customBiomeManager = app.getCustomBiomeManager();
         final BiomeHelper biomeHelper = new BiomeHelper(colourScheme, customBiomeManager, platform);
         List<CustomBiome> customBiomes = customBiomeManager.getCustomBiomes();
         if (! customBiomes.isEmpty()) {
-            JMenu customBiomeMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.90589c47f0"));
+            JMenu customBiomeMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.brush.custom"));
             for (CustomBiome customBiome: customBiomes) {
                 final int selectedBiome = customBiome.getId();
                 final String name = biomeHelper.getBiomeName(selectedBiome);
@@ -641,8 +652,8 @@ public class BrushOptions extends javax.swing.JPanel implements Observer {
                 }
             }
         }
-        final JMenu autoBiomeSubMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.05791ea6e5"));
-        final JMenuItem autoBiomesMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.c9f39ad649"));
+        final JMenu autoBiomeSubMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.brush.autoBiomes"));
+        final JMenuItem autoBiomesMenuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.brush.allAutoBiomes"));
         autoBiomesMenuItem.addActionListener(e -> listener.objectSelected(TerrainOrLayerFilter.AUTO_BIOMES, "All Auto Biomes", null));
         autoBiomeSubMenu.add(autoBiomesMenuItem);
         for (int autoBiome: Dimension.POSSIBLE_AUTO_BIOMES) {
@@ -656,8 +667,8 @@ public class BrushOptions extends javax.swing.JPanel implements Observer {
         biomeMenu.add(autoBiomeSubMenu);
         popupMenu.add(biomeMenu);
 
-        final JMenu annotationsMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.933e469cb3"));
-        JMenuItem menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.eace8320c8"));
+        final JMenu annotationsMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.panel.annotations"));
+        JMenuItem menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.brush.allAnnotations"));
         menuItem.addActionListener(e -> listener.objectSelected(new LayerValue(Annotations.INSTANCE), "All Annotations", null));
         annotationsMenu.add(menuItem);
         for (int i = 1; i < 16; i++) {

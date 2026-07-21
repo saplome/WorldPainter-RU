@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -608,7 +619,7 @@ public class CustomMaterialDialog extends WorldPainterDialog implements Property
             .addComponent(labelPreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        buttonLoad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/folder_page_white.png"))); // NOI18N
+        buttonLoad.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/folder_page_white.png")); // NOI18N
         buttonLoad.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.loadThisCustomMaterial"));
         buttonLoad.setMargin(new java.awt.Insets(2, 2, 2, 2));
         buttonLoad.addActionListener(new java.awt.event.ActionListener() {
@@ -617,7 +628,7 @@ public class CustomMaterialDialog extends WorldPainterDialog implements Property
             }
         });
 
-        buttonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/disk.png"))); // NOI18N
+        buttonSave.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/disk.png")); // NOI18N
         buttonSave.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.saveThisCustomMaterial"));
         buttonSave.setMargin(new java.awt.Insets(2, 2, 2, 2));
         buttonSave.addActionListener(new java.awt.event.ActionListener() {
@@ -645,7 +656,7 @@ public class CustomMaterialDialog extends WorldPainterDialog implements Property
                 .addGap(0, 222, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.1fbb1e3943"), jPanel3);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.material.simple"), jPanel3);
 
         spinnerScale.setModel(new javax.swing.SpinnerNumberModel(100, 1, 9999, 1));
         spinnerScale.setEnabled(false);
@@ -707,7 +718,7 @@ public class CustomMaterialDialog extends WorldPainterDialog implements Property
         });
 
         buttonGroup1.add(radioButtonLayered);
-        radioButtonLayered.setText(org.pepsoft.worldpainter.WPI18n.s("ui.87bfda183c"));
+        radioButtonLayered.setText(org.pepsoft.worldpainter.WPI18n.s("ui.panel.layers"));
         radioButtonLayered.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonLayeredActionPerformed(evt);
@@ -716,7 +727,7 @@ public class CustomMaterialDialog extends WorldPainterDialog implements Property
 
         buttonGroup1.add(radioButtonNoise);
         radioButtonNoise.setSelected(true);
-        radioButtonNoise.setText(org.pepsoft.worldpainter.WPI18n.s("ui.9b27ee4c75"));
+        radioButtonNoise.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.noise"));
         radioButtonNoise.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonNoiseActionPerformed(evt);
@@ -824,7 +835,7 @@ public class CustomMaterialDialog extends WorldPainterDialog implements Property
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.10b4eb7629"), jPanel2);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.material.complex"), jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -301,12 +312,12 @@ public class InfoPanel extends javax.swing.JPanel implements MouseMotionListener
 
         jLabel3.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.terrain"));
 
-        labelTerrain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/transparent.png"))); // NOI18N
+        labelTerrain.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/transparent.png")); // NOI18N
         labelTerrain.setText(" ");
 
         jLabel6.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.biome"));
 
-        labelBiome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/transparent.png"))); // NOI18N
+        labelBiome.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/transparent.png")); // NOI18N
         labelBiome.setText(" ");
 
         checkBoxAutomaticBiome.setText(" ");

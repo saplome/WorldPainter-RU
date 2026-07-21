@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
@@ -75,7 +86,7 @@ public class TestExportDialog extends WorldPainterDialog {
             checkBoxDimension.setSelected(false);
         }
         if ((selectedTiles != null) && (! selectedTiles.isEmpty())) {
-            checkBoxTiles.setText(org.pepsoft.worldpainter.WPI18n.s("ui.2c4e1f122f") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.tilesSelectedSuffix"));
+            checkBoxTiles.setText(org.pepsoft.worldpainter.WPI18n.s("ui.testExport.subsetOfTilesPrefix") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.tilesSelectedSuffix"));
             checkBoxTiles.setSelected(true);
         }
         final Set<WorldExportSettings.Step> stepsToSkip = exportSettings.getStepsToSkip();
@@ -112,7 +123,7 @@ public class TestExportDialog extends WorldPainterDialog {
                 selectedDimension = dialog.getSelectedDimension();
                 comboBoxDimension.setSelectedItem(selectedDimension);
                 selectedTiles = dialog.getSelectedTiles();
-                checkBoxTiles.setText(org.pepsoft.worldpainter.WPI18n.s("ui.2c4e1f122f") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.tilesSelectedSuffix"));
+                checkBoxTiles.setText(org.pepsoft.worldpainter.WPI18n.s("ui.testExport.subsetOfTilesPrefix") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.tilesSelectedSuffix"));
             }
             if ((selectedTiles == null) || selectedTiles.isEmpty()) {
                 checkBoxTiles.setSelected(false);
@@ -206,7 +217,7 @@ public class TestExportDialog extends WorldPainterDialog {
             }
         });
 
-        labelSelectTiles.setForeground(new java.awt.Color(0, 0, 255));
+        labelSelectTiles.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         labelSelectTiles.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUSelectTiles"));
         labelSelectTiles.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         labelSelectTiles.addMouseListener(new java.awt.event.MouseAdapter() {

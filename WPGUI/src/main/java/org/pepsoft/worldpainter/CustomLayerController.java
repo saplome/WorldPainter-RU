@@ -1,3 +1,14 @@
+/*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
 package org.pepsoft.worldpainter;
 
 import com.google.common.collect.Lists;
@@ -125,20 +136,25 @@ public class CustomLayerController implements PropertyChangeListener {
                 if (layer instanceof TunnelLayer tunnelLayer) {
                     final Integer floorDimensionId = tunnelLayer.getFloorDimensionId();
                     if (floorDimensionId != null) {
-                        final String shortName, longName;
+                        // WorldPainter Languages fork (L33): full localized phrases instead of concatenation
+                        final String editKey, messageKey, titleKey, leaveKey;
                         switch (tunnelLayer.getLayerMode()) {
                             case CAVE:
-                                shortName = "floor dimension";
-                                longName = "Custom Cave/Tunnel layer floor dimension";
+                                editKey = "ui.customLayers.editFloorDimension";
+                                messageKey = "ui.customLayers.editingFloorDimension.message";
+                                titleKey = "ui.customLayers.editingFloorDimension.title";
+                                leaveKey = "ui.customLayers.leaveFloorDimensionEsc";
                                 break;
                             case FLOATING:
-                                shortName = "floating dimension";
-                                longName = "Floating Dimension";
+                                editKey = "ui.customLayers.editFloatingDimension";
+                                messageKey = "ui.customLayers.editingFloatingDimension.message";
+                                titleKey = "ui.customLayers.editingFloatingDimension.title";
+                                leaveKey = "ui.customLayers.leaveFloatingDimensionEsc";
                                 break;
                             default:
                                 throw new InternalError("Unknown layer mode " + tunnelLayer.getLayerMode());
                         }
-                        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.585db2c92d") + shortName);
+                        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s(editKey));
                         if (dimension.containsOneOf(tunnelLayer)) {
                             menuItem.addActionListener(e1 -> {
                                 final Point viewPosition = app.view.getViewCentreInWorldCoords();
@@ -190,14 +206,12 @@ public class CustomLayerController implements PropertyChangeListener {
                                 final Configuration config = Configuration.getInstance();
                                 if (! config.isMessageDisplayedCountAtLeast(EDITING_FLOOR_DIMENSION_KEY_2, 3)) {
                                     doLaterOnEventThread(() -> JOptionPane.showMessageDialog(app,
-                                            org.pepsoft.worldpainter.WPI18n.s("ui.help.pressEscToFinishEditingPrefix") + longName + ",\n" +
-                                                    org.pepsoft.worldpainter.WPI18n.s("ui.dialog.surfaceDimension.viewMenuSelect") + COMMAND_KEY_NAME + "+U.\n\n" +
-                                                    org.pepsoft.worldpainter.WPI18n.s("ui.help.undoLostOnShapeChange") +
-                                                    org.pepsoft.worldpainter.WPI18n.s("ui.frag.ofThisPrefix") + longName + ".", org.pepsoft.worldpainter.WPI18n.s("ui.dialog.editingPrefix") + longName, JOptionPane.INFORMATION_MESSAGE));
+                                            java.text.MessageFormat.format(org.pepsoft.worldpainter.WPI18n.s(messageKey), COMMAND_KEY_NAME),
+                                                    org.pepsoft.worldpainter.WPI18n.s(titleKey), JOptionPane.INFORMATION_MESSAGE));
                                     config.setMessageDisplayed(EDITING_FLOOR_DIMENSION_KEY_2);
                                 }
 
-                                final JLabel label = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.help.pressEscToLeavePrefix") + longName + ".</font></html>");
+                                final JLabel label = new JLabel("<html><font size='+1'>" + org.pepsoft.worldpainter.WPI18n.s(leaveKey) + "</font></html>");
                                 label.setBorder(new CompoundBorder(new LineBorder(BLACK), new EmptyBorder(5, 5, 5, 5)));
                                 app.pushGlassPaneComponent(label);
                             });
@@ -208,11 +222,11 @@ public class CustomLayerController implements PropertyChangeListener {
                     }
                 }
 
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.4cfa6c9815"));
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.find"));
                 menuItem.addActionListener(e1 -> findLayer(layer));
                 popup.add(menuItem);
 
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.c4e38a1215"));
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.duplicate"));
                 if (layer.isExportableToFile()) {
                     menuItem.addActionListener(e1 -> duplicate());
                 } else {
@@ -225,7 +239,7 @@ public class CustomLayerController implements PropertyChangeListener {
                 menuItem.addActionListener(e1 -> remove());
                 popup.add(menuItem);
 
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.aeb11854b2"));
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.action.exportToFile"));
                 if (layer.isExportableToFile()) {
                     menuItem.addActionListener(e1 -> exportLayer(layer));
                 } else {
@@ -234,10 +248,10 @@ public class CustomLayerController implements PropertyChangeListener {
                 }
                 popup.add(menuItem);
 
-                JMenu paletteMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.b1ea0667e6"));
+                JMenu paletteMenu = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.moveToPalette"));
 
                 for (final Palette palette: paletteManager.getPalettes()) {
-                    menuItem = new JMenuItem(palette.getName());
+                    menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.paletteName(palette.getName()));
                     menuItem.addActionListener(e1 -> moveLayerToPalette(layer, palette));
                     if (palette.contains(layer)) {
                         menuItem.setEnabled(false);
@@ -245,7 +259,7 @@ public class CustomLayerController implements PropertyChangeListener {
                     paletteMenu.add(menuItem);
                 }
 
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.ef88f743c6"));
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.newPalette"));
                 menuItem.addActionListener(e1 -> createNewLayerPalette(layer));
                 paletteMenu.add(menuItem);
 
@@ -350,10 +364,7 @@ public class CustomLayerController implements PropertyChangeListener {
         if (activate
                 && (paletteManager.getPaletteContaining(layer).getLayers().size() >= 25)
                 && (! config.isMessageDisplayed(LAYER_PALETTE_TIP_KEY))) {
-            showInfo(app, """
-                    Tip: you can distribute Custom Layers over multiple
-                    palettes by right-clicking on the layer button and
-                    selecting Move to palette → New palette...""", "Layer Palette Tip");
+            showInfo(app, WPI18n.s("ui.customLayers.paletteTip.message"), WPI18n.s("ui.customLayers.paletteTip.title"));
             config.setMessageDisplayed(LAYER_PALETTE_TIP_KEY);
         }
     }
@@ -421,7 +432,7 @@ public class CustomLayerController implements PropertyChangeListener {
         }
         customLayerMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.c3dec1a885"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.addCaveTunnelLayer"));
         menuItem.addActionListener(e -> {
             final TunnelLayer layer = new TunnelLayer("Tunnels", CAVE, BLACK, world.getPlatform());
             final int baseHeight, waterLevel;
@@ -449,7 +460,7 @@ public class CustomLayerController implements PropertyChangeListener {
         }
         customLayerMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.0b9fc8b6d5"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.addPlantsLayer"));
         menuItem.addActionListener(e -> {
             final EditLayerDialog<PlantLayer> dialog = new EditLayerDialog<>(app, world.getPlatform(), PlantLayer.class);
             dialog.setVisible(() -> {
@@ -462,7 +473,7 @@ public class CustomLayerController implements PropertyChangeListener {
         });
         customLayerMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.073b47d9dd"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.addCombinedLayer"));
         menuItem.addActionListener(e -> {
             final EditLayerDialog<CombinedLayer> dialog = new EditLayerDialog<>(app, world.getPlatform(), CombinedLayer.class);
             dialog.setVisible(() -> {
@@ -476,7 +487,7 @@ public class CustomLayerController implements PropertyChangeListener {
         });
         customLayerMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.186476e7ca"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.addAnnotationsLayer"));
         menuItem.addActionListener(e -> {
             final CustomAnnotationLayerDialog dialog = new CustomAnnotationLayerDialog(app, new CustomAnnotationLayer("My Custom Annotation", "A custom annotations layer", YELLOW));
             dialog.setVisible(() -> {
@@ -489,7 +500,7 @@ public class CustomLayerController implements PropertyChangeListener {
         });
         customLayerMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.c87e7df6a2"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.addFloatingDimension"));
         menuItem.addActionListener(e -> {
             final TunnelLayer layer = new TunnelLayer("Floating Dimension", FLOATING, CYAN, world.getPlatform());
             layer.setFloorMode(FIXED_HEIGHT_ABOVE_FLOOR);
@@ -528,7 +539,7 @@ public class CustomLayerController implements PropertyChangeListener {
             customLayerMenu.addSeparator();
 
             for (Class<? extends CustomLayer> customLayerClass: allPluginLayers) {
-                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.4d91d2ec2f") + customLayerClass.getSimpleName() + " layer..."); // TODO: introduce a proper display name for custom layers
+                menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.addPrefix") + customLayerClass.getSimpleName() + " layer..."); // TODO: introduce a proper display name for custom layers
                 menuItem.addActionListener(e -> {
                     final EditLayerDialog<CustomLayer> dialog = new EditLayerDialog<>(app, world.getPlatform(), (Class<CustomLayer>) customLayerClass);
                     dialog.setVisible(() -> {
@@ -546,7 +557,7 @@ public class CustomLayerController implements PropertyChangeListener {
             customLayerMenu.addSeparator();
         }
 
-        menuItem = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.f9f658d577"));
+        menuItem = new JMenu(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.copyLayerFromAnotherDimension"));
         menuItem.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.text.thisWillMakeA"));
         final Function<Layer, Boolean> filter = app.getLayerFilterForCurrentDimension();
         List<JMenuItem> copyMenuItems = getCopyLayerMenuItems((paletteName != null) ? paletteName : "Custom Layers", filter);
@@ -559,11 +570,11 @@ public class CustomLayerController implements PropertyChangeListener {
         }
         customLayerMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.0b6937f270"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.importFromFile"));
         menuItem.addActionListener(e -> app.importLayers(paletteName, filter));
         customLayerMenu.add(menuItem);
 
-        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.e5402e8508"));
+        menuItem = new JMenuItem(org.pepsoft.worldpainter.WPI18n.s("ui.customLayers.importFromAnotherWorld"));
         menuItem.addActionListener(e -> app.importCustomItemsFromWorld(CustomItemsTreeModel.ItemType.LAYER, filter));
         customLayerMenu.add(menuItem);
 
@@ -955,7 +966,7 @@ public class CustomLayerController implements PropertyChangeListener {
                     continue;
                 }
                 final String palette = layer.getPalette();
-                final JMenuItem menuForPalette = menusForDimension.computeIfAbsent(palette, k -> new JMenu(palette));
+                final JMenuItem menuForPalette = menusForDimension.computeIfAbsent(palette, k -> new JMenu(org.pepsoft.worldpainter.WPI18n.paletteName(palette)));
                 final JMenuItem menuItem = new JMenuItem(layer.getName(), new ImageIcon(layer.getIcon()));
                 menuItem.addActionListener(event -> copyLayerToPalette(layer, targetPaletteName));
                 menuForPalette.add(menuItem);

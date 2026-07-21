@@ -79,5 +79,5 @@ public class NBTFileNode extends FileSystemNode {
         }
     }
 
-    private static final Icon ICON = IconUtils.scaleIcon(IconUtils.loadScaledIcon("org/pepsoft/worldpainter/mapexplorer/nbtfile.png"), 16);
+    private static final Icon ICON = IconUtils.scaleIcon(IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/nbtfile.png"), 16);
 }

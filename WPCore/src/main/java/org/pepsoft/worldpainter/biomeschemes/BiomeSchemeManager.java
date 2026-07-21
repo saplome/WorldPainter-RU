@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -12,6 +23,10 @@ import org.pepsoft.worldpainter.BiomeScheme;
 import org.pepsoft.worldpainter.ColourScheme;
 import org.pepsoft.worldpainter.Configuration;
 import org.pepsoft.worldpainter.util.MinecraftUtil;
+
+import javax.imageio.ImageIO;
+import javax.swing.UIManager;
+import java.io.InputStream;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -212,6 +227,15 @@ public class BiomeSchemeManager {
     }
 
     public static BufferedImage createImage(BiomeScheme biomeScheme, int biome, ColourScheme colourScheme) {
+        // L77: sprite biome icons belong only to the two custom themes. All built-in themes use the original generated icons.
+        if (Boolean.TRUE.equals(UIManager.get("WorldPainter.useCustomBiomeIcons"))
+                && (biome >= 0) && (biome < Minecraft1_21Biomes.BIOME_NAMES.length) && (Minecraft1_21Biomes.BIOME_NAMES[biome] != null)) {
+            // Use the internal (English) biome name; getBiomeName() returns the localised name, which would not match the sprite filenames
+            final BufferedImage sprite = getBiomeSprite(Minecraft1_21Biomes.BIOME_NAMES[biome]);
+            if (sprite != null) {
+                return GUIUtils.scaleToUI(sprite, true);
+            }
+        }
         int backgroundColour = biomeScheme.getColour(biome, colourScheme);
         boolean[][] pattern = biomeScheme.getPattern(biome);
         BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
@@ -226,6 +250,36 @@ public class BiomeSchemeManager {
         }
         return GUIUtils.scaleToUI(image, true);
     }
+
+    /**
+     * Loads the bundled sprite icon for a biome by its (English) display name,
+     * or returns {@code null} if there is no bundled sprite for that biome.
+     */
+    private static BufferedImage getBiomeSprite(String biomeName) {
+        if (biomeName == null) {
+            return null;
+        }
+        final String key = biomeName.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-+|-+$", "");
+        synchronized (BIOME_SPRITES) {
+            if (BIOME_SPRITES.containsKey(key)) {
+                return BIOME_SPRITES.get(key);
+            }
+            BufferedImage sprite = null;
+            try (InputStream in = ClassLoader.getSystemResourceAsStream("org/pepsoft/worldpainter/biomeicons/" + key + ".png")) {
+                if (in != null) {
+                    final BufferedImage raw = ImageIO.read(in);
+                    sprite = new BufferedImage(raw.getWidth(), raw.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    sprite.getGraphics().drawImage(raw, 0, 0, null);
+                }
+            } catch (IOException e) {
+                logger.warn("I/O error loading bundled sprite for biome " + biomeName + "; falling back to generated icon", e);
+            }
+            BIOME_SPRITES.put(key, sprite);
+            return sprite;
+        }
+    }
+
+    private static final Map<String, BufferedImage> BIOME_SPRITES = new HashMap<>();
 
     public static List<Integer> getAvailableBiomeAlgorithms() {
         synchronized (initialisationLock) {

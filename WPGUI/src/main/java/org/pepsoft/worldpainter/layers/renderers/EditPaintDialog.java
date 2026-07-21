@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
@@ -211,7 +222,7 @@ public class EditPaintDialog extends WorldPainterDialog {
 
         iconEditor1.setEditable(false);
 
-        buttonSolidColour.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/fill.png"))); // NOI18N
+        buttonSolidColour.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/fill.png")); // NOI18N
         buttonSolidColour.setText(org.pepsoft.worldpainter.WPI18n.s("ui.action.makeSolidColour"));
         buttonSolidColour.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlSelectAColour"));
         buttonSolidColour.setEnabled(false);
@@ -223,7 +234,7 @@ public class EditPaintDialog extends WorldPainterDialog {
         });
 
         buttonGroupTools.add(toggleButtonPencil);
-        toggleButtonPencil.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/pencil.png"))); // NOI18N
+        toggleButtonPencil.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/pencil.png")); // NOI18N
         toggleButtonPencil.setSelected(true);
         toggleButtonPencil.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.pencil"));
         toggleButtonPencil.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlLeftClickTo"));
@@ -236,7 +247,7 @@ public class EditPaintDialog extends WorldPainterDialog {
         });
 
         buttonGroupTools.add(toggleButtonEraser);
-        toggleButtonEraser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/sponge.png"))); // NOI18N
+        toggleButtonEraser.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/sponge.png")); // NOI18N
         toggleButtonEraser.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.eraser"));
         toggleButtonEraser.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.clickToEraseTo"));
         toggleButtonEraser.setEnabled(false);
@@ -263,14 +274,14 @@ public class EditPaintDialog extends WorldPainterDialog {
 
         panelColours.setLayout(new java.awt.GridLayout(0, 4));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/shovel-icon_16.png"))); // NOI18N
+        jButton1.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/shovel-icon_16.png")); // NOI18N
         jButton1.setMargin(new java.awt.Insets(2, 2, 2, 2));
         panelColours.add(jButton1);
 
         rendererPreviewer1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         rendererPreviewer1.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.previewOfPattern"));
 
-        buttonClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/clear_selection.png"))); // NOI18N
+        buttonClear.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/clear_selection.png")); // NOI18N
         buttonClear.setText(org.pepsoft.worldpainter.WPI18n.s("ui.button.clear"));
         buttonClear.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlClearEntireCanvas"));
         buttonClear.setEnabled(false);

@@ -1,4 +1,25 @@
 /*
+ * WorldPainter Languages, an unofficial localization fork of WorldPainter
+ * (https://github.com/saplome/WorldPainter-LANGUAGES).
+ * Copyright © 2026 saplome
+ *
+ * WorldPainter itself is Copyright © pepsoft.org, The Netherlands.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
  * Static accessor for externalized UI strings in the
  * org.pepsoft.worldpainter.resources.* bundles (shipped by WPGUI):
  * strings (UI), blocks, gamedata (biomes/plants/terrain/colours),
@@ -10,10 +31,12 @@
  */
 package org.pepsoft.worldpainter;
 
+import java.awt.Color;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import javax.swing.UIManager;
 
 import static org.pepsoft.worldpainter.Constants.DIM_END;
 import static org.pepsoft.worldpainter.Constants.DIM_NETHER;
@@ -55,6 +78,12 @@ public final class WPI18n {
         }
     }
 
+    /** Colour for hyperlink-like labels; themes may override WorldPainter.linkForeground. */
+    public static Color linkColour() {
+        final Color colour = UIManager.getColor("WorldPainter.linkForeground");
+        return (colour != null) ? colour : new Color(0, 0, 255);
+    }
+
     private WPI18n() {
     }
 
@@ -89,6 +118,19 @@ public final class WPI18n {
         }
         RESOLVE_CACHE.put(cacheKey, result);
         return result;
+    }
+
+    /**
+     * WorldPainter Languages fork (L33): returns the localized display name of
+     * a layer palette. Only the default palette name is translated; user
+     * defined names are returned as is. The internal name is never changed,
+     * so palettes in saved worlds and exported layer files are unaffected.
+     */
+    public static String paletteName(String name) {
+        if ("Custom Layers".equals(name)) {
+            return s("ui.customLayers.defaultPaletteName");
+        }
+        return name;
     }
 
     /**
@@ -398,6 +440,52 @@ public final class WPI18n {
         RESOLVE_CACHE.clear();
     }
 
+    /**
+     * Optional UI font candidates for a language, read from languages.list
+     * entries of the form "<code>.font = Font 1, Font 2, ...". The UI replaces
+     * the default UI fonts with the first candidate that is installed on the
+     * system. Returns an empty list when no font is configured for the
+     * language.
+     */
+    public static java.util.List<String> getLanguageFontCandidates(String lang) {
+        java.util.List<String> result = new java.util.ArrayList<>();
+        if (lang == null) {
+            return result;
+        }
+        final String wanted = lang.trim().toLowerCase(java.util.Locale.ROOT) + ".font";
+        try (java.io.InputStream in = WPI18n.class.getResourceAsStream("/org/pepsoft/worldpainter/resources/languages.list")) {
+            if (in != null) {
+                java.io.BufferedReader reader = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String trimmed = line.trim();
+                    if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith("!")) {
+                        continue;
+                    }
+                    int eq = trimmed.indexOf('=');
+                    if (eq <= 0) {
+                        continue;
+                    }
+                    String key = trimmed.substring(0, eq).trim().toLowerCase(java.util.Locale.ROOT);
+                    if (! key.equals(wanted)) {
+                        continue;
+                    }
+                    for (String candidate: trimmed.substring(eq + 1).split(",")) {
+                        String font = candidate.trim();
+                        if (! font.isEmpty()) {
+                            result.add(font);
+                        }
+                    }
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // ignore; no font substitution for this language
+        }
+        return result;
+    }
+
     // Normalize a language code against the data-driven language list
     // (languages.list next to the string bundles). Unknown codes fall back to English.
     public static String normalizeLang(String lang) {
@@ -434,7 +522,9 @@ public final class WPI18n {
                     }
                     String code = trimmed.substring(0, eq).trim().toLowerCase(java.util.Locale.ROOT);
                     String name = trimmed.substring(eq + 1).trim();
-                    if (! code.isEmpty() && ! name.isEmpty()) {
+                    // Keys containing a dot are per-language options (e.g.
+                    // "zh.font = ..."), not language registrations
+                    if (! code.isEmpty() && ! name.isEmpty() && (code.indexOf('.') < 0)) {
                         langs.put(code, name);
                     }
                 }

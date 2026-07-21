@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -630,7 +641,7 @@ public class Bo2LayerEditor extends AbstractLayerEditor<Bo2Layer> implements Lis
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
 
-        buttonReloadAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/arrow_rotate_clockwise.png"))); // NOI18N
+        buttonReloadAll.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/arrow_rotate_clockwise.png")); // NOI18N
         buttonReloadAll.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.reloadAllOrSelected"));
         buttonReloadAll.setEnabled(false);
         buttonReloadAll.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -642,7 +653,7 @@ public class Bo2LayerEditor extends AbstractLayerEditor<Bo2Layer> implements Lis
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        buttonEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_edit.png"))); // NOI18N
+        buttonEdit.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_edit.png")); // NOI18N
         buttonEdit.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.edit.editSelectedObjectS"));
         buttonEdit.setEnabled(false);
         buttonEdit.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -720,7 +731,7 @@ public class Bo2LayerEditor extends AbstractLayerEditor<Bo2Layer> implements Lis
         });
         jScrollPane1.setViewportView(listObjects);
 
-        jLabel6.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel6.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         jLabel6.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUGetCustom"));
         jLabel6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -765,7 +776,7 @@ public class Bo2LayerEditor extends AbstractLayerEditor<Bo2Layer> implements Lis
 
         jLabel2.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.objectS"));
 
-        buttonAddFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_add.png"))); // NOI18N
+        buttonAddFile.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_add.png")); // NOI18N
         buttonAddFile.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.addOneOrMore"));
         buttonAddFile.setMargin(new java.awt.Insets(2, 2, 2, 2));
         buttonAddFile.addActionListener(new java.awt.event.ActionListener() {
@@ -774,7 +785,7 @@ public class Bo2LayerEditor extends AbstractLayerEditor<Bo2Layer> implements Lis
             }
         });
 
-        buttonRemoveFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/brick_delete.png"))); // NOI18N
+        buttonRemoveFile.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/brick_delete.png")); // NOI18N
         buttonRemoveFile.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.removeSelectedObjectS"));
         buttonRemoveFile.setEnabled(false);
         buttonRemoveFile.setMargin(new java.awt.Insets(2, 2, 2, 2));

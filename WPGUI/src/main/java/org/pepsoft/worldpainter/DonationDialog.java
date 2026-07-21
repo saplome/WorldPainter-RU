@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -146,7 +157,7 @@ public final class DonationDialog extends WorldPainterDialog {
         buttonDonate.setBackground(new java.awt.Color(255, 196, 58));
         buttonDonate.setFont(buttonDonate.getFont().deriveFont(buttonDonate.getFont().getStyle() | java.awt.Font.BOLD, buttonDonate.getFont().getSize()+3));
         buttonDonate.setMnemonic('d');
-        buttonDonate.setText(org.pepsoft.worldpainter.WPI18n.s("ui.0584e445d6"));
+        buttonDonate.setText(org.pepsoft.worldpainter.WPI18n.s("ui.menu.donate"));
         buttonDonate.setBorderPainted(false);
         buttonDonate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,7 +193,7 @@ public final class DonationDialog extends WorldPainterDialog {
         });
 
         buttonMerchStore.setFont(buttonMerchStore.getFont().deriveFont(buttonMerchStore.getFont().getSize()+3f));
-        buttonMerchStore.setText(org.pepsoft.worldpainter.WPI18n.s("ui.c34ce60c17"));
+        buttonMerchStore.setText(org.pepsoft.worldpainter.WPI18n.s("ui.menu.merchStore"));
         buttonMerchStore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonMerchStoreActionPerformed(evt);

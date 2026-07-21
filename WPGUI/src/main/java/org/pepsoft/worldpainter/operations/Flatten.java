@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -115,7 +126,7 @@ public class Flatten extends AbstractBrushOperation {
             JPanel buttonPanel = new JPanel();
             buttonPanel.setLayout(new BoxLayout(buttonPanel, X_AXIS));
             buttonPanel.add(new JLabel(FLATTEN_ICON));
-            final JRadioButton flattenButton = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.a7f057ae66"), true);
+            final JRadioButton flattenButton = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.flatten.bothDirections"), true);
             flattenButton.addActionListener(e -> mode = Mode.FLATTEN);
             buttonGroup.add(flattenButton);
             buttonPanel.add(flattenButton);
@@ -124,7 +135,7 @@ public class Flatten extends AbstractBrushOperation {
             buttonPanel = new JPanel();
             buttonPanel.setLayout(new BoxLayout(buttonPanel, X_AXIS));
             buttonPanel.add(new JLabel(RAISE_ICON));
-            final JRadioButton raiseButton = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.08f4e3ca8c"), true);
+            final JRadioButton raiseButton = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.flatten.onlyRaiseTerrain"), true);
             raiseButton.addActionListener(e -> mode = Mode.RAISE);
             buttonGroup.add(raiseButton);
             buttonPanel.add(raiseButton);
@@ -133,7 +144,7 @@ public class Flatten extends AbstractBrushOperation {
             buttonPanel = new JPanel();
             buttonPanel.setLayout(new BoxLayout(buttonPanel, X_AXIS));
             buttonPanel.add(new JLabel(LOWER_ICON));
-            final JRadioButton lowerButton = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.a42bd7d10b"), true);
+            final JRadioButton lowerButton = new JRadioButton(org.pepsoft.worldpainter.WPI18n.s("ui.flatten.onlyLowerTerrain"), true);
             lowerButton.addActionListener(e -> mode = Mode.LOWER);
             buttonGroup.add(lowerButton);
             buttonPanel.add(lowerButton);

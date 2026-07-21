@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -71,13 +82,19 @@ public class Palette {
         soloCheckBox = new JCheckBox();
         soloCheckBox.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlCheckToShowToShow9d2a33"));
         soloCheckBox.addActionListener(e -> setSolo(soloCheckBox.isSelected()));
-        LayoutUtils.addRowOfComponents(panel, constraints, asList(showCheckBox, soloCheckBox, new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.f8606ac1fb"))));
+        LayoutUtils.addRowOfComponents(panel, constraints, asList(showCheckBox, soloCheckBox, new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.palette.allPrefix"))));
 
         // Row: components provided to constructor
         LayoutUtils.addRowOfComponents(panel, constraints, buttonComponents);
 
         dockableFrame = new DockableFrameBuilder(panel, name, DockContext.DOCK_SIDE_WEST, 3).withIcon(ICON_LAYERS).scrollable().build();
         dockableFrame.setKey("customLayerPalette." + name);
+        // WorldPainter Languages fork (L33): display-only localization of the default palette name
+        final String displayName = org.pepsoft.worldpainter.WPI18n.paletteName(name);
+        dockableFrame.setTitle(displayName);
+        dockableFrame.setSideTitle(displayName);
+        dockableFrame.setTabTitle(displayName);
+        dockableFrame.setToolTipText(displayName);
     }
 
     public String getName() {
@@ -89,8 +106,12 @@ public class Palette {
         for (CustomLayer layer: layers) {
             layer.setPalette(name);
         }
-        dockableFrame.setTitle(name);
-        dockableFrame.setTabTitle(name);
+        // WorldPainter Languages fork (L33): display-only localization of the default palette name
+        final String displayName = org.pepsoft.worldpainter.WPI18n.paletteName(name);
+        dockableFrame.setTitle(displayName);
+        dockableFrame.setSideTitle(displayName);
+        dockableFrame.setTabTitle(displayName);
+        dockableFrame.setToolTipText(displayName);
         dockableFrame.setKey("customLayerPalette." + name);
     }
 

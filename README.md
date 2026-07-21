@@ -1,120 +1,213 @@
 <div align="center">
-<img src="assets/icon.png" alt="WorldPainter Languages" width="132">
+  <img src="assets/icon.png" alt="WorldPainter Languages" width="132">
 
-<h1>WorldPainter Languages</h1>
+  <h1>WorldPainter Languages</h1>
 
-<p>
-<strong>Неофициальный многоязычный fork WorldPainter 2.27.0</strong><br>
-редактор миров Minecraft с локализацией интерфейса на русский, белорусский, украинский и казахский языки.
-</p>
+  <p>
+    <strong>Неофициальный многоязычный форк WorldPainter 2.27.0</strong><br>
+    Полностью локализованный WorldPainter с дополнительными темами, иконками, Windows-интеграцией и пользовательскими слоями генерации.
+  </p>
 
-<p>
-<img alt="Release" src="https://img.shields.io/badge/release-2.27.0--L1-e53935?style=for-the-badge">
-<img alt="Base" src="https://img.shields.io/badge/base-WorldPainter%202.27.0-2d8cff?style=for-the-badge">
-<img alt="Languages" src="https://img.shields.io/badge/languages-RU%20%7C%20BE%20%7C%20UK%20%7C%20KK-6d4aff?style=for-the-badge">
-<img alt="License" src="https://img.shields.io/badge/license-GPLv3-43a047?style=for-the-badge">
-</p>
+  <p>
+    <img alt="Release" src="https://img.shields.io/badge/release-2.27.0--L2.0.0-e53935?style=for-the-badge">
+    <img alt="Base" src="https://img.shields.io/badge/base-WorldPainter%202.27.0-2d8cff?style=for-the-badge">
+    <img alt="Languages" src="https://img.shields.io/badge/languages-EN%20%2B%209-6d4aff?style=for-the-badge">
+    <img alt="License" src="https://img.shields.io/badge/license-GPLv3-43a047?style=for-the-badge">
+  </p>
 
-<p>
-<a href="#скачать">Скачать</a> •
-<a href="#что-готово">Что готово</a> •
-<a href="#сборка">Сборка</a> •
-<a href="#лицензия">Лицензия</a>
-</p>
+  <p>
+    <a href="#скачать">Скачать</a> •
+    <a href="#главное-в-l200">Главное в L2.0.0</a> •
+    <a href="#совместимость-миров">Совместимость</a> •
+    <a href="#сборка-из-исходников">Сборка</a> •
+    <a href="#лицензия">Лицензия</a>
+  </p>
 </div>
 
 ---
 
 > [!IMPORTANT]
-> **This is an unofficial localization fork.**
-> WorldPainter Languages не является официальной версией WorldPainter и не связан с автором оригинального проекта.
+> **This is an unofficial fork.** WorldPainter Languages не является официальной версией WorldPainter и не связан с автором оригинального проекта.
 
-Официальный WorldPainter:
-
-- сайт: [worldpainter.net](https://www.worldpainter.net/)
-- репозиторий: [Captain-Chaos/WorldPainter](https://github.com/Captain-Chaos/WorldPainter)
+Официальный WorldPainter: [worldpainter.net](https://www.worldpainter.net/) · [Captain-Chaos/WorldPainter](https://github.com/Captain-Chaos/WorldPainter)
 
 ## О проекте
 
-**WorldPainter Languages 2.27.0-L1** основан на **WorldPainter 2.27.0** и сохраняет полную совместимость с оригинальными `.world` файлами.
+**WorldPainter Languages 2.27.0-L2.0.0** основан на **WorldPainter 2.27.0**.
 
-Интерфейс переведён на 4 языка — русский, белорусский, украинский и казахский — с полным паритетом ключей между языками. Язык подхватывается автоматически из языка системы, английский всегда доступен как базовый.
+В релизе доступны английский и девять полных локализаций:
+
+- русский;
+- беларуская;
+- українська;
+- қазақша;
+- Deutsch;
+- Français;
+- Español;
+- Italiano;
+- 简体中文.
+
+Все десять локалей содержат одинаковый полный набор строк в девяти семействах ресурсов. Переведены интерфейс, меню, диалоги, предупреждения, ошибки, сообщения операций, блоки, растения, биомы, слои и стандартные Swing-элементы.
 
 ## Скачать
 
-Все файлы — на странице [Releases](https://github.com/saplome/WorldPainter-LANGUAGES/releases):
+Готовые файлы публикуются на странице [GitHub Releases](https://github.com/saplome/WorldPainter-LANGUAGES/releases).
 
-| Файл | Для чего нужен |
+| Файл | Назначение |
 | --- | --- |
-| `WorldPainter-Languages-2.27.0-L1-Setup.exe` | обычная установка на Windows: ярлыки, меню «Пуск», деинсталлятор |
-| `WorldPainter-Languages-2.27.0-L1-Portable.zip` | работает без установки — распаковал и запустил |
-| `Source code.zip` | исходный код релиза |
+| `WorldPainter-Languages-2.27.0-L2.0.0-Setup.exe` | обычная установка в Windows, ярлыки и меню «Пуск» |
+| `WorldPainter-Languages-2.27.0-L2.0.0-Portable.zip` | переносимая сборка со встроенной Java-средой |
+| `WorldPainter-Languages-2.27.0-L2.0.0-src.zip` | чистый исходный код без сценариев релизной упаковки |
+| `WorldPainter-Languages-2.27.0-L2.0.0-release-tools.zip` | отдельные сценарии и ресурсы для Portable, Inno Setup и WiX/MSI |
 
 > [!NOTE]
-> Для обычного пользователя лучше `Setup.exe`. Portable удобна, если не хочется ничего устанавливать.
+> Для большинства пользователей рекомендуется `Setup.exe`. Portable-версия не требует отдельной установки Java.
 
-## Что готово
+## Главное в L2.0.0
 
-- Локализация интерфейса WorldPainter 2.27.0 на 4 языка: RU / BE / UK / KK.
-- Переведены меню, окна, панели, диалоги, предупреждения, ошибки, progress-сообщения, блоки, биомы, растения и слои.
-- Переводы разделены на доменные bundle-файлы (strings / blocks / gamedata / layers / swing) — новый язык добавляется без правки кода.
-- Готовые сборки для Windows: установщик и portable-версия. Java устанавливать не нужно — среда выполнения встроена.
-- Сохранена лицензия **GNU GPLv3**.
+### Локализация
+
+- Английский + 9 локализаций с полным паритетом ключей.
+- Названия блоков, растений и биомов сверены с терминологией Minecraft и локализованных Minecraft Wiki.
+- Поддерживается выбор языка в настройках; для китайского предусмотрен список подходящих системных шрифтов.
+- Локализованы редкие окна, инструменты, сообщения импорта/экспорта/слияния, JIDE-подсказки и standalone-инструменты.
+
+### Новые слои и материалы
+
+- **[BETA] Система пещер** (`CaveSystem`) — трёхмерный terrain-aware слой с крупными шумовыми залами, cheese/grand-полостями, соединёнными spaghetti/backbone/noodle-тоннелями, естественными выходами, аквиферами и лавовыми зонами. Поддерживает отдельные пышные и натёчные области, глиняные водоёмы, растительность, небольшие и гигантские натёчные образования. Все семейства пещер, границы, входы, жидкости и декорации настраиваются в семи вкладках.
+- **[BETA] Айсберги** — генерация айсбергов из плотного льда в открытой воде.
+- Добавлены терейны **Лёд** и **Плотный лёд**.
+
+### Интерфейс и иконки
+
+- Две основные темы: **FlatLaf Cyan light** и **FlatLaf One Dark**; также сохранены System, Metal, Nimbus, Dark Metal и Dark Nimbus.
+- Тематические наборы интерфейсных иконок для обеих FlatLaf-тем.
+- 1107 иконок блоков и материалов в окнах выбора.
+- 95 точных sprite-иконок биомов для FlatLaf-тем.
+- Исправлены цвета, docking-элементы, подсказки JIDE, миниатюры кистей и переключение темы/масштаба.
+
+### Windows и обновления
+
+- Современный системный выбор файлов Vista+ через `IFileDialog`, с безопасным fallback на Swing.
+- Автоматическая и ручная проверка новых релизов WorldPainter Languages на GitHub.
+- Windows installer, Portable и Inno Setup собираются единым PowerShell-сценарием.
+- Установщик регистрирует WorldPainter Languages в **Open with** для `.world`; назначение обработчиком по умолчанию остаётся отдельной опцией.
+
+Полный консолидированный список изменений после L1: [docs/CHANGES_L1_TO_L2_RU.md](docs/CHANGES_L1_TO_L2_RU.md).
+
+## Совместимость миров
+
+Обычные `.world`-файлы без возможностей форка остаются совместимыми с оригинальным WorldPainter 2.27.0.
+
+Мир, содержащий слои **[BETA] Система пещер** или **[BETA] Айсберги**, нельзя открывать непосредственно в оригинальной программе: оригинал не знает классы этих слоёв. Для передачи такого мира используйте отдельную команду:
+
+**Файл → Сохранить копию для оригинального WorldPainter…**
+
+Она создаёт независимую копию, удаляет данные fork-only слоёв и заменяет терейны `ICE`/`PACKED_ICE` на штатный `DEEP_SNOW`. Текущий файл и обычная команда сохранения не изменяются.
 
 ## Установка
 
-1. Откройте страницу **Releases**.
-2. Скачайте `WorldPainter-Languages-2.27.0-L1-Setup.exe`.
+1. Откройте [Releases](https://github.com/saplome/WorldPainter-LANGUAGES/releases).
+2. Скачайте `WorldPainter-Languages-2.27.0-L2.0.0-Setup.exe`.
 3. Запустите установщик и следуйте шагам.
-4. Готово — программа запустится на языке вашей системы.
+4. Выберите язык и тему в настройках WorldPainter.
 
-При первом запуске программа предложит перенести настройки из оригинального WorldPainter, если он установлен. Ваши миры и настройки оригинала при этом не изменяются.
+При первом запуске настройки оригинального WorldPainter могут быть скопированы в отдельный каталог **WorldPainter Languages**; исходные настройки оригинала не изменяются.
 
 ## Portable
 
-1. Скачайте `WorldPainter-Languages-2.27.0-L1-Portable.zip`.
-2. Распакуйте в любую папку (или на флешку).
+1. Скачайте `WorldPainter-Languages-2.27.0-L2.0.0-Portable.zip`.
+2. Распакуйте архив в отдельную папку.
 3. Запустите `WorldPainter Languages.exe`.
 
-Установка и отдельная Java не требуются.
+## Сборка из исходников
 
-## Сборка
+Требования:
 
-Требования: JDK 17, Maven, доступ к Maven Central.
+- Windows 10/11;
+- JDK 17;
+- Maven;
+- доступ к Maven Central, JitPack и Maven-репозиторию WorldPainter;
+- Inno Setup 6 для фирменного Setup.exe;
+- WiX Toolset 3.x для классического MSI/jpackage installer.
 
-```bash
-mvn clean package
+WorldPainter нужно закрыть перед пересборкой. Чистый `src.zip` содержит только исходники. Для Portable или установщика распакуйте отдельный `release-tools.zip` в корень проекта: после распаковки должен существовать путь `tools\windows-packaging\build-windows-installer.ps1`.
+
+```powershell
+# Сборка исходников
+mvn clean install -DskipTests
+
+# Portable + Inno Setup
+powershell -ExecutionPolicy Bypass -File .\tools\windows-packaging\build-windows-installer.ps1 -SkipMaven -BuildPortable -BuildInnoInstaller
+
+# Классический WiX/MSI
+powershell -ExecutionPolicy Bypass -File .\tools\windows-packaging\build-windows-installer.ps1 -SkipMaven -BuildInstaller
 ```
 
-Собранные jar-файлы появятся в `WPCore/target`, `WPGUI/target`, `WPDynmapPreviewer/target`.
+### Черновик GitHub Release
 
-## Структура
+Установите [GitHub CLI](https://cli.github.com/) и один раз авторизуйтесь:
+
+```powershell
+gh auth login
+```
+
+Собрать Portable и Setup, загрузить их в **draft release** и открыть страницу предпросмотра:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\windows-packaging\build-windows-installer.ps1 `
+  -SkipMaven -BuildPortable -BuildInnoInstaller `
+  -CreateDraftRelease -OpenDraftRelease
+```
+
+Скрипт создаёт или обновляет черновик с тегом `v2.27.0-L2.0.0`, заменяет одноимённые файлы через `--clobber` и никогда не публикует релиз автоматически. Черновик видят только участники репозитория. Дополнительный архив исходников можно передать через `-AdditionalDraftAsset`.
+
+
+Подробнее: [BUILDING_RU.md](docs/BUILDING_RU.md) · [LOCALIZATION_RU.md](docs/LOCALIZATION_RU.md)
+
+## Структура репозитория
 
 ```text
-WPCore/               ядро WorldPainter
-WPGUI/                графический интерфейс и файлы переводов
-WPDynmapPreviewer/    dynmap previewer
-assets/               иконки проекта
+WPCore/                    ядро WorldPainter и экспортёры слоёв
+WPGUI/                     интерфейс, локализации и UI-ресурсы
+WPDynmapPreviewer/         dynmap previewer
+assets/                    иконка и материалы проекта
+docs/                      документация сборки и локализации
+tools/windows-packaging/   отдельные developer-only инструменты Portable/Installer
 ```
+
+Каталог `tools/` содержит только сценарии и ресурсы релизной упаковки. Он не входит в runtime JAR, чистый архив исходников, Portable или установленное приложение. Для релиза инструменты также поставляются отдельным архивом `WorldPainter-Languages-2.27.0-L2.0.0-release-tools.zip`.
+
+## Что входит в исходники
+
+- ядро, GUI и Dynmap previewer;
+- все десять локалей с полным паритетом строк;
+- слой `CaveSystem`, айсберги, темы и графические ресурсы;
+- документация и лицензии.
+
+Чистый архив исходников не содержит временных файлов, результатов Maven, release-кандидатов и сценариев упаковки. Инструменты Windows вынесены в отдельный архив, а в GitHub-ready архиве сохранены в каталоге `tools/` для прямого коммита.
 
 ## Ограничения
 
-- Это неофициальный fork.
-- Названия платформ Minecraft, версии Minecraft, форматы и расширения файлов намеренно не переводятся.
-- Некоторые редкие аварийные сценарии требуют ручной проверки на реальной Windows-системе.
+- Это неофициальный форк WorldPainter 2.27.0.
+- Fork-only слои требуют специальной команды сохранения копии для оригинальной программы.
+- Названия платформ Minecraft, версии, идентификаторы, форматы и расширения файлов намеренно не переводятся.
+- Финальная релизная сборка и GUI-проверка выполняются на Windows/JDK 17.
 
 ## Поддержать проект
 
-Если проект вам полезен — поставьте репозиторию ⭐ на GitHub: [saplome/WorldPainter-LANGUAGES](https://github.com/saplome/WorldPainter-LANGUAGES).
+Если проект полезен, поставьте репозиторию ⭐: [saplome/WorldPainter-LANGUAGES](https://github.com/saplome/WorldPainter-LANGUAGES).
+
 Поддержать оригинальный WorldPainter можно на [worldpainter.net](https://www.worldpainter.net/).
 
 ## Благодарности
 
-Спасибо **[Captain-Chaos](https://github.com/Captain-Chaos/)** и участникам оригинального WorldPainter за огромную работу над проектом.
-WorldPainter Languages существует как многоязычная адаптация и не заменяет официальный WorldPainter.
+Спасибо **Pepijn Schmitz (Captain-Chaos)** и всем участникам оригинального WorldPainter за многолетнюю работу над проектом.
+
+WorldPainter Languages дополняет оригинальный проект локализациями и возможностями форка, но не заменяет официальную версию.
 
 ## Лицензия
 
-WorldPainter Languages является fork проекта WorldPainter и распространяется на условиях **GNU General Public License v3**.
+WorldPainter Languages распространяется на условиях **GNU General Public License v3**.
 
-Условия лицензии не изменялись. Полный текст — в файле [LICENSE](LICENSE), сведения об оригинальном проекте — в [NOTICE.md](NOTICE.md).
+Полный текст лицензии находится в [LICENSE](LICENSE), сведения об оригинальном проекте и модификациях — в [NOTICE.md](NOTICE.md).

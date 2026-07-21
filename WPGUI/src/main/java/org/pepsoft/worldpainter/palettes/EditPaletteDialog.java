@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
@@ -219,7 +230,7 @@ public class EditPaletteDialog extends WorldPainterDialog {
         listLayers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         jScrollPane1.setViewportView(listLayers);
 
-        buttonTop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/top.png"))); // NOI18N
+        buttonTop.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/top.png")); // NOI18N
         buttonTop.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.top"));
         buttonTop.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayersSelectedLayersbf8e30"));
         buttonTop.setEnabled(false);
@@ -230,7 +241,7 @@ public class EditPaletteDialog extends WorldPainterDialog {
             }
         });
 
-        buttonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/up.png"))); // NOI18N
+        buttonUp.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/up.png")); // NOI18N
         buttonUp.setText(org.pepsoft.worldpainter.WPI18n.s("ui.direction.up"));
         buttonUp.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayersSelectedLayers"));
         buttonUp.setEnabled(false);
@@ -241,7 +252,7 @@ public class EditPaletteDialog extends WorldPainterDialog {
             }
         });
 
-        buttonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/down.png"))); // NOI18N
+        buttonDown.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/down.png")); // NOI18N
         buttonDown.setText(org.pepsoft.worldpainter.WPI18n.s("ui.direction.down"));
         buttonDown.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayers"));
         buttonDown.setEnabled(false);
@@ -252,7 +263,7 @@ public class EditPaletteDialog extends WorldPainterDialog {
             }
         });
 
-        buttonBottom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/bottom.png"))); // NOI18N
+        buttonBottom.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/bottom.png")); // NOI18N
         buttonBottom.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.bottom"));
         buttonBottom.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayersSelectedLayersdaea78"));
         buttonBottom.setEnabled(false);
@@ -263,7 +274,7 @@ public class EditPaletteDialog extends WorldPainterDialog {
             }
         });
 
-        buttonSort.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/a_z.png"))); // NOI18N
+        buttonSort.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/a_z.png")); // NOI18N
         buttonSort.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.sort"));
         buttonSort.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.sortAllTheLayers"));
         buttonSort.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);

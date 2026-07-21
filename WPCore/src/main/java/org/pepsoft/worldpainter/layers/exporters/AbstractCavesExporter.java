@@ -59,11 +59,14 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
             decorationEnabled = decorateBrownMushrooms || decorateGlowLichen || decorateLushCaves || decorateDripstoneCaves;
             lushCaveNoise = decorateLushCaves ? new NoiseHeightMap(decorationSettings.noiseSettingsMap.get(LUSH_CAVE_PATCHES), dimension.getSeed() + 1) : null;
             dripstoneCaveNoise = decorateDripstoneCaves ? new NoiseHeightMap(decorationSettings.noiseSettingsMap.get(DRIPSTONE_CAVE_PATCHES), dimension.getSeed() + 2) : null;
+            lushPoolNoise = decorateLushCaves ? new NoiseHeightMap(1.0, 0.20, 2, dimension.getSeed() + 31) : null;
+            dripstoneFeatureNoise = decorateDripstoneCaves ? new NoiseHeightMap(1.0, 0.24, 2, dimension.getSeed() + 37) : null;
+            dripstonePatchNoise = decorateDripstoneCaves ? new NoiseHeightMap(1.0, 1.8, 2, dimension.getSeed() + 41) : null;
             biomeUtils = new BiomeUtils(dimension);
             setBiomes = platform.capabilities.contains(BIOMES_3D) || platform.capabilities.contains(NAMED_BIOMES);
         } else {
             decorationEnabled = decorateBrownMushrooms = decorateGlowLichen = decorateLushCaves = decorateDripstoneCaves = setBiomes = false;
-            lushCaveNoise = dripstoneCaveNoise = null;
+            lushCaveNoise = dripstoneCaveNoise = lushPoolNoise = dripstoneFeatureNoise = dripstonePatchNoise = null;
             biomeUtils = null;
         }
     }
@@ -94,6 +97,14 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
     }
 
     protected final void processBlock(Chunk chunk, int x, int y, int z, boolean excavate) {
+        processBlock(chunk, x, y, z, excavate, true);
+    }
+
+    /**
+     * Processes a cave block while optionally suppressing aquifer fluid for this particular cave family.
+     * Existing exporters use the five-argument overload and retain their original behaviour.
+     */
+    protected final void processBlock(Chunk chunk, int x, int y, int z, boolean excavate, boolean allowFlooding) {
         final State state = STATE_HOLDER.get();
         if (excavate) {
             // In a cavern
@@ -129,7 +140,7 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
                 }
             }
             state.breachedCeiling = true;
-            if (y > state.waterLevel) {
+            if ((y > state.waterLevel) || (! allowFlooding)) {
                 chunk.setMaterial(x, y, z, AIR);
                 state.previousBlockInCavern = true;
             } else {
@@ -148,14 +159,35 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
     }
 
     protected final void decorateBlock(MinecraftWorld world, Random rng, int x, int y, int height) {
+        decorateBlock(world, rng, x, y, height, 0);
+    }
+
+    protected final void decorateBlock(MinecraftWorld world, Random rng, int x, int y, int height, int forcedBiome) {
         if ((! decorationEnabled) || (height < minZ) || (height > maxZ)) {
             return;
         }
         final Material material = world.getMaterialAt(x, y, height);
-        // TODO fine tune default noise settings
-        final boolean inLushCave = decorateLushCaves && decorationSettings.isEnabledAt(LUSH_CAVE_PATCHES, height) && (lushCaveNoise.getValue(x, y, height * 2.0) >= LUSH_CAVE_THRESHOLD);
-        final boolean inDripstoneCave = decorateDripstoneCaves && decorationSettings.isEnabledAt(Decoration.DRIPSTONE_CAVE_PATCHES, height) && (dripstoneCaveNoise.getValue(x, y, height * 2.0) >= DRIPSTONE_CAVE_THRESHOLD);
-        if (setBiomes && (inLushCave || inDripstoneCave)) {
+        final boolean forceLush = (forcedBiome == 1) && decorateLushCaves
+                && decorationSettings.isEnabledAt(LUSH_CAVE_PATCHES, height);
+        final boolean forceDripstoneBiome = (forcedBiome == 2) && decorateDripstoneCaves
+                && decorationSettings.isEnabledAt(Decoration.DRIPSTONE_CAVE_PATCHES, height);
+        final boolean forceDripstonePatch = forceDripstoneBiome
+                && (dripstonePatchNoise.getValue(x, y, height * 1.15)
+                >= 1.0 - decorationSettings.getDripstonePatchCoverage() / 100.0);
+        final float lushValue = (decorateLushCaves && (!forceLush) && (!forceDripstoneBiome))
+                ? (float) lushCaveNoise.getValue(x, y, height * 2.0) : Float.NEGATIVE_INFINITY;
+        final float dripstoneValue = (decorateDripstoneCaves && (!forceLush) && (!forceDripstoneBiome))
+                ? (float) dripstoneCaveNoise.getValue(x, y, height * 2.0) : Float.NEGATIVE_INFINITY;
+        final float lushThreshold = LUSH_CAVE_THRESHOLD + decorationSettings.getLushThresholdOffset();
+        final float dripstoneThreshold = DRIPSTONE_CAVE_THRESHOLD + decorationSettings.getDripstoneThresholdOffset();
+        boolean inLushCave = forceLush || (decorateLushCaves && decorationSettings.isEnabledAt(LUSH_CAVE_PATCHES, height) && (lushValue >= lushThreshold));
+        boolean inDripstoneCave = forceDripstonePatch || (decorateDripstoneCaves && decorationSettings.isEnabledAt(Decoration.DRIPSTONE_CAVE_PATCHES, height) && (dripstoneValue >= dripstoneThreshold));
+        if (inLushCave && inDripstoneCave && (rng.nextInt(100) >= decorationSettings.getMixedPatchChance())) {
+            final float lushExcess = lushValue - lushThreshold, dripstoneExcess = dripstoneValue - dripstoneThreshold;
+            if (lushExcess >= dripstoneExcess) inDripstoneCave = false; else inLushCave = false;
+        }
+        final boolean tagDripstoneBiome = forceDripstoneBiome || inDripstoneCave;
+        if (setBiomes && (inLushCave || tagDripstoneBiome)) {
             final int terrainHeight = dimension.getIntHeightAt(x, y);
             final int biomeUpperLimit = (((terrainHeight - dimension.getTopLayerDepth(x, y, terrainHeight)) >> 2) << 2) - 1;
             if (height <= biomeUpperLimit) {
@@ -219,13 +251,15 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
             }
             return true;
         } else if (inDripstoneCave && (waterDepth <= 2)) {
-            // TODO make this more configurable and evaluate
-            if (rng.nextInt(4) == 0) {
+            if (decorationSettings.isEnhancedDripstoneFeatures()
+                    && maybeRenderLargeDripstone(world, x, y, height, existingMaterial)) {
+                return true;
+            }
+            if (rng.nextInt(100) < decorationSettings.getSmallDripstoneFrequency()) {
                 // Check whether we are actually below something that could generate a stalactite
                 for (int z = height + 1; z <= dimension.getIntHeightAt(x, y); z++) {
                     final Material material = world.getMaterialAt(x, y, z);
                     if (SUPPORTS_DRIPSTONE.contains(material.name) || material.isNamed(MC_POINTED_DRIPSTONE)) {
-                        // TODO make the length dependent on how deep in the patch we are
                         renderStalagmite(world, x, y, height, rng.nextInt(Math.min(5, spaceAvailable)) + 1, rng);
                         return true;
                     } else if (material.solid) {
@@ -235,8 +269,33 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
             }
         }
         if (inLushCave) {
+            final float poolPatch = (decorationSettings.isEnhancedLushFeatures() && existingMaterial.empty
+                    && (spaceAvailable >= 2) && ((height - 1) >= minZ))
+                    ? getLushPoolPatch(world, x, y, height) : 0.0f;
+            if (poolPatch != 0.0f) {
+                final float poolStrength = Math.abs(poolPatch);
+                world.setMaterialAt(x, y, height - 1, CLAY);
+                if ((poolStrength > 0.48f) && ((height - 2) >= minZ)) {
+                    final Material deepFloor = world.getMaterialAt(x, y, height - 2);
+                    if (deepFloor.solid && deepFloor.natural) world.setMaterialAt(x, y, height - 2, CLAY);
+                }
+                if (poolPatch > 0.0f) {
+                    world.setMaterialAt(x, y, height, WATER);
+                    clayPoolBank(world, x, y - 1, height);
+                    clayPoolBank(world, x, y + 1, height);
+                    clayPoolBank(world, x - 1, y, height);
+                    clayPoolBank(world, x + 1, y, height);
+                    final int plantRoll = rng.nextInt(16);
+                    if ((plantRoll < 4) && (spaceAvailable > 1)) {
+                        renderObject(world, dimension, platform, SMALL_DRIPLEAF.realise(2, platform), x, y, height);
+                    } else if ((plantRoll == 4) && (spaceAvailable > 3)) {
+                        renderObject(world, dimension, platform, BIG_DRIPLEAF.realise(rng.nextInt(Math.min(4, spaceAvailable - 2)) + 3, platform), x, y, height);
+                    }
+                }
+                return true;
+            }
             if ((height - 1) >= minZ) {
-                world.setMaterialAt(x, y, height - 1, MOSS_BLOCK);
+                world.setMaterialAt(x, y, height - 1, (decorationSettings.isEnhancedLushFeatures() && existingMaterial.isNamed(MC_WATER)) ? CLAY : MOSS_BLOCK);
             }
             if (existingMaterial.isNamed(MC_WATER)) {
                 switch (rng.nextInt(10)) {
@@ -290,9 +349,7 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
             }
             return true;
         } else if (inDripstoneCave && SUPPORTS_DRIPSTONE.contains(materialAbove.name)) {
-            // TODO make this more configurable and evaluate
-            if (rng.nextInt(4) == 0) {
-                // TODO make the length dependent on how deep in the patch we are
+            if (rng.nextInt(100) < decorationSettings.getSmallDripstoneFrequency()) {
                 renderStalactite(world, x, y, height, rng.nextInt(Math.min(5, spaceAvailable)) + 1, rng);
             }
         }
@@ -311,6 +368,12 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
                         break;
                     case 5:
                         renderObject(world, dimension, platform, SPORE_BLOSSOM.realise(1, platform), x, y, height);
+                        break;
+                    case 6:
+                        if (decorationSettings.isEnhancedLushFeatures() && ((height + 1) <= maxZ)) {
+                            world.setMaterialAt(x, y, height + 1, ROOTED_DIRT);
+                            world.setMaterialAt(x, y, height, Material.HANGING_ROOTS);
+                        }
                         break;
                 }
             }
@@ -341,18 +404,157 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
         }
         if (inLushCave) {
             if ((! materialNorth.veryInsubstantial) && (! materialNorth.isNamed(MC_POINTED_DRIPSTONE))) {
-                world.setMaterialAt(x, y - 1, height, MOSS_BLOCK);
+                world.setMaterialAt(x, y - 1, height, (decorationSettings.isEnhancedLushFeatures() && existingMaterial.isNamed(MC_WATER)) ? CLAY : MOSS_BLOCK);
             }
             if ((! materialSouth.veryInsubstantial) && (! materialSouth.isNamed(MC_POINTED_DRIPSTONE))) {
-                world.setMaterialAt(x, y + 1, height, MOSS_BLOCK);
+                world.setMaterialAt(x, y + 1, height, (decorationSettings.isEnhancedLushFeatures() && existingMaterial.isNamed(MC_WATER)) ? CLAY : MOSS_BLOCK);
             }
             if ((! materialEast.veryInsubstantial) && (! materialEast.isNamed(MC_POINTED_DRIPSTONE))) {
-                world.setMaterialAt(x + 1, y, height, MOSS_BLOCK);
+                world.setMaterialAt(x + 1, y, height, (decorationSettings.isEnhancedLushFeatures() && existingMaterial.isNamed(MC_WATER)) ? CLAY : MOSS_BLOCK);
             }
             if ((! materialWest.veryInsubstantial) && (! materialWest.isNamed(MC_POINTED_DRIPSTONE))) {
-                world.setMaterialAt(x - 1, y, height, MOSS_BLOCK);
+                world.setMaterialAt(x - 1, y, height, (decorationSettings.isEnhancedLushFeatures() && existingMaterial.isNamed(MC_WATER)) ? CLAY : MOSS_BLOCK);
             }
         }
+    }
+    private float getLushPoolPatch(MinecraftWorld world, int x, int y, int height) {
+        final int poolCellSize = decorationSettings.getLushPoolCellSize();
+        final int cellX = Math.floorDiv(x, poolCellSize), cellY = Math.floorDiv(y, poolCellSize);
+        float result = 0.0f;
+        for (int dcx = -1; dcx <= 1; dcx++) {
+            for (int dcy = -1; dcy <= 1; dcy++) {
+                final int candidateX = cellX + dcx, candidateY = cellY + dcy;
+                final long hash = mixDecorationSeed(dimension.getSeed()
+                        ^ ((long) candidateX * 0x9E3779B97F4A7C15L)
+                        ^ ((long) candidateY * 0xC2B2AE3D27D4EB4FL) ^ 0x6C8E9CF570932BD5L);
+                if ((hash & 0xffL) >= hashThreshold(decorationSettings.getLushPoolFrequency(), 63, 160)) continue;
+                final int margin = Math.max(2, decorationSettings.getLushPoolMaxRadius() / 2);
+                final int centreRange = Math.max(1, poolCellSize - margin * 2);
+                final int centreX = candidateX * poolCellSize + margin + (int) Math.floorMod(hash >>> 8, centreRange);
+                final int centreY = candidateY * poolCellSize + margin + (int) Math.floorMod(hash >>> 16, centreRange);
+                final float radiusRange = decorationSettings.getLushPoolMaxRadius() - decorationSettings.getLushPoolMinRadius();
+                final float radiusX = decorationSettings.getLushPoolMinRadius() + (float) ((hash >>> 24) & 0xffL) / 255.0f * radiusRange;
+                final float radiusY = decorationSettings.getLushPoolMinRadius() + (float) ((hash >>> 32) & 0xffL) / 255.0f * radiusRange;
+                final float nx = (x - centreX) / radiusX, ny = (y - centreY) / radiusY;
+                final float radial = nx * nx + ny * ny;
+                if (radial > 1.28f) continue;
+                final int poolLevel = findCaveFloorNear(world, centreX, centreY, height, 5);
+                if (poolLevel != height) continue;
+                final float edge = (float) ((lushPoolNoise.getValue(x, y, height * 0.35) - 0.5) * 0.42);
+                final float strength = 1.0f + edge - radial;
+                if (strength > 0.0f) {
+                    final boolean dry = Math.floorMod(hash >>> 40, 100L) < decorationSettings.getLushPoolDryChance();
+                    final float encoded = 0.001f + strength;
+                    if ((! dry) || (result == 0.0f)) result = dry ? -encoded : encoded;
+                }
+            }
+        }
+        return result;
+    }
+
+    private int findCaveFloorNear(MinecraftWorld world, int x, int y, int aroundHeight, int range) {
+        for (int delta = 0; delta <= range; delta++) {
+            final int lower = aroundHeight - delta;
+            if ((lower > minHeight) && (lower < maxHeight)) {
+                final Material at = world.getMaterialAt(x, y, lower), below = world.getMaterialAt(x, y, lower - 1);
+                if ((at.empty || at.isNamed(MC_WATER)) && (! below.veryInsubstantial)) return lower;
+            }
+            if (delta != 0) {
+                final int upper = aroundHeight + delta;
+                if ((upper > minHeight) && (upper < maxHeight)) {
+                    final Material at = world.getMaterialAt(x, y, upper), below = world.getMaterialAt(x, y, upper - 1);
+                    if ((at.empty || at.isNamed(MC_WATER)) && (! below.veryInsubstantial)) return upper;
+                }
+            }
+        }
+        return Integer.MIN_VALUE;
+    }
+
+    private void clayPoolBank(MinecraftWorld world, int x, int y, int height) {
+        final Material material = world.getMaterialAt(x, y, height);
+        if (material.solid && material.natural) world.setMaterialAt(x, y, height, CLAY);
+    }
+
+    private boolean maybeRenderLargeDripstone(MinecraftWorld world, int x, int y, int floor, Material existingMaterial) {
+        final int largeCellSize = decorationSettings.getLargeDripstoneCellSize();
+        final int cellX = Math.floorDiv(x, largeCellSize), cellY = Math.floorDiv(y, largeCellSize);
+        final long hash = mixDecorationSeed(dimension.getSeed()
+                ^ ((long) cellX * 0xD6E8FEB86659FD93L)
+                ^ ((long) cellY * 0xA24BAED4963EE407L) ^ 0x3C79AC492BA7B653L);
+        if ((hash & 0xffL) >= hashThreshold(decorationSettings.getLargeDripstoneFrequency(), 56, 144)) return false;
+        final int centreX = (largeCellSize == 32)
+                ? cellX * 32 + 5 + (int) ((hash >>> 8) & 0x15L)
+                : cellX * largeCellSize + (int) Math.floorMod(hash >>> 8, largeCellSize);
+        final int centreY = (largeCellSize == 32)
+                ? cellY * 32 + 5 + (int) ((hash >>> 13) & 0x15L)
+                : cellY * largeCellSize + (int) Math.floorMod(hash >>> 24, largeCellSize);
+        if ((x != centreX) || (y != centreY)) return false;
+        int ceiling = Integer.MIN_VALUE;
+        for (int z = floor + 1; (z <= floor + decorationSettings.getLargeDripstoneSearchHeight()) && (z < maxHeight); z++) {
+            final Material material = world.getMaterialAt(x, y, z);
+            if ((! material.empty) && material.isNotNamed(MC_WATER)) { ceiling = z; break; }
+        }
+        final int caveHeight = ceiling - floor;
+        if ((ceiling == Integer.MIN_VALUE) || (caveHeight < 12)) return false;
+        final int maxRadius = Math.max(4, Math.min(decorationSettings.getLargeDripstoneMaxRadius(), caveHeight / 4));
+        final int radius = 3 + (int) ((hash >>> 20) & 0x1fL) % (maxRadius - 2);
+        final boolean stalagnate = ((hash >>> 27) & 0x07L) == 0L;
+        int floorLength, ceilingLength;
+        if (stalagnate) {
+            floorLength = Math.max(5, Math.round(caveHeight * (0.48f + ((hash >>> 30) & 0x0fL) / 100.0f)));
+            ceilingLength = caveHeight - floorLength + 1;
+        } else {
+            floorLength = Math.max(4, Math.round(caveHeight * (0.25f + ((hash >>> 30) & 0x0fL) / 80.0f)));
+            ceilingLength = Math.max(4, Math.round(caveHeight * (0.22f + ((hash >>> 36) & 0x0fL) / 85.0f)));
+            final int maxCombined = Math.max(8, caveHeight - 3);
+            if ((floorLength + ceilingLength) > maxCombined) ceilingLength = Math.max(4, maxCombined - floorLength);
+        }
+        renderLargeDripstoneCone(world, x, y, floor - 1, floorLength + 1, radius, true);
+        renderLargeDripstoneCone(world, x, y, ceiling, ceilingLength + 1, radius, false);
+        return true;
+    }
+
+    private void renderLargeDripstoneCone(MinecraftWorld world, int x, int y, int baseZ, int length, int radius, boolean upward) {
+        for (int step = 0; step < length; step++) {
+            final float progress = step / (float) Math.max(1, length - 1);
+            final float localRadius = Math.max(0.65f, radius * (float) Math.pow(1.0f - progress, 0.72f));
+            final int blockRadius = Math.max(1, (int) Math.ceil(localRadius));
+            final int z = baseZ + (upward ? step : -step);
+            if ((z < minZ) || (z > maxZ)) continue;
+            for (int dx = -blockRadius; dx <= blockRadius; dx++) {
+                for (int dy = -blockRadius; dy <= blockRadius; dy++) {
+                    final float irregularity = (float) ((dripstoneFeatureNoise.getValue(x + dx, y + dy, z * 0.25) - 0.5) * 0.32);
+                    if ((dx * dx + dy * dy) <= localRadius * localRadius * (1.0f + irregularity)) {
+                        final Material material = world.getMaterialAt(x + dx, y + dy, z);
+                        if (material.empty || material.isNamed(MC_WATER) || (step == 0 && material.solid && material.natural)) {
+                            world.setMaterialAt(x + dx, y + dy, z, DRIPSTONE_BLOCK);
+                        }
+                    }
+                }
+            }
+        }
+        final int tipLength = Math.max(1, Math.min(4, length / 7));
+        for (int step = 0; step < tipLength; step++) {
+            final int z = baseZ + (upward ? length + step : -length - step);
+            if ((z < minZ) || (z > maxZ)) break;
+            final Material material = world.getMaterialAt(x, y, z);
+            if ((!material.empty) && material.isNotNamed(MC_WATER)) break;
+            final Material pointed;
+            if (upward) {
+                pointed = (step == tipLength - 1) ? POINTED_DRIPSTONE_UP_TIP
+                        : ((step == 0) ? POINTED_DRIPSTONE_UP_BASE : POINTED_DRIPSTONE_UP_FRUSTUM);
+            } else {
+                pointed = (step == tipLength - 1) ? POINTED_DRIPSTONE_DOWN_TIP
+                        : ((step == 0) ? POINTED_DRIPSTONE_DOWN_BASE : POINTED_DRIPSTONE_DOWN_FRUSTUM);
+            }
+            setWaterloggedBlock(world, x, y, z, pointed);
+        }
+    }
+
+    private static long mixDecorationSeed(long z) {
+        z = (z ^ (z >>> 30)) * 0xBF58476D1CE4E5B9L;
+        z = (z ^ (z >>> 27)) * 0x94D049BB133111EBL;
+        return z ^ (z >>> 31);
     }
 
     private void renderStalagmite(MinecraftWorld world, int x, int y, int height, int length, Random rng) {
@@ -437,6 +639,10 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
         world.setMaterialAt(x, y, height, material.withProperty(WATERLOGGED, world.getMaterialAt(x, y, height).isNamed(MC_WATER)));
     }
 
+    private static int hashThreshold(int percent, int releaseDefault, int releaseThreshold) {
+        return (percent == releaseDefault) ? releaseThreshold : Math.round(percent * 2.56f);
+    }
+
     public static class CaveDecorationSettings implements java.io.Serializable, Cloneable {
         public CaveDecorationSettings() {
             enabledDecorations.put(Decoration.BROWN_MUSHROOM, null);
@@ -467,6 +673,47 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
             return enabledDecorations.containsKey(decoration);
         }
 
+        public int getLushThresholdOffset() { return lushThresholdOffset; }
+        public void setLushThresholdOffset(int value) { lushThresholdOffset = Math.max(0, value); }
+        public int getDripstoneThresholdOffset() { return dripstoneThresholdOffset; }
+        public void setDripstoneThresholdOffset(int value) { dripstoneThresholdOffset = Math.max(0, value); }
+        public int getMixedPatchChance() { return mixedPatchChance; }
+        public void setMixedPatchChance(int value) { mixedPatchChance = Math.max(0, Math.min(100, value)); }
+        public boolean isEnhancedLushFeatures() { return enhancedLushFeatures; }
+        public void setEnhancedLushFeatures(boolean value) { enhancedLushFeatures = value; }
+        public boolean isEnhancedDripstoneFeatures() { return enhancedDripstoneFeatures; }
+        public void setEnhancedDripstoneFeatures(boolean value) { enhancedDripstoneFeatures = value; }
+        public int getLushPoolFrequency() { return lushPoolFrequency; }
+        public void setLushPoolFrequency(int value) { lushPoolFrequency = Math.max(0, Math.min(100, value)); }
+        public int getLushPoolCellSize() { return lushPoolCellSize; }
+        public void setLushPoolCellSize(int value) { lushPoolCellSize = Math.max(12, Math.min(48, value)); }
+        public int getLushPoolMinRadius() { return lushPoolMinRadius; }
+        public void setLushPoolMinRadius(int value) { lushPoolMinRadius = Math.max(2, Math.min(12, value)); }
+        public int getLushPoolMaxRadius() { return lushPoolMaxRadius; }
+        public void setLushPoolMaxRadius(int value) { lushPoolMaxRadius = Math.max(lushPoolMinRadius, Math.min(16, value)); }
+        public int getLushPoolDryChance() { return lushPoolDryChance; }
+        public void setLushPoolDryChance(int value) { lushPoolDryChance = Math.max(0, Math.min(100, value)); }
+        public int getDripstonePatchCoverage() { return dripstonePatchCoverage; }
+        public void setDripstonePatchCoverage(int value) { dripstonePatchCoverage = Math.max(0, Math.min(100, value)); }
+        public int getSmallDripstoneFrequency() { return smallDripstoneFrequency; }
+        public void setSmallDripstoneFrequency(int value) { smallDripstoneFrequency = Math.max(0, Math.min(100, value)); }
+        public int getLargeDripstoneFrequency() { return largeDripstoneFrequency; }
+        public void setLargeDripstoneFrequency(int value) { largeDripstoneFrequency = Math.max(0, Math.min(100, value)); }
+        public int getLargeDripstoneCellSize() { return largeDripstoneCellSize; }
+        public void setLargeDripstoneCellSize(int value) { largeDripstoneCellSize = Math.max(16, Math.min(64, value)); }
+        public int getLargeDripstoneMaxRadius() { return largeDripstoneMaxRadius; }
+        public void setLargeDripstoneMaxRadius(int value) { largeDripstoneMaxRadius = Math.max(4, Math.min(32, value)); }
+        public int getLargeDripstoneSearchHeight() { return largeDripstoneSearchHeight; }
+        public void setLargeDripstoneSearchHeight(int value) { largeDripstoneSearchHeight = Math.max(24, Math.min(192, value)); }
+        public float getBiomePatchScale(Decoration decoration) {
+            final NoiseSettings settings = noiseSettingsMap.get(decoration);
+            return (settings != null) ? settings.getScale() : 1.0f;
+        }
+        public void setBiomePatchScale(Decoration decoration, float scale) {
+            final NoiseSettings settings = noiseSettingsMap.get(decoration);
+            if (settings != null) settings.setScale(Math.max(0.5f, scale));
+        }
+
         public boolean isEnabledAt(Decoration decoration, int height) {
             if (enabledDecorations.containsKey(decoration)) {
                 final int[] limits = enabledDecorations.get(decoration);
@@ -483,12 +730,33 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
 
             CaveDecorationSettings that = (CaveDecorationSettings) o;
 
-            return enabledDecorations.equals(that.enabledDecorations);
+            return (lushThresholdOffset == that.lushThresholdOffset)
+                    && (dripstoneThresholdOffset == that.dripstoneThresholdOffset)
+                    && (mixedPatchChance == that.mixedPatchChance)
+                    && (lushPoolFrequency == that.lushPoolFrequency)
+                    && (lushPoolCellSize == that.lushPoolCellSize)
+                    && (lushPoolMinRadius == that.lushPoolMinRadius)
+                    && (lushPoolMaxRadius == that.lushPoolMaxRadius)
+                    && (lushPoolDryChance == that.lushPoolDryChance)
+                    && (dripstonePatchCoverage == that.dripstonePatchCoverage)
+                    && (smallDripstoneFrequency == that.smallDripstoneFrequency)
+                    && (largeDripstoneFrequency == that.largeDripstoneFrequency)
+                    && (largeDripstoneCellSize == that.largeDripstoneCellSize)
+                    && (largeDripstoneMaxRadius == that.largeDripstoneMaxRadius)
+                    && (largeDripstoneSearchHeight == that.largeDripstoneSearchHeight)
+                    && (enhancedLushFeatures == that.enhancedLushFeatures)
+                    && (enhancedDripstoneFeatures == that.enhancedDripstoneFeatures)
+                    && enabledDecorations.equals(that.enabledDecorations)
+                    && noiseSettingsMap.equals(that.noiseSettingsMap);
         }
 
         @Override
         public int hashCode() {
-            return enabledDecorations.hashCode();
+            return Objects.hash(lushThresholdOffset, dripstoneThresholdOffset, mixedPatchChance,
+                    lushPoolFrequency, lushPoolCellSize, lushPoolMinRadius, lushPoolMaxRadius, lushPoolDryChance,
+                    dripstonePatchCoverage, smallDripstoneFrequency, largeDripstoneFrequency,
+                    largeDripstoneCellSize, largeDripstoneMaxRadius, largeDripstoneSearchHeight,
+                    enhancedLushFeatures, enhancedDripstoneFeatures, enabledDecorations, noiseSettingsMap);
         }
 
         @Override
@@ -504,6 +772,30 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
          * If the key is present, the decoration is enabled. If the value is {@code null}, it is enabled everywhere;
          * otherwise the value is an array with the minimum and maximum levels at which to apply the decoration.
          */
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+            in.defaultReadObject();
+            if (settingsVersion < 1) {
+                lushPoolFrequency = 63;
+                lushPoolCellSize = 20;
+                lushPoolMinRadius = 4;
+                lushPoolMaxRadius = 8;
+                lushPoolDryChance = 13;
+                dripstonePatchCoverage = 50;
+                smallDripstoneFrequency = 25;
+                largeDripstoneFrequency = 56;
+                largeDripstoneCellSize = 32;
+                largeDripstoneMaxRadius = 19;
+                largeDripstoneSearchHeight = 96;
+                settingsVersion = 1;
+            }
+        }
+
+        private int lushThresholdOffset, dripstoneThresholdOffset, mixedPatchChance = 100;
+        private int lushPoolFrequency = 63, lushPoolCellSize = 20, lushPoolMinRadius = 4, lushPoolMaxRadius = 8, lushPoolDryChance = 13;
+        private int dripstonePatchCoverage = 50, smallDripstoneFrequency = 25, largeDripstoneFrequency = 56;
+        private int largeDripstoneCellSize = 32, largeDripstoneMaxRadius = 19, largeDripstoneSearchHeight = 96;
+        private boolean enhancedLushFeatures, enhancedDripstoneFeatures;
+        private int settingsVersion = 1;
         final Map<Decoration, int[]> enabledDecorations = new HashMap<>();
         final Map<Decoration, NoiseSettings> noiseSettingsMap = new HashMap<>();
 
@@ -524,7 +816,7 @@ public abstract class AbstractCavesExporter<L extends Layer> extends AbstractLay
     protected final boolean decorationEnabled;
 
     private final CaveDecorationSettings decorationSettings;
-    private final NoiseHeightMap lushCaveNoise, dripstoneCaveNoise;
+    private final NoiseHeightMap lushCaveNoise, dripstoneCaveNoise, lushPoolNoise, dripstoneFeatureNoise, dripstonePatchNoise;
     private final BiomeUtils biomeUtils;
     private final boolean decorateBrownMushrooms, decorateGlowLichen, decorateLushCaves, decorateDripstoneCaves, setBiomes;
 

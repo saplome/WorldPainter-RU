@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -2842,7 +2853,12 @@ public enum Terrain {
         private static final long CLAY_SEED_OFFSET = 161603308;
     },
     MOSS("Moss", MOSS_BLOCK, MOSS_BLOCK, "moss", BIOME_PLAINS),
-    PALE_MOSS("Pale Moss", PALE_MOSS_BLOCK, PALE_MOSS_BLOCK, "pale moss", BIOME_PLAINS);
+    PALE_MOSS("Pale Moss", PALE_MOSS_BLOCK, PALE_MOSS_BLOCK, "pale moss", BIOME_PLAINS),
+
+    // WorldPainter Languages fork (L32): ice terrains, appended at the END (values are
+    // stored by name AND ordinal, so existing ordinals are not disturbed)
+    ICE("Ice", Material.ICE, Material.ICE, "solid ice", BIOME_ICE_PLAINS),
+    PACKED_ICE("Packed Ice", Material.PACKED_ICE, Material.PACKED_ICE, "packed ice", BIOME_ICE_PLAINS);
 
     Terrain(String name, String description, int defaultBiome) {
         this(name, Material.STONE, Material.STONE, description, defaultBiome);
@@ -3261,7 +3277,9 @@ public enum Terrain {
         MUD,
         BARE_BEACHES,
 
-        MOSS
+        MOSS,
+        ICE,
+        PACKED_ICE
     };
 
     /**
@@ -3309,6 +3327,8 @@ public enum Terrain {
         LAVA,
         MAGMA,
         DEEP_SNOW,
+        ICE,
+        PACKED_ICE,
         NETHERRACK,
         BASALT,
         BLACKSTONE,

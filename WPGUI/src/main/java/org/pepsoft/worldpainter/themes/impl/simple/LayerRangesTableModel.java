@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -144,7 +155,7 @@ public class LayerRangesTableModel implements TableModel {
     private final List<Layer> layers = new ArrayList<>();
     private final int minHeight, maxHeight;
     private final List<TableModelListener> listeners = new ArrayList<>();
-    private final JButton deleteButton = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.f2a6c498fb"));
+    private final JButton deleteButton = new JButton(org.pepsoft.worldpainter.WPI18n.s("ui.action.delete"));
     
     private static final String[] COLUMN_NAME_KEYS = {"ui.col.from", "ui.col.to", "ui.col.feather", "ui.col.layer", "ui.col.actions"};
     private static final Class[]  COLUMN_TYPES     = {Integer.class, Integer.class, Boolean.class,   Layer.class,   JButton.class};

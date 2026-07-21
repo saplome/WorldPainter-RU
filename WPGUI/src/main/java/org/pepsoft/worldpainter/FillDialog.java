@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -1137,7 +1148,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
             }
         });
 
-        buttonFillTerrainSelectOnMap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/eyedropper.png"))); // NOI18N
+        buttonFillTerrainSelectOnMap.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/eyedropper.png")); // NOI18N
         buttonFillTerrainSelectOnMap.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.label.selectATerrainType"));
         buttonFillTerrainSelectOnMap.setEnabled(false);
         buttonFillTerrainSelectOnMap.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -1147,7 +1158,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
             }
         });
 
-        buttonFillLayerSelectOnMap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/eyedropper.png"))); // NOI18N
+        buttonFillLayerSelectOnMap.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/eyedropper.png")); // NOI18N
         buttonFillLayerSelectOnMap.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.label.selectALayerFrom"));
         buttonFillLayerSelectOnMap.setEnabled(false);
         buttonFillLayerSelectOnMap.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -1157,7 +1168,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
             }
         });
 
-        buttonRemoveLayerSelectOnMap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/eyedropper.png"))); // NOI18N
+        buttonRemoveLayerSelectOnMap.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/eyedropper.png")); // NOI18N
         buttonRemoveLayerSelectOnMap.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.label.selectALayerFrom"));
         buttonRemoveLayerSelectOnMap.setEnabled(false);
         buttonRemoveLayerSelectOnMap.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -1167,7 +1178,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
             }
         });
 
-        buttonInvertLayerSelectOnMap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/eyedropper.png"))); // NOI18N
+        buttonInvertLayerSelectOnMap.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/eyedropper.png")); // NOI18N
         buttonInvertLayerSelectOnMap.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.label.selectALayerFrom"));
         buttonInvertLayerSelectOnMap.setEnabled(false);
         buttonInvertLayerSelectOnMap.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -1177,7 +1188,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
             }
         });
 
-        buttonFillBiomeSelectOnMap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/eyedropper.png"))); // NOI18N
+        buttonFillBiomeSelectOnMap.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/eyedropper.png")); // NOI18N
         buttonFillBiomeSelectOnMap.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.label.selectABiomeFrom"));
         buttonFillBiomeSelectOnMap.setEnabled(false);
         buttonFillBiomeSelectOnMap.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -1311,7 +1322,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
                 .addContainerGap())
         );
 
-        jLabel3.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel3.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         jLabel3.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUChangeHeight"));
         jLabel3.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.field.raiseOrLowerThe"));
         jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -1323,7 +1334,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
 
         jLabel4.setText("-");
 
-        jLabel5.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel5.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         jLabel5.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlURotateU"));
         jLabel5.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.rotate.rotateTheEntireDimension"));
         jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -1335,7 +1346,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
 
         jLabel6.setText("-");
 
-        jLabel7.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel7.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         jLabel7.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUShiftU"));
         jLabel7.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.shift.shiftTheEntireDimension"));
         jLabel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -1352,7 +1363,7 @@ chunks:         for (int chunkX = 0; chunkX < TILE_SIZE; chunkX += 16) {
 
         jLabel8.setText("-");
 
-        jLabel9.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel9.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         jLabel9.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUScaleU"));
         jLabel9.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.scale.scaleTheEntireDimension"));
         jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));

@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -279,7 +290,7 @@ public class SimpleThemeEditor extends javax.swing.JPanel implements ButtonPress
                 .addGap(0, 0, 0))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.4ccfea7a25"), jPanel1);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.panel.terrain"), jPanel1);
 
         buttonAddLayer.setText(org.pepsoft.worldpainter.WPI18n.s("ui.action.add"));
         buttonAddLayer.addActionListener(new java.awt.event.ActionListener() {
@@ -311,7 +322,7 @@ public class SimpleThemeEditor extends javax.swing.JPanel implements ButtonPress
                 .addGap(0, 0, 0))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.87bfda183c"), jPanel2);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.panel.layers"), jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

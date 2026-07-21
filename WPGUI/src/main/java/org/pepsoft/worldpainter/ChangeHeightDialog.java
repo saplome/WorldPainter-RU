@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -369,7 +380,7 @@ public class ChangeHeightDialog extends WorldPainterDialog {
         jLabel8.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.ifBothAreEnabled"));
 
         labelWarning.setFont(labelWarning.getFont().deriveFont(labelWarning.getFont().getStyle() | java.awt.Font.BOLD));
-        labelWarning.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelWarning.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelWarning.setText(org.pepsoft.worldpainter.WPI18n.s("ui.text.mayImpactPerformance"));
 
         jLabel3.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.mapFormat"));
@@ -396,7 +407,7 @@ public class ChangeHeightDialog extends WorldPainterDialog {
         checkBoxAdjustLayers.setText(org.pepsoft.worldpainter.WPI18n.s("ui.text.alsoApplyToTheme"));
 
         labelCutOffWarning.setFont(labelCutOffWarning.getFont().deriveFont(labelCutOffWarning.getFont().getStyle() | java.awt.Font.BOLD));
-        labelCutOffWarning.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelCutOffWarning.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelCutOffWarning.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.topAndOrBottom"));
 
         jLabel11.setText(org.pepsoft.worldpainter.WPI18n.s("ui.text.willBeAppliedFirst"));
@@ -409,7 +420,7 @@ public class ChangeHeightDialog extends WorldPainterDialog {
 
         labelNewExtents.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlBBHtml"));
 
-        labelPlatformWarning.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        labelPlatformWarning.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         labelPlatformWarning.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlBUnknownFormatUnknownFormat"));
         labelPlatformWarning.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlThisMapFormat"));
 

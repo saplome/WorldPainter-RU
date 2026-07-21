@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -235,7 +246,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
             checkBoxPopulate.setSelected(dimension.isPopulate());
         } else {
             checkBoxPopulate.setSelected(false);
-            checkBoxPopulate.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.6ab5972bc7") + platform);
+            checkBoxPopulate.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.message.autoPopulationNotSupportedPrefix") + platform);
         }
         Generator generator = (Generator) comboBoxGenerator.getSelectedItem();
         comboBoxGenerator.setModel(new DefaultComboBoxModel<>(platform.supportedGenerators.toArray(new Generator[platform.supportedGenerators.size()])));
@@ -645,7 +656,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
                 try {
                     ExportSettingsEditor editor = platformProvider.getExportSettingsEditor(platform);
                     editor.setExportSettings(exportSettings);
-                    jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.5ed7151aa2"), editor);
+                    jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.postProcessing"), editor);
                 } catch (RuntimeException e) {
                     logger.warn("Could not initialise post processing tab", e);
                 }
@@ -1615,7 +1626,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
         checkBoxBottomless.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.bottomlessWorld"));
         checkBoxBottomless.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlGenerateABottomless"));
 
-        jLabel67.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/information.png"))); // NOI18N
+        jLabel67.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/information.png")); // NOI18N
         jLabel67.setText(" ");
         jLabel67.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlGenerateABottomless"));
 
@@ -1652,7 +1663,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
         spinnerBorderLevel.setEnabled(false);
 
         buttonGroup1.add(radioButtonWaterBorder);
-        radioButtonWaterBorder.setText(org.pepsoft.worldpainter.WPI18n.s("ui.27634ff800"));
+        radioButtonWaterBorder.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.water"));
         radioButtonWaterBorder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonWaterBorderActionPerformed(evt);
@@ -1689,7 +1700,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
         });
 
         buttonGroup1.add(radioButtonLavaBorder);
-        radioButtonLavaBorder.setText(org.pepsoft.worldpainter.WPI18n.s("ui.1d18fe2cdd"));
+        radioButtonLavaBorder.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.lava"));
         radioButtonLavaBorder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonLavaBorderActionPerformed(evt);
@@ -1992,7 +2003,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.0db377921f"), panelGeneral);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.general"), panelGeneral);
 
         jLabel45.setText(org.pepsoft.worldpainter.WPI18n.s("ui.text.theseAreTheDefault"));
 
@@ -2023,7 +2034,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.d721757161"), jPanel5);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.theme"), jPanel5);
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
@@ -2658,7 +2669,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         jPanel3.add(jPanel27, gridBagConstraints);
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.cavesCavernsChasms"), new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/caverns.png")), jPanel3); // NOI18N
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.cavesCavernsChasms"), org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/caverns.png"), jPanel3); // NOI18N
 
         jCheckBox8.setText(org.pepsoft.worldpainter.WPI18n.s("ui.resources.resourcesEverywhere"));
         jCheckBox8.addActionListener(new java.awt.event.ActionListener() {
@@ -3566,7 +3577,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("layer.Resources.name"), new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/resources.png")), jPanel4); // NOI18N
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("layer.Resources.name"), org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/resources.png"), jPanel4); // NOI18N
 
         checkBoxPopulate.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.allowMinecraftToPopulate"));
         checkBoxPopulate.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlThisWillMark"));
@@ -3608,13 +3619,13 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
 
         checkBoxSmoothSnow.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.smoothSnowAlsoApplies"));
 
-        jLabel47.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/populate.png"))); // NOI18N
+        jLabel47.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/populate.png")); // NOI18N
 
-        jLabel48.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/deciduousforest.png"))); // NOI18N
+        jLabel48.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/deciduousforest.png")); // NOI18N
 
-        jLabel49.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/pineforest.png"))); // NOI18N
+        jLabel49.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/pineforest.png")); // NOI18N
 
-        jLabel50.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/frost.png"))); // NOI18N
+        jLabel50.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/frost.png")); // NOI18N
 
         checkBoxJungleEverywhere.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.jungleEverywhere"));
         checkBoxJungleEverywhere.addActionListener(new java.awt.event.ActionListener() {
@@ -3623,7 +3634,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
             }
         });
 
-        jLabel68.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/jungle.png"))); // NOI18N
+        jLabel68.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/jungle.png")); // NOI18N
 
         sliderJungleLevel.setMajorTickSpacing(1);
         sliderJungleLevel.setMaximum(15);
@@ -3639,7 +3650,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
             }
         });
 
-        jLabel69.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/swampland.png"))); // NOI18N
+        jLabel69.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/swampland.png")); // NOI18N
 
         jSlider6.setMajorTickSpacing(1);
         jSlider6.setMaximum(15);
@@ -3758,14 +3769,14 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.bb6b408aa1"), jPanel2);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.otherLayers"), jPanel2);
 
         jLabel82.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlOnThisPage"));
 
         tableCustomLayers.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane1.setViewportView(tableCustomLayers);
 
-        buttonCustomLayerUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/up.png"))); // NOI18N
+        buttonCustomLayerUp.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/up.png")); // NOI18N
         buttonCustomLayerUp.setText(org.pepsoft.worldpainter.WPI18n.s("ui.direction.up"));
         buttonCustomLayerUp.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayer"));
         buttonCustomLayerUp.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
@@ -3775,7 +3786,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
             }
         });
 
-        buttonCustomLayerDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/down.png"))); // NOI18N
+        buttonCustomLayerDown.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/down.png")); // NOI18N
         buttonCustomLayerDown.setText(org.pepsoft.worldpainter.WPI18n.s("ui.direction.down"));
         buttonCustomLayerDown.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayerSelectedLayerf2bc63"));
         buttonCustomLayerDown.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
@@ -3785,7 +3796,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
             }
         });
 
-        buttonCustomLayerTop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/top.png"))); // NOI18N
+        buttonCustomLayerTop.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/top.png")); // NOI18N
         buttonCustomLayerTop.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.toTop"));
         buttonCustomLayerTop.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayerSelectedLayer"));
         buttonCustomLayerTop.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
@@ -3795,7 +3806,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
             }
         });
 
-        buttonCustomLayerBottom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/bottom.png"))); // NOI18N
+        buttonCustomLayerBottom.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/bottom.png")); // NOI18N
         buttonCustomLayerBottom.setText(org.pepsoft.worldpainter.WPI18n.s("ui.label.toBottom"));
         buttonCustomLayerBottom.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.action.moveTheSelectedLayerSelectedLayercbee20"));
         buttonCustomLayerBottom.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
@@ -3821,7 +3832,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
             }
         });
 
-        buttonSelectPaint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/eyedropper.png"))); // NOI18N
+        buttonSelectPaint.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/eyedropper.png")); // NOI18N
         buttonSelectPaint.setText(org.pepsoft.worldpainter.WPI18n.s("ui.button.select"));
         buttonSelectPaint.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
         buttonSelectPaint.addActionListener(new java.awt.event.ActionListener() {
@@ -3890,7 +3901,7 @@ public class DimensionPropertiesEditor extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.917d3053eb"), jPanel7);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.customLayers"), jPanel7);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

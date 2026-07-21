@@ -48,6 +48,10 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <scm>
@@ -126,6 +130,7 @@
         <jpen.version>2-150301</jpen.version>
         <jide.version>3.8.1</jide.version>
         <laf-dark.version>201403101706</laf-dark.version>
+        <flatlaf.version>3.7.2</flatlaf.version>
         <logback.version>1.2.11</logback.version>
         <log4j-to-slf4j.version>2.17.2</log4j-to-slf4j.version>
 

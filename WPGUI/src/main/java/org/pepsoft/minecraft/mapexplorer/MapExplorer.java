@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -110,13 +121,13 @@ public class MapExplorer {
         JToolBar toolBar = new JToolBar();
         wordSizeSpinner = new JSpinner(new SpinnerNumberModel(4, 4, 999, 1));
         wordSizeSpinner.addChangeListener(e -> updateBinaryData());
-        JLabel label = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.d1148ef18f"));
+        JLabel label = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.mapExplorer.wordSize"));
         label.setLabelFor(wordSizeSpinner);
         toolBar.add(label);
         toolBar.add(wordSizeSpinner);
         lineLengthSpinner = new JSpinner(new SpinnerNumberModel(16, 1, 9999, 1));
         lineLengthSpinner.addChangeListener(e -> updateBinaryData());
-        label = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.847241b5f5"));
+        label = new JLabel(org.pepsoft.worldpainter.WPI18n.s("ui.mapExplorer.lineLength"));
         label.setLabelFor(lineLengthSpinner);
         toolBar.add(label);
         toolBar.add(lineLengthSpinner);

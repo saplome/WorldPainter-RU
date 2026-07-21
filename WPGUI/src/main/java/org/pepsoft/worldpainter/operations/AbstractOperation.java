@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -32,6 +43,7 @@ public abstract class AbstractOperation implements Operation {
         }
         this.name = name;
         this.description = description;
+        this.iconName = iconName;
         icon = IconUtils.loadScaledImage(getClass().getClassLoader(), "org/pepsoft/worldpainter/icons/" + iconName + ".png");
     }
 
@@ -78,6 +90,18 @@ public abstract class AbstractOperation implements Operation {
 
     @Override
     public final BufferedImage getIcon() {
+        final Object configuredTheme = UIManager.get("WorldPainter.iconTheme");
+        if (configuredTheme instanceof String) {
+            final String iconTheme = (String) configuredTheme;
+            if (! iconTheme.equals(themedIconTheme)) {
+                themedIcon = IconUtils.loadScaledImage(getClass().getClassLoader(),
+                        "org/pepsoft/worldpainter/icons/" + iconTheme + "/" + iconName + ".png");
+                themedIconTheme = iconTheme;
+            }
+            if (themedIcon != null) {
+                return themedIcon;
+            }
+        }
         return icon;
     }
 
@@ -108,8 +132,10 @@ public abstract class AbstractOperation implements Operation {
     protected abstract void activate() throws PropertyVetoException;
     protected abstract void deactivate();
 
-    private final String name, description;
+    private final String name, description, iconName;
     private final BufferedImage icon;
+    private transient BufferedImage themedIcon;
+    private transient String themedIconTheme;
     private boolean active;
     private WorldPainterView view;
 }

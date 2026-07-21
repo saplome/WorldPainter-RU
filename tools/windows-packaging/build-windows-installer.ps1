@@ -1,0 +1,589 @@
+#requires -version 5.1
+
+[CmdletBinding()]
+param(
+    [switch]$SkipMaven,
+    [switch]$BuildInstaller,
+    [switch]$BuildAppImage,
+    [switch]$BuildPortable,
+    [switch]$BuildInnoInstaller,
+    [switch]$CreateDraftRelease,
+    [switch]$OpenDraftRelease,
+    [string]$ReleaseTag = 'v2.27.0-L2.0.0',
+    [string]$ReleaseTitle = 'WorldPainter Languages 2.27.0-L2.0.0',
+    [string]$ReleaseNotesFile = '',
+    [string[]]$AdditionalDraftAsset = @()
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+$ProductName = 'WorldPainter Languages'
+$ProductVersion = '2.27.0-L2.0.0'
+$WindowsInstallerVersion = '2.27.4'
+$WindowsUpgradeUuid = 'd5984a7f-cb32-48c8-b6f1-97a3c4c0da44'
+$ProductVendor = 'WorldPainter Languages'
+$ProductDescription = 'WorldPainter Languages'
+$MavenVersion = '2.27.0'
+$MainClass = 'org.pepsoft.worldpainter.Main'
+$JPackageEnabled = [bool]$BuildInstaller
+
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ProjectRoot = (Resolve-Path (Join-Path $ScriptDir '..\..')).Path
+$JPackageResourceDir = Join-Path $ScriptDir 'jpackage-resources\windows'
+$IconIcoPath = Join-Path $ProjectRoot 'assets\icon.ico'
+$ReleaseDir = Join-Path $ProjectRoot 'release'
+$StagingDir = Join-Path $ReleaseDir 'staging'
+$AppDir = Join-Path $StagingDir 'app'
+$LibDir = Join-Path $AppDir 'lib'
+$InstallerDir = Join-Path $ReleaseDir 'installer'
+$InstallerWorkDir = Join-Path $ReleaseDir 'installer-work'
+$AppImageDir = Join-Path $ReleaseDir 'app-image'
+$PortableZipPath = Join-Path $ReleaseDir "WorldPainter-Languages-$ProductVersion-Portable.zip"
+$GitHubRepository = 'saplome/WorldPainter-LANGUAGES'
+$DefaultReleaseNotesPath = Join-Path $ProjectRoot 'docs\RELEASE_NOTES_2.27.0-L2.0.0.md'
+$LogsDir = Join-Path $ReleaseDir 'logs'
+
+function Fail {
+    param([string]$Message)
+
+    [Console]::Error.WriteLine("ERROR: $Message")
+    exit 1
+}
+
+function Test-Tool {
+    param(
+        [string]$Name,
+        [string]$Hint,
+        [switch]$Required
+    )
+
+    $command = Get-Command $Name -ErrorAction SilentlyContinue
+
+    if ($command) {
+        Write-Host "Found ${Name}: $($command.Source)"
+        return $true
+    }
+
+    $message = "Required tool not found: '$Name'. $Hint"
+    if ($Required) {
+        Fail $message
+    }
+
+    Write-Warning $message
+    return $false
+}
+
+function Ensure-CleanDirectory {
+    param([string]$Path)
+
+    $root = [System.IO.Path]::GetFullPath($ProjectRoot)
+    $fullPath = [System.IO.Path]::GetFullPath($Path)
+
+    if (-not $fullPath.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
+        Fail "Refusing to clean a directory outside the project: $fullPath"
+    }
+
+    if (Test-Path -LiteralPath $fullPath) {
+        Remove-Item -LiteralPath $fullPath -Recurse -Force
+    }
+
+    New-Item -ItemType Directory -Path $fullPath -Force | Out-Null
+}
+
+function Invoke-Checked {
+    param(
+        [string]$Tool,
+        [string[]]$Arguments
+    )
+
+    & $Tool @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        Fail "Command failed: $Tool $($Arguments -join ' ')"
+    }
+}
+
+function Find-ModuleJar {
+    param(
+        [string]$ModuleName,
+        [string]$ExpectedFileName
+    )
+
+    $jarPath = Join-Path (Join-Path $ProjectRoot $ModuleName) "target\$ExpectedFileName"
+
+    if (-not (Test-Path -LiteralPath $jarPath)) {
+        Fail "Module jar was not found: $jarPath. Expected it after 'mvn clean package'."
+    }
+
+    return (Resolve-Path $jarPath).Path
+}
+
+function Copy-ModuleJar {
+    param(
+        [string]$ModuleName,
+        [string]$ExpectedFileName
+    )
+
+    $jar = Find-ModuleJar $ModuleName $ExpectedFileName
+    Copy-Item -LiteralPath $jar -Destination $AppDir -Force
+    Write-Host "Copied module jar: $jar"
+    return (Join-Path $AppDir $ExpectedFileName)
+}
+
+function Copy-RuntimeDependencies {
+    Write-Host "Copying WPGUI runtime dependencies to: $LibDir"
+
+    Push-Location $ProjectRoot
+    try {
+        Invoke-Checked 'mvn' @(
+            '-pl', 'WPGUI',
+            'dependency:copy-dependencies',
+            '-DincludeScope=runtime',
+            '-DexcludeArtifactIds=WPCore,WPGUI,WPDynmapPreviewer',
+            "-DoutputDirectory=$LibDir"
+        )
+    } finally {
+        Pop-Location
+    }
+
+    $dependencyJars = @(Get-ChildItem -LiteralPath $LibDir -Filter '*.jar' -File -ErrorAction SilentlyContinue)
+    if ($dependencyJars.Count -eq 0) {
+        Fail "No runtime dependency jars were copied to $LibDir."
+    }
+
+    Write-Host "Runtime dependency jars copied: $($dependencyJars.Count)"
+}
+
+function New-ManifestAttributeLines {
+    param(
+        [string]$Name,
+        [string]$Value
+    )
+
+    $firstLineLimit = 70
+    $continuationPayloadLimit = 69
+    $remaining = "${Name}: $Value"
+    $lines = @()
+
+    if ($remaining.Length -le $firstLineLimit) {
+        return @($remaining)
+    }
+
+    $lines += $remaining.Substring(0, $firstLineLimit)
+    $remaining = $remaining.Substring($firstLineLimit)
+
+    while ($remaining.Length -gt $continuationPayloadLimit) {
+        $lines += " $($remaining.Substring(0, $continuationPayloadLimit))"
+        $remaining = $remaining.Substring($continuationPayloadLimit)
+    }
+
+    if ($remaining.Length -gt 0) {
+        $lines += " $remaining"
+    }
+
+    return $lines
+}
+
+function Update-GuiJarManifest {
+    param([string]$GuiJarPath)
+
+    $classPathEntries = @(
+        "WPCore-$MavenVersion.jar",
+        "WPDynmapPreviewer-$MavenVersion.jar"
+    )
+
+    $classPathEntries += @(Get-ChildItem -LiteralPath $LibDir -Filter '*.jar' -File | Sort-Object Name | ForEach-Object {
+        "lib/$($_.Name)"
+    })
+
+    $manifestPath = Join-Path $StagingDir 'jpackage-manifest.mf'
+    $manifestLines = @("Main-Class: $MainClass")
+    $manifestLines += New-ManifestAttributeLines 'Class-Path' ($classPathEntries -join ' ')
+    $manifestLines += ''
+
+    Set-Content -LiteralPath $manifestPath -Value $manifestLines -Encoding ASCII
+    Invoke-Checked 'jar' @('umf', $manifestPath, $GuiJarPath)
+
+    Write-Host "Updated staged GUI jar manifest with Main-Class and Class-Path."
+}
+
+function Show-StagingContents {
+    $files = @(Get-ChildItem -LiteralPath $AppDir -Recurse -File | Sort-Object FullName)
+    $totalBytes = ($files | Measure-Object Length -Sum).Sum
+
+    Write-Host ""
+    Write-Host "Staging app contents:"
+    Write-Host "  Directory: $AppDir"
+    Write-Host "  Files: $($files.Count)"
+    Write-Host "  Size: $([math]::Round($totalBytes / 1MB, 2)) MB"
+
+    foreach ($file in $files) {
+        $relative = $file.FullName.Substring($AppDir.Length + 1)
+        Write-Host "  $relative"
+    }
+}
+
+function Invoke-JPackage {
+    if (-not $script:WixAvailable) {
+        Fail "Cannot build installer.exe because WiX tools are missing. Required: candle.exe and light.exe in PATH."
+    }
+
+    if (-not (Test-Path -LiteralPath $JPackageResourceDir)) {
+        Fail "jpackage resource directory was not found: $JPackageResourceDir"
+    }
+
+    if (-not (Test-Path -LiteralPath $IconIcoPath)) {
+        Fail "Installer icon was not found: $IconIcoPath"
+    }
+
+    $mainJarName = "WPGUI-$MavenVersion.jar"
+    $fileAssociationsPath = Join-Path $StagingDir 'world-file-association.properties'
+    @(
+        'extension=world'
+        'mime-type=application/x-worldpainter-world'
+        'description=WorldPainter world'
+        "icon=$IconIcoPath"
+    ) | Set-Content -LiteralPath $fileAssociationsPath -Encoding ascii
+    $finalInstallerName = "$ProductName $ProductVersion Setup.exe"
+    $finalInstallerPath = Join-Path $InstallerDir $finalInstallerName
+    $jpackageArguments = @(
+        '--type', 'exe',
+        '--name', $ProductName,
+        '--app-version', $WindowsInstallerVersion,
+        '--vendor', $ProductVendor,
+        '--description', $ProductDescription,
+        '--input', $AppDir,
+        '--main-jar', $mainJarName,
+        '--main-class', $MainClass,
+        '--dest', $InstallerWorkDir,
+        '--icon', $IconIcoPath,
+        '--resource-dir', $JPackageResourceDir,
+        '--file-associations', $fileAssociationsPath,
+        '--win-menu',
+        '--win-menu-group', $ProductName,
+        '--win-shortcut',
+        '--win-shortcut-prompt',
+        '--win-dir-chooser',
+        '--win-upgrade-uuid', $WindowsUpgradeUuid
+    )
+
+    Write-Host ""
+    Write-Host "Running jpackage:"
+    Write-Host "  jpackage $($jpackageArguments -join ' ')"
+
+    Invoke-Checked 'jpackage' $jpackageArguments
+
+    $installers = @(Get-ChildItem -LiteralPath $InstallerWorkDir -Filter '*.exe' -File | Sort-Object LastWriteTime -Descending)
+    if ($installers.Count -eq 0) {
+        Fail "jpackage completed, but no installer.exe was found in $InstallerWorkDir."
+    }
+
+    New-Item -ItemType Directory -Path $InstallerDir -Force | Out-Null
+    if (Test-Path -LiteralPath $finalInstallerPath) {
+        try {
+            Remove-Item -LiteralPath $finalInstallerPath -Force
+        } catch {
+            Fail "Could not replace existing installer because it is locked: $finalInstallerPath. Close any running setup process and try again. Fresh installer remains in: $($installers[0].FullName)"
+        }
+    }
+
+    Move-Item -LiteralPath $installers[0].FullName -Destination $finalInstallerPath
+
+    Write-Host ""
+    Write-Host "Installer created: $finalInstallerPath"
+}
+
+function Invoke-JPackageAppImage {
+    Ensure-CleanDirectory $AppImageDir
+    $mainJarName = "WPGUI-$MavenVersion.jar"
+    $jpArguments = @(
+        '--type', 'app-image',
+        '--name', $ProductName,
+        '--app-version', $WindowsInstallerVersion,
+        '--vendor', $ProductVendor,
+        '--description', $ProductDescription,
+        '--input', $AppDir,
+        '--main-jar', $mainJarName,
+        '--main-class', $MainClass,
+        '--dest', $AppImageDir,
+        '--icon', $IconIcoPath
+    )
+
+    Write-Host ""
+    Write-Host "Running jpackage (app-image):"
+    Write-Host "  jpackage $($jpArguments -join ' ')"
+
+    Invoke-Checked 'jpackage' $jpArguments
+
+    $appImageRoot = Join-Path $AppImageDir $ProductName
+    if (-not (Test-Path -LiteralPath $appImageRoot)) {
+        Fail "jpackage completed, but the app image was not found: $appImageRoot"
+    }
+
+    Write-Host ""
+    Write-Host "App image created: $appImageRoot"
+}
+
+function New-PortableZip {
+    $appImageRoot = Join-Path $AppImageDir $ProductName
+    if (-not (Test-Path -LiteralPath $appImageRoot)) {
+        Fail "App image was not found: $appImageRoot. Run with -BuildPortable or -BuildAppImage first."
+    }
+
+    if (Test-Path -LiteralPath $PortableZipPath) {
+        Remove-Item -LiteralPath $PortableZipPath -Force
+    }
+
+    Write-Host ""
+    Write-Host "Creating portable zip..."
+    Compress-Archive -Path (Join-Path $appImageRoot '*') -DestinationPath $PortableZipPath -CompressionLevel Optimal
+
+    Write-Host "Portable zip created: $PortableZipPath"
+}
+
+function Invoke-InnoSetup {
+    $iscc = $null
+    $isccCommand = Get-Command 'ISCC.exe' -ErrorAction SilentlyContinue
+    if ($isccCommand) {
+        $iscc = $isccCommand.Source
+    } else {
+        $isccCandidates = @()
+        if (${env:ProgramFiles(x86)}) { $isccCandidates += "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+        if ($env:ProgramFiles) { $isccCandidates += "$env:ProgramFiles\Inno Setup 6\ISCC.exe" }
+        if ($env:LOCALAPPDATA) { $isccCandidates += "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe" }
+        foreach ($candidate in $isccCandidates) {
+            if (Test-Path -LiteralPath $candidate) {
+                $iscc = $candidate
+                break
+            }
+        }
+    }
+
+    if (-not $iscc) {
+        Fail "Inno Setup 6 (ISCC.exe) was not found. Install it from https://jrsoftware.org/isdl.php and retry."
+    }
+
+    Write-Host ""
+    Write-Host "Found ISCC.exe: $iscc"
+    Write-Host "Compiling Inno Setup installer..."
+
+    Invoke-Checked $iscc @((Join-Path $ScriptDir 'installer.iss'))
+
+    Write-Host "Inno Setup installer created in: $InstallerDir"
+}
+
+
+function Get-DraftReleaseAssets {
+    $assets = New-Object System.Collections.Generic.List[string]
+
+    if (Test-Path -LiteralPath $PortableZipPath) {
+        $assets.Add((Resolve-Path $PortableZipPath).Path)
+    }
+
+    if (Test-Path -LiteralPath $InstallerDir) {
+        Get-ChildItem -LiteralPath $InstallerDir -Filter '*.exe' -File | Sort-Object Name | ForEach-Object {
+            $assets.Add($_.FullName)
+        }
+    }
+
+    foreach ($candidate in @(
+        (Join-Path $ReleaseDir "WorldPainter-Languages-$ProductVersion-src.zip"),
+        (Join-Path $ProjectRoot "WorldPainter-Languages-$ProductVersion-src.zip")
+    )) {
+        if (Test-Path -LiteralPath $candidate) {
+            $assets.Add((Resolve-Path $candidate).Path)
+        }
+    }
+
+    foreach ($asset in $AdditionalDraftAsset) {
+        if (-not (Test-Path -LiteralPath $asset -PathType Leaf)) {
+            Fail "Additional draft asset was not found: $asset"
+        }
+        $assets.Add((Resolve-Path $asset).Path)
+    }
+
+    $uniqueAssets = @($assets | Select-Object -Unique)
+    if ($uniqueAssets.Count -eq 0) {
+        Fail "No release assets were found. Build Portable/Installer or pass -AdditionalDraftAsset."
+    }
+
+    return $uniqueAssets
+}
+
+function Sync-GitHubDraftRelease {
+    Test-Tool 'gh' 'Install GitHub CLI and run gh auth login.' -Required | Out-Null
+
+    & gh auth status --hostname github.com
+    if ($LASTEXITCODE -ne 0) {
+        Fail "GitHub CLI is not authenticated. Run: gh auth login"
+    }
+
+    $notesPath = if ([string]::IsNullOrWhiteSpace($ReleaseNotesFile)) {
+        $DefaultReleaseNotesPath
+    } else {
+        (Resolve-Path $ReleaseNotesFile).Path
+    }
+    if (-not (Test-Path -LiteralPath $notesPath -PathType Leaf)) {
+        Fail "Release notes file was not found: $notesPath"
+    }
+
+    $assets = @(Get-DraftReleaseAssets)
+
+    # A missing release is the normal first-run case. Windows PowerShell 5.1
+    # converts native stderr into an error record, and the script-wide Stop
+    # preference would otherwise abort before we can inspect the exit code.
+    [string]$draftState = ''
+    [int]$releaseViewExitCode = 0
+    $previousErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $draftState = (& gh release view $ReleaseTag --repo $GitHubRepository --json isDraft --jq '.isDraft' 2>$null)
+        $releaseViewExitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
+    $releaseExists = ($releaseViewExitCode -eq 0)
+
+    if ($releaseExists) {
+        if ($draftState.Trim().ToLowerInvariant() -ne 'true') {
+            Fail "Release tag $ReleaseTag already exists and is published. Refusing to replace it."
+        }
+        Invoke-Checked 'gh' @(
+            'release', 'edit', $ReleaseTag,
+            '--repo', $GitHubRepository,
+            '--draft',
+            '--title', $ReleaseTitle,
+            '--notes-file', $notesPath
+        )
+    } else {
+        Invoke-Checked 'gh' @(
+            'release', 'create', $ReleaseTag,
+            '--repo', $GitHubRepository,
+            '--draft',
+            '--title', $ReleaseTitle,
+            '--notes-file', $notesPath
+        )
+    }
+
+    $uploadArguments = @('release', 'upload', $ReleaseTag, '--repo', $GitHubRepository, '--clobber')
+    $uploadArguments += $assets
+    Invoke-Checked 'gh' $uploadArguments
+
+    [string]$releaseUrl = (& gh release view $ReleaseTag --repo $GitHubRepository --json url --jq '.url')
+    if ($LASTEXITCODE -ne 0) {
+        Fail "Draft release was updated, but its URL could not be read."
+    }
+
+    Write-Host ""
+    Write-Host "GitHub draft release updated: $releaseUrl"
+    Write-Host "The release is still a draft and is not visible to regular users."
+
+    if ($OpenDraftRelease) {
+        Invoke-Checked 'gh' @('release', 'view', $ReleaseTag, '--repo', $GitHubRepository, '--web')
+    }
+}
+
+Write-Host "WorldPainter Languages Windows installer preparation"
+Write-Host "Product: $ProductName"
+Write-Host "Version: $ProductVersion"
+Write-Host "Windows installer version: $WindowsInstallerVersion"
+Write-Host "Windows upgrade UUID: $WindowsUpgradeUuid"
+Write-Host "Vendor: $ProductVendor"
+Write-Host "Description: $ProductDescription"
+Write-Host "Maven artifact version: $MavenVersion"
+Write-Host "Main class: $MainClass"
+Write-Host "Project root: $ProjectRoot"
+Write-Host "Release path: $ReleaseDir"
+Write-Host "Staging path: $AppDir"
+Write-Host "Installer path: $InstallerDir"
+Write-Host "Installer work path: $InstallerWorkDir"
+Write-Host "Logs path: $LogsDir"
+Write-Host "Installer icon: $IconIcoPath"
+Write-Host "jpackage resources: $JPackageResourceDir"
+Write-Host "jpackage execution: $(if ($JPackageEnabled) { 'enabled' } else { 'disabled, preparation only' })"
+Write-Host ""
+
+Test-Tool 'java' 'Install JDK 17 and check PATH/JAVA_HOME.' -Required | Out-Null
+Test-Tool 'jar' 'Install a full JDK, not only a JRE, and check PATH.' -Required | Out-Null
+Test-Tool 'mvn' 'Install Maven and check PATH.' -Required | Out-Null
+Test-Tool 'jpackage' 'Use a JDK distribution which includes jpackage.' -Required | Out-Null
+
+if ($BuildInstaller) {
+    $candleFound = Test-Tool 'candle.exe' 'Install WiX Toolset and add its bin directory to PATH.' -Required
+    $lightFound = Test-Tool 'light.exe' 'Install WiX Toolset and add its bin directory to PATH.' -Required
+} else {
+    $candleFound = Test-Tool 'candle.exe' 'Install WiX Toolset and add its bin directory to PATH.'
+    $lightFound = Test-Tool 'light.exe' 'Install WiX Toolset and add its bin directory to PATH.'
+}
+$script:WixAvailable = ($candleFound -and $lightFound)
+
+Write-Host ""
+Write-Host "Tool check completed."
+Write-Host ""
+
+if (-not $SkipMaven) {
+    Push-Location $ProjectRoot
+    try {
+        Write-Host "Running Maven build..."
+        Invoke-Checked 'mvn' @('clean', 'package')
+    } finally {
+        Pop-Location
+    }
+} else {
+    Write-Warning "Maven build skipped by -SkipMaven."
+}
+
+New-Item -ItemType Directory -Path $ReleaseDir -Force | Out-Null
+Ensure-CleanDirectory $LogsDir
+Ensure-CleanDirectory $StagingDir
+New-Item -ItemType Directory -Path $AppDir -Force | Out-Null
+New-Item -ItemType Directory -Path $LibDir -Force | Out-Null
+Ensure-CleanDirectory $InstallerWorkDir
+New-Item -ItemType Directory -Path $InstallerDir -Force | Out-Null
+
+Copy-RuntimeDependencies
+
+$stagedGuiJar = Copy-ModuleJar 'WPGUI' "WPGUI-$MavenVersion.jar"
+Copy-ModuleJar 'WPCore' "WPCore-$MavenVersion.jar" | Out-Null
+Copy-ModuleJar 'WPDynmapPreviewer' "WPDynmapPreviewer-$MavenVersion.jar" | Out-Null
+
+Write-Host ""
+Write-Host "Found GUI jar: $stagedGuiJar"
+Update-GuiJarManifest $stagedGuiJar
+Show-StagingContents
+
+Write-Host ""
+Write-Host "Prepared release staging directory:"
+Write-Host "  $AppDir"
+Write-Host "Release output directory:"
+Write-Host "  $ReleaseDir"
+
+if ($BuildInstaller) {
+    Invoke-JPackage
+}
+
+if ($BuildAppImage -or $BuildPortable -or $BuildInnoInstaller) {
+    Invoke-JPackageAppImage
+}
+
+if ($BuildPortable) {
+    New-PortableZip
+}
+
+if ($BuildInnoInstaller) {
+    Invoke-InnoSetup
+}
+
+if (-not ($BuildInstaller -or $BuildAppImage -or $BuildPortable -or $BuildInnoInstaller)) {
+    Write-Host ""
+    Write-Warning "Nothing was packaged because no build switch was specified."
+    Write-Host "Available build switches:"
+    Write-Host "  -BuildInstaller       classic WiX/MSI installer (requires WiX Toolset)"
+    Write-Host "  -BuildAppImage        standalone app image via jpackage"
+    Write-Host "  -BuildPortable        app image + portable zip"
+    Write-Host "  -BuildInnoInstaller   app image + branded Inno Setup installer (requires Inno Setup 6)"
+}
+
+if ($CreateDraftRelease) {
+    Sync-GitHubDraftRelease
+}

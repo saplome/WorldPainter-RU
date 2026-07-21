@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -62,6 +73,16 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
+        // Enable font anti-aliasing unless it has been explicitly configured
+        // externally. This is mainly important for CJK (e.g. Chinese) glyphs,
+        // which otherwise render with merged strokes at small sizes.
+        if (System.getProperty("awt.useSystemAAFontSettings") == null) {
+            System.setProperty("awt.useSystemAAFontSettings", "lcd");
+        }
+        if (System.getProperty("swing.aatext") == null) {
+            System.setProperty("swing.aatext", "true");
+        }
+
         // When this instance was spawned by an automatic restart (e.g. after a
         // language change), wait briefly so the previous instance can finish
         // shutting down: save its configuration and release the single-instance
@@ -462,7 +483,7 @@ public class Main {
             }
         }
 
-        final Configuration.LookAndFeel lookAndFeel = (config.getLookAndFeel() != null) ? config.getLookAndFeel() : Configuration.LookAndFeel.SYSTEM;
+        final Configuration.LookAndFeel lookAndFeel = (config.getLookAndFeel() != null) ? config.getLookAndFeel() : Configuration.LookAndFeel.FLATLAF_CYAN_LIGHT;
         SwingUtilities.invokeLater(() -> {
             Configuration myConfig = Configuration.getInstance();
             if (myConfig.isSafeMode()) {
@@ -472,6 +493,9 @@ public class Main {
                 // Install configured look and feel
                 try {
                     String laf;
+                    // WorldPainter Languages fork (L58): explicit icon-theme marker
+                    UIManager.getDefaults().remove("WorldPainter.iconTheme");
+                    UIManager.getDefaults().remove("WorldPainter.useCustomBiomeIcons");
                     switch (lookAndFeel) {
                         case SYSTEM:
                             laf = UIManager.getSystemLookAndFeelClassName();
@@ -490,14 +514,182 @@ public class Main {
                             laf = "org.netbeans.swing.laf.dark.DarkNimbusLookAndFeel";
                             IconUtils.setTheme("dark_nimbus");
                             break;
+                        case FLAT_LIGHT:
+                        case FLAT_DARK:
+                            // Legacy values from a rolled back FlatLaf experiment; treat as system look and feel
+                            laf = UIManager.getSystemLookAndFeelClassName();
+                            break;
+                        case FLATLAF_ARC_ORANGE:
+                            // L75: removed from the UI; old serialized selections safely use Cyan light.
+                        case FLATLAF_CYAN_LIGHT:
+                            laf = "com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme";
+                            IconUtils.setTheme("flatlaf_light");
+                            UIManager.put("WorldPainter.iconTheme", "flatlaf_light");
+                            UIManager.put("WorldPainter.useCustomBiomeIcons", Boolean.TRUE);
+                            javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
+                            javax.swing.JDialog.setDefaultLookAndFeelDecorated(true);
+                            break;
+                        case DARK_THEME:
+                        case RADIANCE_NIGHT_SHADE:
+                        case RADIANCE_NIGHT_SHADE_2:
+                        case RADIANCE_GRAPHITE:
+                        case RADIANCE_GRAPHITE_CHALK:
+                        case RADIANCE_TWILIGHT:
+                            // L78: removed themes are compatibility aliases for FlatLaf One Dark.
+                        case FLATLAF_CARBON:
+                        case FLATLAF_DARK_PURPLE:
+                        case FLATLAF_ONE_DARK:
+                            laf = "com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme";
+                            IconUtils.setTheme("flatlaf_dark");
+                            UIManager.put("WorldPainter.iconTheme", "flatlaf_dark");
+                            UIManager.put("WorldPainter.useCustomBiomeIcons", Boolean.TRUE);
+                            javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
+                            javax.swing.JDialog.setDefaultLookAndFeelDecorated(true);
+                            break;
                         default:
                             throw new InternalError();
                     }
                     logger.debug("Installing look and feel: " + laf);
                     UIManager.setLookAndFeel(laf);
                     LookAndFeelFactory.installJideExtension();
+
+                    if ((lookAndFeel == Configuration.LookAndFeel.FLATLAF_ONE_DARK)
+                            || (lookAndFeel == Configuration.LookAndFeel.FLATLAF_CARBON)
+                            || (lookAndFeel == Configuration.LookAndFeel.FLATLAF_DARK_PURPLE)
+                            || (lookAndFeel == Configuration.LookAndFeel.DARK_THEME)
+                            || lookAndFeel.name().startsWith("RADIANCE_")) {
+                        // L69: FlatLaf's docking fallback used near-white outlines and text. Keep the original
+                        // theme backgrounds/accents, but soften bright foregrounds and JIDE frame separators.
+                        final boolean purple = false; // Dark purple is a compatibility alias for One Dark since L75.
+                        final Color softText = purple ? new Color(0xB2, 0xB0, 0xBC) : new Color(0x98, 0xA0, 0xAD);
+                        final Color mutedText = purple ? new Color(0x8B, 0x87, 0x9A) : new Color(0x7F, 0x87, 0x94);
+                        final Color darkPanel = purple ? new Color(0x2C, 0x2C, 0x3B) : new Color(0x21, 0x25, 0x2B);
+                        final Color subtleBorder = purple ? new Color(0x37, 0x34, 0x46) : new Color(0x2F, 0x34, 0x3B);
+                        final Color subtleSeparator = purple ? new Color(0x39, 0x36, 0x46) : new Color(0x30, 0x34, 0x3B);
+                        final String[] foregroundKeys = {
+                            "Label.foreground", "Button.foreground", "ToggleButton.foreground",
+                            "CheckBox.foreground", "RadioButton.foreground", "ComboBox.foreground",
+                            "List.foreground", "Table.foreground", "Tree.foreground",
+                            "TabbedPane.foreground", "Menu.foreground", "MenuItem.foreground",
+                            "TextField.foreground", "TextArea.foreground", "TextPane.foreground",
+                            "EditorPane.foreground", "TitledBorder.titleColor", "JideLabel.foreground",
+                            "DockableFrame.activeTitleForeground", "DockableFrame.inactiveTitleForeground"
+                        };
+                        for (String key: foregroundKeys) UIManager.put(key, softText);
+                        UIManager.put("Label.disabledForeground", mutedText);
+                        UIManager.put("Button.disabledText", mutedText);
+                        UIManager.put("Separator.foreground", subtleSeparator);
+                        UIManager.put("Separator.background", subtleSeparator);
+                        UIManager.put("SplitPane.dividerFocusColor", subtleBorder);
+                        UIManager.put("control", darkPanel);
+                        UIManager.put("controlHighlight", subtleBorder);
+                        UIManager.put("controlLtHighlight", subtleBorder);
+                        final String[] darkSurfaceKeys = {
+                            "DockableFrame.background", "DockableFrameTitlePane.background",
+                            "ContentContainer.background", "JideTabbedPane.background",
+                            "JideTabbedPane.tabAreaBackground", "SidePane.background",
+                            "Workspace.background", "CommandBar.background", "Gripper.background"
+                        };
+                        for (String key: darkSurfaceKeys) UIManager.put(key, darkPanel);
+
+                        final javax.swing.border.Border lineBorder = javax.swing.BorderFactory.createLineBorder(subtleBorder);
+                        final String[] borderKeys = {
+                            "DockableFrame.border", "DockableFrameTitlePane.border",
+                            "ContentContainer.border", "JideTabbedPane.border", "SidePane.border"
+                        };
+                        for (String key: borderKeys) UIManager.put(key, lineBorder);
+
+                        final String[] dockingFamilies = {
+                            "DockableFrame", "DockableFrameTitlePane", "ContentContainer",
+                            "JideTabbedPane", "SidePane", "Workspace", "CommandBar", "Gripper"
+                        };
+                        final List<Object> flatJideKeys = new ArrayList<>();
+                        for (Enumeration<Object> e = UIManager.getDefaults().keys(); e.hasMoreElements(); ) {
+                            flatJideKeys.add(e.nextElement());
+                        }
+                        for (Object key: flatJideKeys) {
+                            if (! (key instanceof String)) continue;
+                            final String keyName = (String) key;
+                            boolean dockingKey = false;
+                            for (String family: dockingFamilies) {
+                                if (keyName.startsWith(family + ".")) { dockingKey = true; break; }
+                            }
+                            if (! dockingKey) continue;
+                            final Object value = UIManager.get(key);
+                            if (value instanceof Color) {
+                                final Color colour = (Color) value;
+                                final int luminance = (colour.getRed() * 299 + colour.getGreen() * 587 + colour.getBlue() * 114) / 1000;
+                                final String lower = keyName.toLowerCase();
+                                if ((lower.contains("foreground") || lower.contains("text")) && (luminance > 175)) {
+                                    UIManager.put(key, softText);
+                                } else if ((lower.contains("border") || lower.contains("separator") || lower.contains("shadow")) && (luminance > 100)) {
+                                    UIManager.put(key, subtleBorder);
+                                } else if ((lower.contains("background") || lower.contains("highlight")
+                                        || lower.contains("light") || lower.contains("control")) && (luminance > 145)) {
+                                    UIManager.put(key, darkPanel);
+                                }
+                            }
+                        }
+                    }
+
+                    // L68: all custom themes use their dedicated icon override directory.
+                    if (UIManager.get("WorldPainter.iconTheme") != null) {
+                        UIManager.put("DockableFrameTitlePane.autohideIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_pin.png"));
+                        UIManager.put("DockableFrameTitlePane.stopAutohideIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_unpin.png"));
+                        UIManager.put("DockableFrameTitlePane.hideAutohideIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_unpin.png"));
+                        UIManager.put("DockableFrameTitlePane.floatIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_float.png"));
+                        UIManager.put("DockableFrameTitlePane.unfloatIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_dock.png"));
+                        UIManager.put("DockableFrameTitlePane.hideIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_hide.png"));
+                        UIManager.put("DockableFrameTitlePane.closeIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_close.png"));
+                        UIManager.put("DockableFrameTitlePane.maximizeIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_maximize.png"));
+                        UIManager.put("DockableFrameTitlePane.restoreIcon", IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/dock_restore.png"));
+                    }
+
+                    // Per-language UI font substitution, driven by the optional
+                    // "<code>.font = Font 1, Font 2, ..." entries in
+                    // languages.list. The first candidate font that is installed
+                    // on the system replaces all default UI fonts, for languages
+                    // whose default fallback font renders poorly (e.g. the
+                    // bitmap SimSun for Chinese merges strokes at small sizes)
+                    // or lacks glyphs for the language's script.
+                    final List<String> fontCandidates = WPI18n.getLanguageFontCandidates(Locale.getDefault().getLanguage());
+                    if (! fontCandidates.isEmpty()) {
+                        String uiFontName = null;
+                        final String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+                        outer:
+                        for (String candidate: fontCandidates) {
+                            for (String available: availableFonts) {
+                                if (available.equalsIgnoreCase(candidate)) {
+                                    uiFontName = available;
+                                    break outer;
+                                }
+                            }
+                        }
+                        if (uiFontName != null) {
+                            logger.debug("Installing configured UI font for language " + Locale.getDefault().getLanguage() + ": " + uiFontName);
+                            final List<Object> fontKeys = new ArrayList<>();
+                            for (Enumeration<Object> e = UIManager.getDefaults().keys(); e.hasMoreElements(); ) {
+                                fontKeys.add(e.nextElement());
+                            }
+                            for (Object key: fontKeys) {
+                                final Object value = UIManager.get(key);
+                                if (value instanceof javax.swing.plaf.FontUIResource) {
+                                    final javax.swing.plaf.FontUIResource oldFont = (javax.swing.plaf.FontUIResource) value;
+                                    UIManager.put(key, new javax.swing.plaf.FontUIResource(uiFontName, oldFont.getStyle(), oldFont.getSize()));
+                                }
+                            }
+                        } else {
+                            logger.debug("None of the configured UI fonts for language " + Locale.getDefault().getLanguage() + " are installed; leaving default fonts in place");
+                        }
+                    }
+
+
                     if (((lookAndFeel == Configuration.LookAndFeel.DARK_METAL)
-                            || (lookAndFeel == Configuration.LookAndFeel.DARK_NIMBUS))) {
+                            || (lookAndFeel == Configuration.LookAndFeel.DARK_NIMBUS)
+                            || (lookAndFeel == Configuration.LookAndFeel.FLATLAF_CARBON)
+                            || (lookAndFeel == Configuration.LookAndFeel.FLATLAF_DARK_PURPLE)
+                            || (lookAndFeel == Configuration.LookAndFeel.FLATLAF_ONE_DARK)
+                            || lookAndFeel.name().startsWith("RADIANCE_"))) {
                         // Patch some things to make dark themes look better
                         VoidRenderer.setColour(UIManager.getColor("Panel.background").getRGB());
                         if (lookAndFeel == Configuration.LookAndFeel.DARK_METAL) {
@@ -522,7 +714,14 @@ public class Main {
             }
 
             final App app = App.getInstance();
+            if (JFrame.isDefaultLookAndFeelDecorated()) {
+                // L41 (WorldPainter Languages): LAF-decorated frames maximize over the Windows taskbar;
+                // constrain maximized bounds to the usable screen area (minus taskbar).
+                app.setMaximizedBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+            }
             app.setVisible(true);
+            app.localiseDockingButtonToolTips();
+            ForkUpdateChecker.checkAtStartup(app);
             // Swing quirk:
             if (myConfig.isMaximised() && (System.getProperty("org.pepsoft.worldpainter.size") == null)) {
                 app.setExtendedState(Frame.MAXIMIZED_BOTH);

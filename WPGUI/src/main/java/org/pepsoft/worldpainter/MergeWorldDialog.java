@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -88,7 +99,7 @@ public class MergeWorldDialog extends WorldPainterDialog {
         }
         ((SpinnerNumberModel) spinnerSurfaceThickness.getModel()).setMaximum(world.getMaxHeight());
         if (selectedTiles != null) {
-            radioButtonExportSelection.setText(org.pepsoft.worldpainter.WPI18n.s("ui.d443733e33") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.selectedTilesSuffix"));
+            radioButtonExportSelection.setText(org.pepsoft.worldpainter.WPI18n.s("ui.merge.mergePrefix") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.selectedTilesSuffix"));
             radioButtonExportSelection.setSelected(true);
             checkBoxSurface.setSelected(selectedDimension == DIM_NORMAL);
             checkBoxNether.setSelected(selectedDimension == DIM_NETHER);
@@ -405,7 +416,7 @@ public class MergeWorldDialog extends WorldPainterDialog {
             checkBoxNether.setSelected(selectedDimension == DIM_NETHER);
             checkBoxEnd.setSelected(selectedDimension == DIM_END);
             selectedTiles = dialog.getSelectedTiles();
-            radioButtonExportSelection.setText(org.pepsoft.worldpainter.WPI18n.s("ui.d443733e33") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.selectedTilesSuffix"));
+            radioButtonExportSelection.setText(org.pepsoft.worldpainter.WPI18n.s("ui.merge.mergePrefix") + selectedTiles.size() + org.pepsoft.worldpainter.WPI18n.s("ui.frag.selectedTilesSuffix"));
             pack();
             setControlStates();
             disableTileSelectionWarning = true;
@@ -582,7 +593,7 @@ public class MergeWorldDialog extends WorldPainterDialog {
 
         jLabel7.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlBBelowB"));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/pepsoft/worldpainter/icons/error.png"))); // NOI18N
+        jLabel3.setIcon(org.pepsoft.util.IconUtils.loadScaledIcon("org/pepsoft/worldpainter/icons/error.png")); // NOI18N
         jLabel3.setText(" ");
         jLabel3.setToolTipText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlThisRemovesEm"));
 

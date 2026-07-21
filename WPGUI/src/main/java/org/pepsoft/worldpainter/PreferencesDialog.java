@@ -1,4 +1,15 @@
 /*
+ * This file is part of WorldPainter Languages, an unofficial localization
+ * fork of WorldPainter (https://github.com/saplome/WorldPainter-LANGUAGES).
+ *
+ * Original work Copyright © pepsoft.org, The Netherlands.
+ * Modifications Copyright © 2026 saplome. This file was modified in 2026.
+ *
+ * This file remains licensed under the GNU General Public License,
+ * version 3. See the LICENSE file for details.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -101,7 +112,13 @@ public class PreferencesDialog extends WorldPainterDialog {
     }
     
     public void ok() {
+        final Configuration.LookAndFeel oldLookAndFeel = previousLookAndFeel;
+        final float oldUiScale = previousUiScale;
         saveSettings();
+        final Configuration config = Configuration.getInstance();
+        if ((config.getLookAndFeel() != oldLookAndFeel) || (config.getUiScale() != oldUiScale)) {
+            App.getInstance().promptRestartForInterfaceChange();
+        }
         super.ok();
     }
     
@@ -119,13 +136,14 @@ public class PreferencesDialog extends WorldPainterDialog {
                 checkBoxPing.setSelected(false);
                 pingNotSet = true;
             }
-            if ((Main.privateContext == null)
-                    || "true".equals(System.getProperty("org.pepsoft.worldpainter.devMode"))
+            if ("true".equals(System.getProperty("org.pepsoft.worldpainter.devMode"))
                     || "true".equals(System.getProperty("org.pepsoft.worldpainter.disableUpdateCheck"))) {
                 checkBoxCheckForUpdates.setSelected(false);
                 checkBoxCheckForUpdates.setEnabled(false);
             } else {
+                // L66: the fork has its own GitHub Releases update checker; it does not need PrivateContext.
                 checkBoxCheckForUpdates.setSelected(config.isCheckForUpdates());
+                checkBoxCheckForUpdates.setEnabled(true);
             }
             if ("true".equals(System.getProperty("org.pepsoft.worldpainter.disableUndo"))) {
                 checkBoxUndo.setSelected(false);
@@ -183,7 +201,36 @@ public class PreferencesDialog extends WorldPainterDialog {
 
             previousMaxHeight = config.getDefaultMaxHeight();
 
-            comboBoxLookAndFeel.setSelectedIndex(config.getLookAndFeel() != null ? config.getLookAndFeel().ordinal() : 0);
+            Configuration.LookAndFeel configuredLookAndFeel = config.getLookAndFeel();
+            if (configuredLookAndFeel != null) {
+                switch (configuredLookAndFeel) {
+                    case FLATLAF_ARC_ORANGE:
+                        configuredLookAndFeel = Configuration.LookAndFeel.FLATLAF_CYAN_LIGHT;
+                        break;
+                    case FLATLAF_CARBON:
+                    case FLATLAF_DARK_PURPLE:
+                        configuredLookAndFeel = Configuration.LookAndFeel.FLATLAF_ONE_DARK;
+                        break;
+                    case DARK_THEME:
+                    case RADIANCE_NIGHT_SHADE:
+                    case RADIANCE_GRAPHITE:
+                    case RADIANCE_GRAPHITE_CHALK:
+                    case RADIANCE_TWILIGHT:
+                    case RADIANCE_NIGHT_SHADE_2:
+                        configuredLookAndFeel = Configuration.LookAndFeel.FLATLAF_ONE_DARK;
+                        break;
+                    case FLAT_LIGHT:
+                    case FLAT_DARK:
+                        configuredLookAndFeel = Configuration.LookAndFeel.SYSTEM;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            int lookAndFeelIndex = (configuredLookAndFeel != null) ? asList(LOOK_AND_FEEL_VALUES).indexOf(configuredLookAndFeel) : 0;
+            if (lookAndFeelIndex < 0) lookAndFeelIndex = 0;
+            comboBoxLookAndFeel.setSelectedIndex(lookAndFeelIndex);
+            previousLookAndFeel = LOOK_AND_FEEL_VALUES[lookAndFeelIndex];
             if (config.getUiScale() == 0.0f) {
                 radioButtonUIScaleAuto.setSelected(true);
                 sliderUIScale.setValue((int) (GUIUtils.SYSTEM_UI_SCALE_FLOAT * 100));
@@ -191,6 +238,7 @@ public class PreferencesDialog extends WorldPainterDialog {
                 radioButtonUIScaleManual.setSelected(true);
                 sliderUIScale.setValue((int) (config.getUiScale() * 100));
             }
+            previousUiScale = config.getUiScale();
             updateLabelUIScale();
 
             switch (config.getAccelerationType()) {
@@ -317,7 +365,7 @@ public class PreferencesDialog extends WorldPainterDialog {
         config.setDefaultGameType((GameType) comboBoxMode.getSelectedItem());
         config.setDefaultAllowCheats(checkBoxCheats.isSelected());
 
-        config.setLookAndFeel(Configuration.LookAndFeel.values()[comboBoxLookAndFeel.getSelectedIndex()]);
+        config.setLookAndFeel(LOOK_AND_FEEL_VALUES[comboBoxLookAndFeel.getSelectedIndex()]);
         if (radioButtonUIScaleAuto.isSelected()) {
             config.setUiScale(0.0f);
         } else {
@@ -752,7 +800,7 @@ public class PreferencesDialog extends WorldPainterDialog {
 
         jLabel30.setText(org.pepsoft.worldpainter.WPI18n.s("ui.field.visualTheme"));
 
-        comboBoxLookAndFeel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "System", "Metal", "Nimbus", "Dark Metal", "Dark Nimbus" }));
+        comboBoxLookAndFeel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FlatLaf Cyan light", "FlatLaf One Dark", "System", "Metal", "Nimbus", "Dark Metal", "Dark Nimbus" }));
         comboBoxLookAndFeel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboBoxLookAndFeelActionPerformed(evt);
@@ -997,7 +1045,7 @@ public class PreferencesDialog extends WorldPainterDialog {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.0db377921f"), jPanel1);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.tab.general"), jPanel1);
 
         jLabel1.setText(org.pepsoft.worldpainter.WPI18n.s("ui.configure.configureYourDefaultSettings"));
 
@@ -1199,7 +1247,7 @@ public class PreferencesDialog extends WorldPainterDialog {
             }
         });
 
-        labelEditExportSettingsLink.setForeground(new java.awt.Color(0, 0, 255));
+        labelEditExportSettingsLink.setForeground(org.pepsoft.worldpainter.WPI18n.linkColour());
         labelEditExportSettingsLink.setText(org.pepsoft.worldpainter.WPI18n.s("ui.html.htmlUConfigureDefault"));
         labelEditExportSettingsLink.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         labelEditExportSettingsLink.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1436,7 +1484,7 @@ public class PreferencesDialog extends WorldPainterDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.0aabf727ab"), jPanel5);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.preferences.defaults"), jPanel5);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(org.pepsoft.worldpainter.WPI18n.s("ui.field.hardwareAcceleration")));
 
@@ -1683,7 +1731,7 @@ public class PreferencesDialog extends WorldPainterDialog {
                 .addContainerGap(77, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.9446a98ad1"), jPanel2);
+        jTabbedPane1.addTab(org.pepsoft.worldpainter.WPI18n.s("ui.preferences.performance"), jPanel2);
 
         buttonCancel.setText(org.pepsoft.worldpainter.WPI18n.s("ui.button.cancel"));
         buttonCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -2080,6 +2128,16 @@ public class PreferencesDialog extends WorldPainterDialog {
     private Dimension defaultTerrainAndLayerSettings;
     private ExportSettings defaultExportSettings;
     private Platform previousPlatform;
+    // WorldPainter Languages fork (L39): explicit mapping between the visual theme combo box indices and
+    // LookAndFeel values, so that the deprecated FLAT_LIGHT/FLAT_DARK constants in the middle of the enum
+    // do not break the ordinal-based mapping
+    private static final Configuration.LookAndFeel[] LOOK_AND_FEEL_VALUES = {
+            Configuration.LookAndFeel.FLATLAF_CYAN_LIGHT, Configuration.LookAndFeel.FLATLAF_ONE_DARK,
+            Configuration.LookAndFeel.SYSTEM, Configuration.LookAndFeel.METAL, Configuration.LookAndFeel.NIMBUS,
+            Configuration.LookAndFeel.DARK_METAL, Configuration.LookAndFeel.DARK_NIMBUS
+    };
+    private Configuration.LookAndFeel previousLookAndFeel;
+    private float previousUiScale;
     
     private static final long serialVersionUID = 1L;
 }
